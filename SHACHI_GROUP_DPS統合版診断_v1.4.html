@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DPS統合版診断 v1.4</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1EFE8;--bg2:#FAFAF8;--bg3:#EDEBE2;--bg4:#E5E2D8;
+  --dark:#2C2C2A;--mid:#5F5E5A;--lit:#888780;
+  --line:#DDDBD2;--gold:#C9A96E;--gold2:#8A6830;
+  --teal:#1D9E75;--tl:#E1F5EE;
+  --amb:#BA7517;--al:#FAEEDA;
+  --red:#A32D2D;--rl:#FCEBEB;
+  --blu:#185FA5;--bl:#E6F1FB;
+  --text:var(--dark);--text2:var(--mid);--text3:var(--lit);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif;font-size:14px;line-height:1.75;min-height:100vh}
+.screen{display:none;padding:24px 20px 80px;max-width:680px;margin:0 auto}
+/* ── 表紙 ── */
+.cover-wrap{text-align:center;padding:40px 0 20px}
+.cover-brand{font-size:10px;letter-spacing:.4em;color:var(--lit);margin-bottom:12px}
+.cover-title{font-family:'Noto Serif JP',serif;font-size:26px;font-weight:600;color:var(--dark);line-height:1.4;margin-bottom:8px}
+.cover-sub{font-size:11px;color:var(--lit);letter-spacing:.2em;margin-bottom:28px}
+.cover-desc{font-size:13px;color:var(--mid);line-height:1.9;margin-bottom:28px;text-align:left;background:var(--bg3);padding:16px;border-left:3px solid var(--gold);border-radius:0 4px 4px 0}
+.btn-start{background:var(--dark);color:var(--bg);border:none;font-size:13px;letter-spacing:.3em;padding:14px 40px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:0 auto}
+.btn-start:hover{opacity:.85}
+/* ── 設問画面 ── */
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.q-block-label{font-size:10px;letter-spacing:.3em;color:var(--gold2);font-weight:500}
+.q-progress-wrap{flex:1;margin:0 12px;height:3px;background:var(--line);border-radius:2px}
+.q-progress-bar{height:3px;background:var(--gold);border-radius:2px;transition:width .3s}
+.q-progress-num{font-size:10px;color:var(--lit)}
+.q-number{font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:6px;letter-spacing:.1em}
+.q-text{font-size:15px;font-weight:500;color:var(--dark);margin-bottom:16px;line-height:1.75}
+.q-note{font-size:11px;color:var(--amb);margin-bottom:12px;padding:6px 10px;border-left:2px solid var(--amb);background:var(--al);line-height:1.6}
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.choice{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer;transition:all .15s;font-size:13px;color:var(--dark);line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.choice:hover{border-color:var(--gold);background:var(--bg3)}
+.choice.selected{border-color:var(--gold);background:var(--al)}
+.choice-letter{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--lit)}
+.choice.selected .choice-letter{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.btn-nav{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 24px;cursor:pointer;border-radius:4px;font-family:inherit}
+.btn-nav:disabled{opacity:.35;cursor:default}
+.btn-nav.sec{background:transparent;border:1px solid var(--line);color:var(--mid)}
+/* ── 結果画面 ── */
+.r-type-badge{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:4px}
+.r-type-name{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.r-type-sub{font-size:12px;color:var(--mid);margin-bottom:16px}
+.r-catch{font-size:16px;font-weight:500;color:var(--gold2);margin-bottom:16px;padding:10px 14px;border-left:3px solid var(--gold);background:var(--al);line-height:1.7}
+.r-divider{height:1px;background:var(--line);margin:16px 0}
+.fb-block{margin-bottom:14px;padding:12px 14px;border-radius:6px}
+.fb-base{background:var(--bg3)}
+.fb-tips{background:var(--tl);border-left:3px solid var(--teal)}
+.fb-warn{background:var(--rl);border-left:3px solid var(--red)}
+.fb-label{font-size:10px;letter-spacing:.2em;color:var(--lit);margin-bottom:4px}
+.fb-label-tips{font-size:10px;letter-spacing:.2em;color:var(--teal);margin-bottom:4px}
+.fb-label-warn{font-size:10px;letter-spacing:.2em;color:var(--red);margin-bottom:4px}
+.fb-body{font-size:13px;line-height:1.8;color:var(--dark)}
+.scores-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sc-card{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:10px 8px;text-align:center}
+.sc-card.top{border-color:var(--gold)}
+.sc-label{font-size:9px;color:var(--lit);margin-bottom:4px;line-height:1.4}
+.sc-val{font-size:16px;font-weight:700;color:var(--dark)}
+.sc-card.top .sc-val{color:var(--gold2)}
+.ts-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px}
+.ts-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.ts-phase{font-size:10px;font-weight:700;color:var(--lit);width:28px;flex-shrink:0;padding-top:2px}
+.ts-body{font-size:12px;color:var(--dark);line-height:1.7}
+.pos-wrap{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.pos-item{display:flex;gap:10px;align-items:flex-start}
+.pos-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.pos-icon-g{background:var(--tl);color:var(--teal)}
+.pos-icon-b{background:var(--rl);color:var(--red)}
+.pos-icon-n{background:var(--al);color:var(--amb)}
+.pos-label{font-size:9px;color:var(--lit);margin-bottom:2px}
+.pos-body{font-size:12px;color:var(--dark);line-height:1.65}
+.shachi-box{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:12px}
+.s-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:8px}
+.s-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.s-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.s-lbl{font-size:11px;color:var(--mid);flex:1}
+.s-val{font-size:11px;font-weight:500}
+.stress-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.stress-bar-wrap{flex:1;height:6px;background:var(--line);border-radius:3px}
+.stress-bar{height:6px;background:var(--amb);border-radius:3px}
+.stress-label{font-size:10px;color:var(--mid);width:90px;flex-shrink:0}
+.stress-val{font-size:10px;color:var(--lit);width:20px;text-align:right}
+.weak-flag{display:inline-block;background:var(--al);border:1px solid var(--amb);color:var(--amb);font-size:10px;padding:3px 8px;border-radius:12px;margin:3px 3px 3px 0}
+.btn-pwd{background:transparent;border:1px solid var(--gold);color:var(--gold2);font-size:11px;letter-spacing:.2em;padding:10px 24px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:16px auto 0}
+.btn-restart{background:transparent;border:1px solid var(--line);color:var(--mid);font-size:11px;letter-spacing:.2em;padding:8px 20px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:8px auto 0}
+/* ── パスワード画面 ── */
+.pwd-wrap{text-align:center;padding:40px 0}
+.pwd-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:16px}
+.pwd-input{background:var(--bg3);border:1px solid var(--line);color:var(--dark);font-size:14px;padding:10px 14px;width:100%;max-width:260px;border-radius:4px;outline:none;text-align:center;font-family:inherit;letter-spacing:.3em}
+.pwd-input:focus{border-color:var(--gold)}
+.btn-pwd-submit{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 28px;cursor:pointer;border-radius:4px;font-family:inherit;margin-top:12px}
+.pwd-err{font-size:11px;color:var(--red);margin-top:8px;height:16px}
+/* ── 管理画面 ── */
+.ad-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ad-title{font-size:13px;font-weight:500;color:var(--gold2);letter-spacing:.1em}
+.btn-close{background:transparent;border:1px solid var(--line);color:var(--mid);font-size:10px;padding:6px 14px;cursor:pointer;border-radius:4px;font-family:inherit}
+.warn-box{background:var(--rl);border:1px solid var(--red);border-left:4px solid var(--red);border-radius:4px;padding:10px 14px;font-size:11px;color:var(--dark);line-height:1.75;margin-bottom:16px}
+.ad-sec{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px}
+.ad-sec-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.j-box{border-radius:6px;padding:12px 14px;margin-bottom:8px}
+.j-p1{background:var(--tl);border-left:3px solid var(--teal)}
+.j-p2{background:var(--al);border-left:3px solid var(--amb)}
+.j-p3{background:var(--rl);border-left:3px solid var(--red)}
+.j-lbl{font-size:14px;font-weight:700;margin-bottom:4px}
+.j-desc{font-size:11px;color:var(--mid);line-height:1.7}
+.prof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}
+.prof-card{background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+.prof-lbl{font-size:9px;color:var(--lit);margin-bottom:3px}
+.prof-val{font-size:12px;font-weight:500;color:var(--dark)}
+.flag-item{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.flag-item:last-child{border-bottom:none}
+.flag-icon{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;margin-top:1px}
+.fw{background:var(--rl);color:var(--red)}
+.fc{background:var(--al);color:var(--amb)}
+.fi{background:var(--tl);color:var(--teal)}
+.flag-name{font-size:11px;font-weight:500;color:var(--dark)}
+.flag-desc{font-size:10px;color:var(--mid);line-height:1.6;margin-top:2px}
+.act-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:8px}
+.act-item{font-size:12px;color:var(--dark);padding:6px 0 6px 14px;position:relative;border-bottom:1px solid var(--line);line-height:1.6}
+.act-item::before{content:'›';position:absolute;left:0;color:var(--gold)}
+</style>
+</head>
+<body>
+
+<!-- ── 表紙 ── -->
+<div id="s-cover" class="screen" style="display:block">
+  <div class="cover-wrap">
+    <div class="cover-brand">SHACHI GROUP</div>
+    <div class="cover-title">DPS統合版診断<br>v1.4</div>
+    <div class="cover-sub">DIAGNOSTIC PLACEMENT SYSTEM</div>
+    <div class="cover-desc">
+      あなたの<strong>自然な傾向・役割適性・判断の癖・ストレス反応・成長タイプ</strong>を見つける診断です。<br>
+      配置・育成の仮説を作るために使います。正直に、思ったままお答えください。<br>
+      <span style="font-size:11px;color:var(--lit)">全40問 / 所要時間 約10〜15分</span>
+    </div>
+    <button class="btn-start" onclick="startQ()">診断をはじめる</button>
+  </div>
+</div>
+
+<!-- ── 設問画面 ── -->
+<div id="s-q" class="screen">
+  <div class="q-header">
+    <div class="q-block-label" id="q-bl"></div>
+    <div class="q-progress-wrap"><div class="q-progress-bar" id="q-bar"></div></div>
+    <div class="q-progress-num" id="q-num"></div>
+  </div>
+  <div class="q-number" id="q-no"></div>
+  <div class="q-text" id="q-tx"></div>
+  <div id="q-note-wrap"></div>
+  <div class="choices" id="q-choices"></div>
+  <div class="nav">
+    <button class="btn-nav sec" onclick="gBack()" id="btn-back">← 戻る</button>
+    <button class="btn-nav" onclick="gNext()" id="btn-next" disabled>次へ →</button>
+  </div>
+</div>
+
+<!-- ── 結果画面 ── -->
+<div id="s-result" class="screen">
+  <div id="rcard"></div>
+  <div class="r-divider"></div>
+  <div id="sgrid"></div>
+  <div class="r-divider"></div>
+  <div id="sbox"></div>
+  <button class="btn-pwd" onclick="goPwd()">経営・上司向けレポートを見る</button>
+  <button class="btn-restart" onclick="doRestart()">もう一度診断する</button>
+
+  <div class="send-box">
+    <div class="send-title">結果を送信する</div>
+    <div style="font-size:11px;color:var(--mid);margin-bottom:10px;line-height:1.6">
+      名前と店舗を入力して送信ボタンを押してください。<br>管理者のスプレッドシートに自動で記録されます。
+    </div>
+    <div class="send-row">
+      <div class="send-label">氏名</div>
+      <input class="send-input" id="send-name" placeholder="例：田中 翔" type="text">
+    </div>
+    <div class="send-row">
+      <div class="send-label">店舗</div>
+      <input class="send-input" id="send-store" placeholder="例：ジェネルー" type="text">
+    </div>
+    <button class="btn-send" onclick="sendResult()" id="btn-send">結果を送信する</button>
+    <div class="send-status" id="send-status"></div>
+  </div>
+</div>
+
+<!-- ── パスワード画面 ── -->
+<div id="s-pwd" class="screen">
+  <div class="pwd-wrap">
+    <div class="pwd-title">経営・上司向けレポート<br>管理者パスワードを入力してください</div>
+    <input type="password" class="pwd-input" id="pwd-in" placeholder="••••••••" onkeydown="if(event.key==='Enter')chkPwd()">
+    <br>
+    <button class="btn-pwd-submit" onclick="chkPwd()">確認する</button>
+    <div class="pwd-err" id="pwd-err"></div>
+    <button class="btn-restart sec" onclick="backRes()" style="margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--mid);font-size:11px;padding:8px 20px;cursor:pointer;border-radius:4px;font-family:inherit">← 結果に戻る</button>
+  </div>
+</div>
+
+<!-- ── 管理画面 ── -->
+<div id="s-admin" class="screen">
+  <div class="ad-header">
+    <div class="ad-title">経営・上司向けレポート</div>
+    <button class="btn-close" onclick="backRes()">← 結果に戻る</button>
+  </div>
+  <div id="admcont"></div>
+</div>
+
+<script>
+var PWD='DPS2025';
+var ans=[];
+var lastSc=null;
+var cur=0;
+
+var N='対人',B='現場',C='分析',D='表現';
+var LEAD='LEAD',EDU='EDU',NUM='NUM',SYS='SYS',REC='REC',PR='PR';
+
+// ── 設問定義 ──
+var QS=(function(){
+var qs=[];
+
+// A. 自然傾向 6問 (idx 0-5) - 4能力のみ
+qs.push({bl:'A',bll:'自然傾向',tx:'人と関わった後の自分に近いのは？',
+ ch:[{t:'人と話したことで元気になる',a:N},{t:'一人で整理する時間がほしくなる',a:C},
+     {t:'相手によって疲れ方が大きく変わる',a:N,a2:C},{t:'その場では平気だが後から疲れが出る',a:C,ov:'OVER'}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'新しい場所や人間関係に入るとき、自分に近いのは？',
+ ch:[{t:'まず自分から話しかけて関係を作る',a:N},{t:'まず観察して、空気を見てから入る',a:C},
+     {t:'役割や立場がわかると動きやすい',a:B},{t:'誰かに紹介されると入りやすい',a:N,w:1}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'物事を理解するとき、近いのは？',
+ ch:[{t:'全体像や可能性から考える',a:D},{t:'実際の事例や過去の経験から考える',a:B},
+     {t:'目的や意味がわかると理解しやすい',a:C},{t:'手順や流れが整理されると理解しやすい',a:C,a2:B,w:1}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'会話で自分が自然にしやすいのは？',
+ ch:[{t:'アイデアや今後の可能性を広げる',a:D},{t:'実際にあった出来事や現実的な話をする',a:B},
+     {t:'相手の気持ちや空気を読みながら話す',a:N},{t:'話の結論や筋道を整理する',a:C}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'判断をするとき、自然に重視しやすいのは？',
+ ch:[{t:'合理性や正しさ',a:C},{t:'周囲の気持ちや関係性',a:N},
+     {t:'結果につながるかどうか',a:C,a2:B,w:1},{t:'今の現場で無理なくできるか',a:B}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'意見が割れたとき、自分に近いのは？',
+ ch:[{t:'論点を整理して正しい方向を決めたい',a:C},{t:'まず感情的なしこりを残さないようにしたい',a:N},
+     {t:'最終的に結果が出る方を選びたい',a:B,a2:C,w:1},{t:'現場が動きやすい落とし所を探したい',a:B}]});
+
+// B. 役割申告 8問 (idx 6-13)
+qs.push({bl:'B',bll:'役割申告',tx:'自分が一番やる気になる任され方は？',
+ ch:[{t:'この現場をまとめてほしい',a:B,r:{LEAD:3}},{t:'この子を育ててほしい',a:N,r:{EDU:3}},
+     {t:'この数字を改善してほしい',a:C,r:{NUM:3}},{t:'この仕組みを整えてほしい',a:C,r:{SYS:3}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'もう一つ選ぶなら、やる気になる任され方は？',
+ ch:[{t:'求人や採用を強くしてほしい',a:N,r:{REC:3}},{t:'SNSや見せ方を考えてほしい',a:D,r:{PR:3}},
+     {t:'店舗の空気や営業を立て直してほしい',a:B,r:{LEAD:2}},{t:'新しい企画やイベントを考えてほしい',a:D,r:{PR:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'新人スタッフが入った初日、あなたの動きに近いのは？',
+ ch:[{t:'声をかけて緊張をほぐす',a:N,r:{EDU:2}},{t:'その人の性格や動きを観察する',a:C},
+     {t:'ルールや流れを先に教える',a:B,r:{SYS:2}},{t:'まず現場で一緒に動かしながら教える',a:B,r:{LEAD:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'誰かに仕事を教えるとき、自分に近いのは？',
+ ch:[{t:'まず自分がやって見せる',a:B,r:{EDU:1},ls:'DO'},{t:'手順を整理して順番に教える',a:C,r:{SYS:1},ls:'STEP'},
+     {t:'相手の理解度に合わせて教え方を変える',a:N,r:{EDU:2}},{t:'なぜ必要なのか、目的から説明する',a:C,r:{EDU:1},ls:'WHY'}]});
+qs.push({bl:'B',bll:'役割申告',tx:'店舗の売上が落ちているとき、最初に気になるのは？',
+ ch:[{t:'店内の空気やスタッフの動き',a:N,r:{LEAD:1}},{t:'来客数・単価・指名数などの数字',a:C,r:{NUM:3}},
+     {t:'キャストや黒服がどう感じているか',a:N,r:{EDU:1}},{t:'営業の流れや仕組みに問題がないか',a:C,r:{SYS:3}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'新しいイベントを考えるとき、重視するのは？',
+ ch:[{t:'お客様が面白いと思うインパクト',a:D,r:{PR:3}},{t:'現場が無理なく回せるか',a:B,r:{LEAD:2}},
+     {t:'売上や集客につながるか',a:C,r:{NUM:3}},{t:'店舗やグループのブランドに合っているか',a:D,r:{PR:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'求人がうまくいっていないとき、まず考えるのは？',
+ ch:[{t:'条件や待遇が弱いのではないか',a:C,r:{REC:2,NUM:1}},{t:'見せ方や言葉が刺さっていないのではないか',a:D,r:{REC:2,PR:1}},
+     {t:'今いるスタッフの紹介を増やせないか',a:N,r:{REC:2}},{t:'応募後の対応や面接導線に問題がないか',a:C,r:{REC:2,SYS:1}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'SNSや広告を見るとき、自分が気になりやすいのは？',
+ ch:[{t:'目を引くか、印象に残るか',a:D,r:{PR:2}},{t:'ターゲットに刺さる言葉になっているか',a:D,r:{PR:2,REC:1}},
+     {t:'店舗の世界観と合っているか',a:D,r:{PR:2}},{t:'結果として応募や来店につながっているか',a:C,r:{NUM:2,PR:1}}]});
+
+// C. 判断の癖 7問 (idx 14-20)
+qs.push({bl:'C',bll:'判断の癖',tx:'営業中にトラブルが起きたとき、最初の動きに近いのは？',
+ ch:[{t:'自分が前に出て、その場を収める',a:B,r:{LEAD:2}},{t:'状況を整理して、誰に何を任せるか決める',a:C,r:{LEAD:1}},
+     {t:'関係者の感情を見ながら場を落ち着かせる',a:N,r:{EDU:1}},{t:'原因を確認して、再発防止まで考える',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'部下が同じミスを繰り返したとき、最初に思うのは？',
+ ch:[{t:'本人の意識や責任感を高める必要がある',a:B,r:{LEAD:1}},{t:'教え方や伝え方が合っていなかったかもしれない',a:N,r:{EDU:2}},
+     {t:'ミスが起きやすい仕組みになっているかもしれない',a:C,r:{SYS:2}},{t:'今の配置や任せている仕事が合っていないかもしれない',a:C,r:{EDU:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'店長が独自のやり方で成果を出しているが、グループ方針とは少しズレている。どうする？',
+ ch:[{t:'成果が出ているなら、ある程度尊重する',a:B,r:{NUM:1}},{t:'方針とのズレを確認し、必要なら話し合う',a:C,r:{LEAD:1}},
+     {t:'他店舗への影響が出る前にルールを揃える',a:C,r:{SYS:2}},{t:'本人の意図を聞き、良い部分は横展開する',a:C,r:{EDU:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'会議で話がまとまらないとき、自分がしやすい動きは？',
+ ch:[{t:'結論を出すために話を前に進める',a:B,r:{LEAD:2}},{t:'それぞれの意見を聞いて整理する',a:N,r:{EDU:1}},
+     {t:'目的に戻して、論点を絞る',a:C,r:{NUM:1}},{t:'実行できる案に落とし込む',a:C,r:{SYS:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'急に人が足りなくなったとき、あなたの判断に近いのは？',
+ ch:[{t:'自分も現場に入ってまず回す',a:B,r:{LEAD:2}},{t:'他店舗や周囲に協力を依頼する',a:N},
+     {t:'何を削れば営業が回るか整理する',a:C,r:{SYS:1,LEAD:1}},{t:'そもそも人手不足が起きにくい体制を考える',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'上から曖昧な指示が来たとき、自分に近いのは？',
+ ch:[{t:'まず動きながら形にしていく',a:B,ls:'DO'},{t:'意図を確認してから動く',a:C,st:'AMB'},
+     {t:'現場に伝わるように噛み砕く',a:N,r:{EDU:1,LEAD:1}},{t:'目的・期限・担当を整理してから進める',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'数字は悪くないが、現場の空気が悪い。あなたはどう見る？',
+ ch:[{t:'数字が出ているなら、まず大きな問題ではない',a:C,r:{NUM:1}},{t:'空気の悪さは後から数字に出るので早めに見る',a:N},
+     {t:'誰が原因かより、構造的な原因を探す',a:C,r:{SYS:2}},{t:'店長や中心人物の関わり方を確認する',a:N,r:{EDU:1,LEAD:1}}]});
+
+// D. ストレス反応 5問 (idx 21-25) - ストレスプロファイル専用・役割加点なし
+qs.push({bl:'D',bll:'ストレス反応',tx:'一番ストレスを感じやすい状況は？',
+ ch:[{t:'人間関係が悪く、空気がギスギスしている',st:'REL'},{t:'ルールや役割が曖昧で、動き方が見えない',st:'AMB'},
+     {t:'数字が悪いのに原因が見えない',st:'NUM_S'},{t:'自分の意見や提案を出せない',st:'FREE'}]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'忙しさが続いたとき、自分に出やすい反応は？',
+ ch:[{t:'周りへの言い方が強くなる',st:'OVER'},{t:'一人で抱え込みやすくなる',st:'OVER'},
+     {t:'細かい確認や管理が雑になる',st:'OVER'},{t:'先のことを考える余裕がなくなる',st:'OVER'}]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'評価されていないと感じたとき、自分に近いのは？',
+ ch:[{t:'結果で見返そうとする',ls:'CHALLENGE'},{t:'口には出さないが、やる気が落ちる',st:'REL'},
+     {t:'なぜ評価されないのか確認したくなる',ls:'WHY'},{t:'自分の役割が合っていないのではと考える',st:'FREE'}]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'苦手な上司・先輩のタイプは？',
+ ch:[{t:'感情で指示が変わる人',st:'AMB'},{t:'細かく管理しすぎる人',st:'FREE'},
+     {t:'目的を説明せずに指示だけ出す人',ls:'WHY'},{t:'現場を見ずに数字だけで判断する人',st:'REL'}]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'自分が腐りやすい環境は？',
+ ch:[{t:'頑張っても任される範囲が増えない環境',ls:'CHALLENGE',st:'FREE'},{t:'人間関係に気を使い続ける環境',st:'REL'},
+     {t:'ルールがなく、その場しのぎが多い環境',st:'AMB'},{t:'新しい挑戦や変化がない環境',st:'FREE'}]});
+
+// E. 成長タイプ 4問 (idx 26-29)
+qs.push({bl:'E',bll:'成長タイプ',tx:'自分が伸びやすい教えられ方は？',
+ ch:[{t:'実際にやらせてもらいながら覚える',ls:'DO'},{t:'理由や目的を説明されると理解しやすい',ls:'WHY'},
+     {t:'手順や基準を整理してもらうと動きやすい',ls:'STEP'},{t:'こまめにフィードバックをもらうと伸びやすい',ls:'FB'}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'任されると成長しやすいのは？',
+ ch:[{t:'少し背伸びする現場責任',a:B,r:{LEAD:2},ls:'CHALLENGE'},{t:'人を育てる役割',a:N,r:{EDU:2}},
+     {t:'数字改善の目標',a:C,r:{NUM:2},ls:'CHALLENGE'},{t:'仕組みやルール作り',a:C,r:{SYS:2}}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'注意や指摘を受けたとき、自分に近いのは？',
+ ch:[{t:'その場で受け止めて、すぐ行動を変える',ls:'DO'},{t:'一度持ち帰って、自分の中で整理する',ls:'WHY'},
+     {t:'納得できる理由があれば素直に変える',ls:'WHY'},{t:'言い方によって受け取り方が大きく変わる',st:'REL'}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'注意や指摘を受けた後、実際にどう動きやすいですか？',
+ ch:[{t:'すぐ行動に移す',a:B,ls:'DO'},{t:'まず振り返ってから動く',a:C,ls:'WHY'},
+     {t:'似たミスをしないための仕組みを考える',a:C,r:{SYS:2},ls:'STEP'},{t:'誰かに話して整理する',a:N,ls:'FB'}]});
+
+// F. 行動場面 7問 (idx 30-36) - behavior_sim
+qs.push({bl:'F',bll:'行動場面',tx:'金曜の22時、店が急にバタついている。最初に手をつけやすいのはどれですか？',
+ ch:[{t:'動きが止まっている新人黒服',a:N,r:{EDU:1}},{t:'空気を重くしているキャスト',a:N},
+     {t:'店全体の流れと詰まり',a:B,r:{LEAD:1}},{t:'今日の自分の担当範囲の中で、崩れると一番影響が大きい場所',a:B,r:{LEAD:2},rx:1}]});
+qs.push({bl:'F',bll:'行動場面',tx:'担当しているスタッフの同じミスが3週続いています。今すぐ取れる動きとして近いのはどれですか？',
+ ch:[{t:'自分の教え方や声のかけ方を変える',a:N,r:{EDU:2},ea:0},{t:'本人の理解の仕方や向き不向きを見直す',a:C,ea:2},
+     {t:'役割の割り当てや担当の決め方を見直す',a:C,r:{SYS:1},ea:1},{t:'店の忙しさや環境が原因ではないか確認する',a:B,ea:2}]});
+qs.push({bl:'F',bll:'行動場面',tx:'売上を持っているキャストがいる一方で、周りのキャストとの空気が悪い。今夜の営業が始まる前に、最初に見やすいのはどれですか？',
+ ch:[{t:'本人が今何を求めているか',a:N,r:{EDU:1},rx:2},{t:'周りのキャストの反応や空気',a:N},
+     {t:'店がそのキャストにどれだけ依存しているか',a:C,r:{NUM:1}},{t:'まず売上への影響を抑えること',a:B,r:{LEAD:1}}]});
+// Q34 idx33: 弱点フラグ専用
+qs.push({bl:'F',bll:'行動場面',fo:1,tx:'人手が足りない夜、全部は守れません。後ろに回しやすいのはどれですか？',
+ note:'この設問は「後回しにしやすいもの」を選んでください。正直に答えることで、あなたの優先順位のクセが見えます。',
+ ch:[{t:'キャストへの細かい声かけ',wf:'対人後回し'},{t:'新人黒服への確認',wf:'育成後回し'},
+     {t:'店内全体の流れ確認',wf:'現場後回し'},{t:'売上・客単価・指名状況などの数字確認',wf:'数字後回し'}]});
+qs.push({bl:'F',bll:'行動場面',tx:'新しいスタッフが辞めそうな雰囲気を出している。ただし今日は週末で店が混んでおり、店長も接客対応中です。今すぐあなたが取る行動に近いのはどれですか？',
+ ch:[{t:'隙を見て声をかけて本音を聞く',a:N,r:{EDU:1}},{t:'まず周囲のスタッフから最近の様子を確認する',a:C},
+     {t:'今は営業を優先し、終わってから話す時間を作る',a:B,r:{LEAD:1}},{t:'店長が戻り次第すぐ共有して、フォロー体制を考える',a:C,r:{SYS:1,EDU:1}}]});
+qs.push({bl:'F',bll:'行動場面',tx:'クレームが入りました。まだ大事になっていません。ただし別のテーブルも対応中で、自分が動けるのは1つだけです。最初に取りやすい情報はどれですか？',
+ ch:[{t:'今どのくらい空気が悪くなりそうか',a:B,r:{LEAD:1}},{t:'その場で実際に何が起きたか',a:C},
+     {t:'誰がどう関わっていたか',a:N,ea:1},{t:'前にも似た流れがあったか',a:C,r:{SYS:1}}]});
+qs.push({bl:'F',bll:'行動場面',tx:'注意したスタッフが、その後から明らかに落ち込んでいる。営業は続いている。あなたの動きに近いのはどれですか？',
+ ch:[{t:'少し時間を置いて、営業後にフォローする',a:N,r:{EDU:1}},{t:'隙を見て声をかけて気持ちを確認する',a:N,r:{EDU:1}},
+     {t:'まず仕事を続けてもらう（切り替えが大事）',a:B,r:{LEAD:1}},{t:'落ち込みの原因を一緒に整理する',a:C,r:{SYS:1,EDU:1}}]});
+
+// G. 評価感度 3問 (idx 37-39)
+qs.push({bl:'G',bll:'もう少しだけ',tx:'先輩が主任に昇格した。その時、自分に近いのはどれですか？',
+ ch:[{t:'自分も早くその役割を持ちたいと感じた',ef:1,ls:'CHALLENGE'},{t:'どんな仕事をするのか・どう動くのかが気になった',a:C},
+     {t:'自分が次は誰かを育てる番だと感じた',a:N,r:{EDU:2}},{t:'特に何も感じず、今の仕事に集中した',a:B}]});
+qs.push({bl:'G',bll:'もう少しだけ',tx:'自分より後輩が先に評価されたとき、近いのはどれですか？',
+ ch:[{t:'悔しいが、自分も結果を出そうと思う',ls:'CHALLENGE'},{t:'なぜ評価されたのか理由を知りたい',a:C,ls:'WHY'},
+     {t:'自分の見られ方が気になってやる気が落ちる',ef:2,st:'REL'},{t:'特に気にせず、自分の役割に集中する',a:B}]});
+qs.push({bl:'G',bll:'最後の1問',tx:'注意されたとき、一番引っかかりやすいのはどれですか？',
+ ch:[{t:'内容が正しいかどうか',a:C,ls:'WHY'},{t:'言い方や態度',st:'REL'},
+     {t:'自分の評価が下がったのではないか',ef:2},{t:'次にどう直せばいいか',ls:'DO',ls2:'FB'}]});
+
+return qs;
+})();
+
+var TOTAL=QS.length;
+
+// ── 役割直接スコアの理論最大値（全設問から事前計算済み）──
+// Dブロック・Q34を除く全設問でその役割に最大加点できる合計値
+var RDIR_THEO_MAX={LEAD:28,EDU:25,NUM:18,SYS:31,REC:6,PR:9};
+
+// ── 15タイプ定義 ──
+var TYPES={
+ 'LEAD-EDU':{
+  role:'現場統率者',lb:'動かせば、人が育つ',ct:'現場を制し、人を育てる主任・店長補佐',
+  ds:'忙しい夜に店をまとめながら、気づけば後輩が動けるようになっている。\n誰かを育てながら場を回す——それがあなたの一番の強みです。',
+  tp:'「まとめてほしい」と「この子を見てほしい」を同時に任せるとエンジンがかかります。\nどちらか一方だけでは力が半減しやすいです。',
+  wn:'忙しさが続くと、育成を後回しにして自分で抱えがちになります。\n「一つだけ誰かに渡す」習慣が次のステージへの鍵です。',
+  pa:'現場で動きながら、先輩の背中を見て覚えてきた',pr:'教えながら回す、両立の難しさと醍醐味を感じている',fu:'自分のやり方を持った後輩が、また誰かを育てる連鎖をつくる',
+  gd:'バタつく現場で後輩と一緒に動く場面',bd:'育成だけ・数字だけを切り離して任される場面',nx:'今週後輩に一つだけ任せて、結果を聞く時間を作る'},
+ 'LEAD-NUM':{
+  role:'数字統率者',lb:'場を制し、数字で証明する',ct:'売上責任を持つ店長・営業責任者',
+  ds:'店の流れを整えながら、数字にしっかり目を向けられる。\n感覚だけで終わらせず、結果で語ることができるタイプです。',
+  tp:'「この店をまとめてほしい、かつ数字を上げてほしい」という明確な責任を渡すと力が出ます。\n曖昧な期待値のままでは動きが止まりやすいです。',
+  wn:'結果にこだわるあまり、現場の空気より数字優先になりやすい局面があります。\n空気が先に崩れると、数字も後から崩れることを意識すると強くなります。',
+  pa:'現場を任されながら、結果を問われる経験を積んできた',pr:'数字と現場の両方を見る難しさと面白さにいる',fu:'自分が動かなくてもチームが結果を出す仕組みをつくる',
+  gd:'目標と権限が明確に渡されている場面',bd:'権限がないのに責任だけ問われる場面',nx:'今週の数字の弱い時間帯を一つ特定して、仮説を立てる'},
+ 'LEAD-SYS':{
+  role:'仕組み統率者',lb:'整えれば、現場が動く',ct:'現場改善・オペレーション整備',
+  ds:'場を回しながら「なぜ詰まるのか」を見る目がある。\n仕組みを整えることで、次の混乱を防ぐことができるタイプです。',
+  tp:'「現場のオペレーションを整えてほしい」という任せ方で力が出ます。\n感覚的な「うまくやって」ではなく、課題が見えている状態で渡すと動きやすいです。',
+  wn:'整えることに集中するあまり、整える前から動けない状態になりやすいことがあります。\n「完璧より60点で動く」を意識すると突破口が開きます。',
+  pa:'なぜこの流れになっているのかを考えながら現場を経験してきた',pr:'改善と運用を両立させる難しさの中にいる',fu:'自分がいなくても回る仕組みを残す',
+  gd:'「なぜ詰まるのか」を考えられる余裕がある場面',bd:'毎日の緊急対応に追われる場面',nx:'今週の繰り返し起きているトラブルを一つだけ書き出す'},
+ 'EDU-SYS':{
+  role:'育成設計者',lb:'教えたことが仕組みになる',ct:'教育マニュアル・研修設計',
+  ds:'人の成長を見ながら、それを形にできる。\n「育てる」と「整える」が同時にできるのがあなたの強みです。',
+  tp:'「このポジションの育成を仕組みにしてほしい」という任せ方で力が出ます。\n個別対応だけを任せると強みが半分しか出ません。',
+  wn:'整えることに時間をかけすぎて、目の前の人のケアが後回しになることがあります。\n仕組みと個別フォローのバランスを意識すると安定します。',
+  pa:'教えながら「なぜこの教え方が通じないのか」を考えてきた',pr:'育成と制度設計の両方を求められる場面にいる',fu:'自分が作った育成の仕組みで、後輩が後輩を育てる状態にする',
+  gd:'新人育成とマニュアル整備を同時に任される場面',bd:'緊急対応や現場のバタつきが続く場面',nx:'今教えている内容を一つだけ「次の人に渡せる形」にする'},
+ 'EDU-REC':{
+  role:'採用育成者',lb:'入口から育てる',ct:'新人定着・採用後フォロー',
+  ds:'採用した人が定着するまでの流れを見ることができる。\n「採る」だけでなく「育てる」まで見届けるのが強みです。',
+  tp:'採用から入社後フォローまでをセットで任せると力が出ます。\n採用だけ・育成だけでは強みが切れてしまいます。',
+  wn:'一人ひとりに時間をかけすぎて、自分のキャパを超えやすいことがあります。\n「全員を同じように見る」より「誰を重点的に見るか」を決めると安定します。',
+  pa:'採用に関わりながら、入社後のギャップを近くで見てきた',pr:'採用と定着の両方を見る難しさの中にいる',fu:'定着率が上がる採用・育成の流れを設計する',
+  gd:'採用から3ヶ月の伴走をセットで任される場面',bd:'採用基準も育成方針も曖昧な環境',nx:'今いる新人の「辞めやすいポイント」を一つ書き出す'},
+ 'NUM-SYS':{
+  role:'数字設計者',lb:'数字で見て、仕組みで解く',ct:'業績改善・KPI管理',
+  ds:'数字の変化を見ながら、原因を仕組みに落とし込める。\n感覚ではなく構造で問題を解くタイプです。',
+  tp:'「この数字を改善する仕組みをつくってほしい」という任せ方で力が出ます。\n数字だけ・仕組みだけでは動きが鈍くなります。',
+  wn:'データと仕組みに集中するあまり、現場の人の動きや感情が見えにくくなることがあります。\n数字の裏に人がいることを意識すると、改善の精度が上がります。',
+  pa:'数字を見ながら「なぜこうなるのか」を考えてきた',pr:'分析と実行を繋ぐ役割の難しさの中にいる',fu:'自分がいなくても数字が改善し続ける仕組みを残す',
+  gd:'KPI改善・業績分析を任される場面',bd:'感覚や空気で動く現場に一人で入る場面',nx:'今週の数字で「なぜこうなっているか」が説明できないものを一つ特定する'},
+ 'NUM-PR':{
+  role:'集客設計者',lb:'数字と見せ方で集客する',ct:'集客施策・イベント改善',
+  ds:'集客の効果を数字で見ながら、見せ方を改善できる。\n「なんとなく盛り上がった」で終わらせず、再現性にこだわるタイプです。',
+  tp:'「この集客施策の効果を測りながら改善してほしい」という任せ方で力が出ます。',
+  wn:'効果測定にこだわるあまり、企画のスピードが落ちやすいことがあります。\n「まず小さく動いて計測する」を繰り返すと前に進みやすいです。',
+  pa:'イベントや企画の効果が出た・出なかった経験を積んできた',pr:'創造性と再現性の両立に取り組んでいる',fu:'再現性のある集客の仕組みをつくる',
+  gd:'施策の企画から効果測定まで任される場面',bd:'効果測定なしにただ実行だけを求められる場面',nx:'今週の企画の「効いた指標」を一つ特定する'},
+ 'REC-PR':{
+  role:'採用広報者',lb:'見せ方で人を集める',ct:'求人広報・採用SNS',
+  ds:'求人の見せ方と言葉を考えながら、応募者の動きをイメージできる。\n「いい人が来ない」を見せ方から変えられるタイプです。',
+  tp:'「求人の見せ方と採用SNSを任せてほしい」という形で渡すと力が出ます。',
+  wn:'見せ方の改善に注力するあまり、採用後のフォローが薄くなりやすいことがあります。\n「採った後」まで視野を持つと定着率が上がります。',
+  pa:'求人や採用の言葉を考えながら、反応の違いを見てきた',pr:'採用広報の価値を証明しようとしている',fu:'「この店に入りたい」と思わせる採用ブランドをつくる',
+  gd:'求人SNSの改善・応募者とのやり取りを任される場面',bd:'採用基準が曖昧で何でも任される場面',nx:'今の求人文の「引っかかりやすいポイント」を一つ書き直す'},
+ 'PR-SYS':{
+  role:'ブランド設計者',lb:'世界観を仕組みにする',ct:'ブランド運用・投稿ルール整備',
+  ds:'店の見え方や世界観を考えながら、それを続けられる形に整えられる。\n「なんとなくかっこいい」を再現可能にできるタイプです。',
+  tp:'「店のブランドと投稿ルールを整えてほしい」という任せ方で力が出ます。',
+  wn:'世界観にこだわりすぎて、現場の動きやすさが後回しになることがあります。\n「現場が使える形」にこだわると実装精度が上がります。',
+  pa:'店の見せ方や発信の統一感が気になる経験を積んできた',pr:'ブランドと運用の両立に向き合っている',fu:'誰が投稿してもブレないブランドの仕組みをつくる',
+  gd:'SNS運用ルールの設計・世界観の言語化を任される場面',bd:'毎日の緊急対応に追われる場面',nx:'今の投稿で「これはブランドとズレている」を一つ特定する'},
+ 'SYS-REC':{
+  role:'採用仕組み者',lb:'採用を仕組みで安定させる',ct:'面接導線・採用フロー改善',
+  ds:'採用の流れを見ながら、どこで詰まっているかを整理できる。\n「なぜ採れないのか」を仕組みから解くタイプです。',
+  tp:'「採用フローの改善を任せてほしい」という形で渡すと力が出ます。',
+  wn:'仕組みを整えることに注力するあまり、応募者一人ひとりへの対応が薄くなることがあります。\nフローと個別対応のバランスを意識すると安定します。',
+  pa:'採用の流れを見ながら「なぜここで止まるのか」を考えてきた',pr:'採用フロー改善の価値を証明しようとしている',fu:'採用の歩留まりが安定的に改善する仕組みをつくる',
+  gd:'採用フロー全体を任される場面',bd:'採用基準が毎回変わる環境',nx:'今の採用フローで「一番詰まっている箇所」を一つ特定する'},
+ 'LEAD-PR':{
+  role:'企画統率者',lb:'現場と発信を両立する',ct:'イベント現場・SNSに強い店長候補',
+  ds:'現場を動かしながら、それを外に伝える力がある。\n「映える現場をつくる」が自然にできるタイプです。',
+  tp:'現場統率と店舗発信をセットで任せると力が出ます。',
+  wn:'どちらも完璧にやろうとして、両方が中途半端になりやすいことがあります。\n「今日は現場、今週は発信」と切り替えを決めると安定します。',
+  pa:'現場を回しながら「これ映えるな」と思う感覚を持ち続けてきた',pr:'現場と発信の両立の難しさの中にいる',fu:'現場の空気が外にも伝わる発信をつくる',
+  gd:'イベントの企画から当日の運営・発信まで任される場面',bd:'どちらか一方だけを求められる場面',nx:'今週の現場で「発信できるポイント」を一つ見つけておく'},
+ 'EDU-NUM':{
+  role:'育成数値者',lb:'育成を数字で見る',ct:'育成KPI・定着率改善担当',
+  ds:'人の成長を見ながら、それを数字でも追える。\n「感覚的にうまくいった」で終わらせず、再現性を求めるタイプです。',
+  tp:'「定着率や育成の数字を改善してほしい」という任せ方で力が出ます。',
+  wn:'数字を追うあまり、目の前の人への対応が機械的になりやすいことがあります。\n「数字は人の変化の結果」という意識を持つと温度感が保てます。',
+  pa:'育成に関わりながら「何が効いているのか」を考えてきた',pr:'育成と効果測定を繋ぐ役割の難しさの中にいる',fu:'定着率・成長速度が改善する育成の仕組みをつくる',
+  gd:'育成KPIの設計・定着率改善を任される場面',bd:'成果測定のない環境で育成だけを任される場面',nx:'今担当している人の「成長を測れる指標」を一つ設定する'},
+ 'NUM-REC':{
+  role:'採用分析者',lb:'数字で採用を解剖する',ct:'応募数・採用率・CPAなどの採用数値分析担当',
+  ds:'採用の数字を見ながら、どこに問題があるかを特定できる。\n「なんとなく採れていない」を数字で解くタイプです。',
+  tp:'採用数値の分析と改善提案をセットで任せると力が出ます。',
+  wn:'数字分析に集中するあまり、応募者の気持ちや現場感が薄くなりやすいことがあります。',
+  pa:'採用に関わりながら「どこで詰まっているのか」を数字で追ってきた',pr:'採用データの読み方を磨いている',fu:'採用コストと採用質を両立させる仕組みをつくる',
+  gd:'採用KPIの分析・改善提案を任される場面',bd:'データが整備されていない環境',nx:'今の採用数字で「最も改善余地がある指標」を一つ特定する'},
+ 'PR-EDU':{
+  role:'広報育成者',lb:'発信で人を育てる',ct:'キャスト発信・スタッフ広報担当',
+  ds:'店の見え方を考えながら、スタッフの魅力を引き出して発信できる。\n「この人を知ってほしい」という視点で動けるタイプです。',
+  tp:'キャストや黒服の発信・魅力づくりをセットで任せると力が出ます。',
+  wn:'発信に力を入れすぎて、育成の本質部分が薄くなりやすいことがあります。\n「発信は育成の結果として出るもの」という順番を意識すると安定します。',
+  pa:'人の魅力を見ながら、どう伝えるかを考えてきた',pr:'育成と発信を組み合わせる新しい役割の中にいる',fu:'スタッフ一人ひとりの強みが外に伝わる環境をつくる',
+  gd:'キャスト発信・スタッフのSNS支援を任される場面',bd:'数字責任だけを求められる場面',nx:'今担当しているスタッフの「発信できる強み」を一つ見つける'},
+ 'REC-NUM':{
+  role:'採用改善者',lb:'採用の現場を数字で改善する',ct:'応募後導線・面接率・採用歩留まり改善担当',
+  ds:'採用の現場を見ながら、歩留まりを改善できる。\n「なぜここで落ちるのか」を現場感と数字で解くタイプです。',
+  tp:'採用現場の改善と効果測定をセットで任せると力が出ます。',
+  wn:'現場の改善に集中するあまり、発信側（求人の見せ方）が後回しになることがあります。',
+  pa:'採用の現場で「なぜここで断られるのか」を考えてきた',pr:'採用歩留まりの改善に取り組んでいる',fu:'応募から採用までの全フローが安定する仕組みをつくる',
+  gd:'採用フローの改善・面接対応の質向上を任される場面',bd:'採用基準が毎回変わる環境',nx:'今の採用フローで「一番離脱している箇所」を一つ確認する'}
+};
+
+// ── 画面制御 ──
+function showOnly(id){
+  var ids=['s-cover','s-q','s-result','s-pwd','s-admin'];
+  for(var i=0;i<ids.length;i++) document.getElementById(ids[i]).style.display='none';
+  document.getElementById(id).style.display='block';
+  window.scrollTo(0,0);
+}
+function startQ(){
+  ans=new Array(TOTAL).fill(null);
+  cur=0;
+  renderQ();
+  showOnly('s-q');
+}
+function doRestart(){startQ();}
+function goPwd(){showOnly('s-pwd');}
+function backRes(){showOnly('s-result');}
+function chkPwd(){
+  var v=document.getElementById('pwd-in').value;
+  document.getElementById('pwd-err').textContent='';
+  if(v===PWD){
+    document.getElementById('pwd-in').value='';
+    buildAdmin();
+    showOnly('s-admin');
+  } else {
+    document.getElementById('pwd-err').textContent='パスワードが違います';
+  }
+}
+
+function renderQ(){
+  var q=QS[cur];
+  document.getElementById('q-bl').textContent=q.bll||'';
+  var pct=Math.round((cur+1)/TOTAL*100);
+  document.getElementById('q-bar').style.width=pct+'%';
+  document.getElementById('q-num').textContent=(cur+1)+'/'+TOTAL;
+  document.getElementById('q-no').textContent='Q'+(cur+1);
+  document.getElementById('q-tx').textContent=q.tx;
+  var nw=document.getElementById('q-note-wrap');
+  nw.innerHTML='';
+  if(q.note) nw.innerHTML='<div class="q-note">'+q.note+'</div>';
+  if(q.fo) nw.innerHTML+='<div class="q-note" style="color:var(--amb)">この設問は1つだけ選んでください</div>';
+  var letters=['A','B','C','D'];
+  var choiceHtml='';
+  for(var i=0;i<q.ch.length;i++){
+    var sel=(ans[cur]===i)?' selected':'';
+    choiceHtml+='<div class="choice'+sel+'" onclick="selectAns('+i+')" style="cursor:pointer">'+
+      '<div class="choice-letter">'+letters[i]+'</div>'+
+      '<div>'+q.ch[i].t+'</div></div>';
+  }
+  document.getElementById('q-choices').innerHTML=choiceHtml;
+  document.getElementById('btn-back').disabled=(cur===0);
+  document.getElementById('btn-next').disabled=(ans[cur]===null||ans[cur]===undefined);
+}
+
+function selectAns(idx){
+  ans[cur]=idx;
+  // 選択済みスタイルを再描画
+  var letters=['A','B','C','D'];
+  var q=QS[cur];
+  var choiceHtml='';
+  for(var i=0;i<q.ch.length;i++){
+    var sel=(i===idx)?' selected':'';
+    choiceHtml+='<div class="choice'+sel+'" onclick="selectAns('+i+')" style="cursor:pointer">'+
+      '<div class="choice-letter">'+letters[i]+'</div>'+
+      '<div>'+q.ch[i].t+'</div></div>';
+  }
+  document.getElementById('q-choices').innerHTML=choiceHtml;
+  document.getElementById('btn-next').disabled=false;
+}
+
+function gNext(){
+  if(ans[cur]===null) return;
+  if(cur===TOTAL-1){
+    showResult();
+  } else {
+    cur++;
+    renderQ();
+  }
+}
+function gBack(){
+  if(cur>0){cur--;renderQ();}
+}
+
+// ── 採点ロジック ──
+function calcSc(){
+  var NAT_IDX=[0,1,2,3,4,5];
+  var CLM_IDX=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+  var SIM_IDX=[30,31,32,34,35,36]; // idx33=Q34はフラグ専用で除外
+  var STR_IDX=[21,22,23,24,25];
+
+  var nat={};nat[N]=0;nat[B]=0;nat[C]=0;nat[D]=0;
+  var clm={};clm[N]=0;clm[B]=0;clm[C]=0;clm[D]=0;
+  var sim={};sim[N]=0;sim[B]=0;sim[C]=0;sim[D]=0;
+  var rdir={LEAD:0,EDU:0,NUM:0,SYS:0,REC:0,PR:0};
+  var str={REL:0,AMB:0,NUM_S:0,FREE:0,OVER:0};
+  var lrnMap={DO:0,WHY:0,STEP:0,FB:0,CHALLENGE:0};
+  var ea=0,ef=0,wf=null;
+
+  for(var i=0;i<QS.length;i++){
+    var q=QS[i];var a=ans[i];
+    if(a===null||a===undefined) continue;
+    var ch=q.ch[a];if(!ch) continue;
+
+    // Q34(idx33): 弱点フラグのみ
+    if(i===33){
+      if(ch.wf) wf=ch.wf;
+      continue;
+    }
+
+    // 4能力
+    if(ch.a){
+      if(NAT_IDX.indexOf(i)>=0) nat[ch.a]=(nat[ch.a]||0)+2;
+      else if(CLM_IDX.indexOf(i)>=0) clm[ch.a]=(clm[ch.a]||0)+2;
+      else if(SIM_IDX.indexOf(i)>=0) sim[ch.a]=(sim[ch.a]||0)+2;
+    }
+    // 副能力(a2/w:1は+1)
+    if(ch.a2){
+      if(NAT_IDX.indexOf(i)>=0) nat[ch.a2]=(nat[ch.a2]||0)+1;
+      else if(CLM_IDX.indexOf(i)>=0) clm[ch.a2]=(clm[ch.a2]||0)+1;
+    }
+
+    // 役割直接スコア（Dブロックは除外）
+    if(ch.r && STR_IDX.indexOf(i)<0){
+      for(var rk in ch.r) rdir[rk]=(rdir[rk]||0)+ch.r[rk];
+    }
+
+    // ストレス系統（Dブロックのみ）
+    if(ch.st && STR_IDX.indexOf(i)>=0) str[ch.st]=(str[ch.st]||0)+3;
+    else if(ch.st && STR_IDX.indexOf(i)<0) str[ch.st]=(str[ch.st]||0)+1;
+
+    // 成長タイプ
+    if(ch.ls) lrnMap[ch.ls]=(lrnMap[ch.ls]||0)+2;
+    if(ch.ls2) lrnMap[ch.ls2]=(lrnMap[ch.ls2]||0)+1;
+
+    // 外部帰属
+    if(ch.ea!==undefined) ea+=ch.ea;
+
+    // 評価感度フラグ
+    if(ch.ef) ef+=ch.ef;
+
+    // 役割逆算フラグ（rx=1: 欲読み+2、rx=2: 役割逆算+2）
+    if(ch.rx===1) rdir['EDU']=(rdir['EDU']||0)+0; // 欲読みはフラグのみ
+    if(ch.rx===2) rdir['LEAD']=(rdir['LEAD']||0)+0; // 役割逆算はフラグのみ
+  }
+
+  // ── 最終役割スコア（3階建て）──
+  // ステップ1: 4能力変換（claimed+sim混合）
+  var clmMax=Object.values(clm).reduce(function(a,b){return a+b;},0)||1;
+  var simMax=Object.values(sim).reduce(function(a,b){return a+b;},0)||1;
+  var crn={};for(var k in clm) crn[k]=clm[k]/clmMax;
+  var srn={};for(var k in sim) srn[k]=sim[k]/simMax;
+
+  // claimed70/sim30の混合正規化率
+  var mix={};
+  mix[N]=crn[N]*0.7+srn[N]*0.3;
+  mix[B]=crn[B]*0.7+srn[B]*0.3;
+  mix[C]=crn[C]*0.7+srn[C]*0.3;
+  mix[D]=crn[D]*0.85+srn[D]*0.15;
+
+  function convRole(ab){
+    return{
+      LEAD:ab[B]*2+ab[N],EDU:ab[N]*2+ab[B],
+      NUM:ab[C]*2+ab[B],SYS:ab[C]*2+ab[N]*0.5,
+      REC:ab[N]*2+ab[D]*0.5,PR:ab[D]*2+ab[C]
+    };
+  }
+  var abConv=convRole(mix);
+  var simConv=convRole(srn);
+
+  // roleKeysを先に定義（rdirNのループで使用するため）
+  var roleKeys=['LEAD','EDU','NUM','SYS','REC','PR'];
+
+  // 役割直接スコア: RDIR_THEO_MAXで正規化（人内最大ではなく理論最大値）
+  var rdirN={};
+  for(var i=0;i<roleKeys.length;i++){
+    var rk=roleKeys[i];
+    rdirN[rk]=Math.min(1.0,(rdir[rk]||0)/(RDIR_THEO_MAX[rk]||1));
+  }
+
+  // 3階建て合成（4能力30%+役割直接40%+behavior30%）
+  var roles={};
+  // 理論最大値2.0で正規化（人内最大で割らない）
+  var AB_CONV_MAX=2.0, SM_CONV_MAX=2.0;
+  for(var i=0;i<roleKeys.length;i++){
+    var rk=roleKeys[i];
+    var ab3=(abConv[rk]||0)/AB_CONV_MAX;
+    var rd3=rdirN[rk]||0;
+    var sm3=(simConv[rk]||0)/SM_CONV_MAX;
+    roles[rk]=ab3*0.3+rd3*0.4+sm3*0.3;
+  }
+
+  // 0〜100点化（理論最大1.0 × 100 = 100点、人内最大で割らない）
+  var rn={};
+  for(var rk in roles) rn[rk]=Math.min(100,Math.round(roles[rk]*100));
+
+  // 判定用: claimed生スコアのroles_raw
+  var roles_raw={LEAD:clm[B]*2+clm[N],EDU:clm[N]*2+clm[B],NUM:clm[C]*2+clm[B],
+                 SYS:clm[C]*2+clm[N]*0.5,REC:clm[N]*2+clm[D]*0.5,PR:clm[D]*2+clm[C]};
+  var rawVals=Object.values(roles_raw).sort(function(a,b){return b-a;});
+  var rawGap=rawVals[0]-rawVals[1];
+
+  var sorted=[];
+  for(var rk in rn) sorted.push([rk,rn[rk]]);
+  sorted.sort(function(a,b){return b[1]-a[1];});
+  var topKey=sorted[0][0];
+  var secKey=sorted[1][0];
+  var typeKey=topKey+'-'+secKey;
+  var junType=false;
+  // 15タイプにない組み合わせ → 逆順を試す
+  if(!TYPES[typeKey]){
+    var revKey=secKey+'-'+topKey;
+    if(TYPES[revKey]) typeKey=revKey;
+    else{ junType=true; typeKey=null; }
+  }
+
+  // 3層top
+  var ntTop=topK(nat);
+  var clTop=topK(clm);
+  var simTop=topK(sim);
+  // 乖離判定: claimed_topとbehavior_simのトップ能力が一致しない場合
+  // ※表現(D)は後半7問が現場行動中心のため、behavior_simに表現が出にくい構造的理由がある
+  // 表現タイプは後半7問が現場行動中心のため、behavior_simに表現が出にくい構造的理由がある
+  // そのため claimed_top=表現の場合は乖離フラグを立てない（設計上の意図的例外）
+  var gap=(clTop!==simTop)&&!(clTop===D);
+
+  // 信頼度
+  var trust='',trustColor='';
+  if(clTop===simTop&&clTop===ntTop){trust='高（3層一致）';trustColor='var(--teal)';}
+  else if(clTop===simTop&&clTop!==ntTop){trust='中（申告と行動一致）';trustColor='var(--gold)';}
+  else if(clTop!==simTop&&ntTop===simTop){trust='要確認（隠れた強み候補）';trustColor='var(--amb)';}
+  else{trust='低（3層にズレあり・面談必須）';trustColor='var(--red)';}
+
+  // P1/P2/P3判定（3条件AND）
+  var topScore=sorted[0][1];
+  var scoreGap=sorted[0][1]-sorted[1][1];
+
+  // Q34弱点フラグと主役割の衝突チェック
+  var wfConflict=false;
+  if(wf){
+    var conflicts={LEAD:['現場後回し'],EDU:['育成後回し','対人後回し'],NUM:['数字後回し'],
+                   SYS:['現場後回し'],REC:['対人後回し','育成後回し'],PR:['数字後回し']};
+    if(conflicts[topKey]&&conflicts[topKey].indexOf(wf)>=0) wfConflict=true;
+  }
+
+  var hantei='';
+  // P1: スコア高・差大・claimed=behavior_sim一致・フラグなし・弱点衝突なし
+  if(topScore>=75&&scoreGap>=15&&clTop===simTop&&ef<=1&&!wfConflict){
+    hantei='P1（主担当候補）';
+  // P2: スコア中以上・差あり・評価感度3以下
+  }else if(topScore>=65&&scoreGap>=8&&ef<=3){
+    // 弱点フラグが主役割と衝突する場合はP2-確認あり
+    hantei=wfConflict?'P2-確認あり（弱点フラグ要確認）':'P2（試験配置候補）';
+  }else{
+    hantei='P3（要面談・仮説未確定）';
+  }
+
+  // 成長タイプ上位
+  var lrnTop=topK(lrnMap);
+
+  return{nat:nat,clm:clm,sim:sim,ntTop:ntTop,clTop:clTop,simTop:simTop,junType:junType,
+         gap:gap,trust:trust,trustColor:trustColor,
+         rn:rn,sorted:sorted,typeKey:typeKey,
+         topKey:topKey,secKey:secKey,
+         str:str,lrnTop:lrnTop,ea:ea,ef:ef,wf:wf,wfConflict:wfConflict,
+         hantei:hantei,topScore:topScore,scoreGap:scoreGap};
+}
+
+function topK(obj){
+  var best=null,bestV=-1;
+  for(var k in obj){if((obj[k]||0)>bestV){bestV=obj[k];best=k;}}
+  return best;
+}
+
+// ── 結果表示 ──
+function showResult(){
+  var sc=calcSc();
+  lastSc=sc;
+  var ty=sc.typeKey?TYPES[sc.typeKey]:null;
+  // 準タイプ（15タイプ外の組み合わせ）のデフォルト表示を生成
+  if(!ty){
+    var roleNames2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+    var t1=roleNames2[sc.topKey]||sc.topKey;
+    var t2=roleNames2[sc.secKey]||sc.secKey;
+    ty={
+      role:'準タイプ（'+t1+'×'+t2+'）',
+      lb:t1+'と'+t2+'の両面を持つ',
+      ct:'15タイプのカテゴリには収まらない複合的な適性',
+      ds:t1+'の強みと'+t2+'の強みを両方持っている可能性があります。\nどちらか一方に特化しているというより、場面によって使い分けられるタイプです。\n面談でどちらの役割で力が出やすいかを確認してください。',
+      tp:'どちらの役割も試験配置で確認することを推奨します。\nまず現在の配置で力が出やすい方から始めてください。',
+      wn:'役割が定まっていない状態が長続きすると疲弊しやすいです。\n「今は何をメインにやるか」を明確にする時間をつくると安定します。',
+      pa:'複数の領域を経験しながら、自分の得意を探してきた',
+      pr:'どの役割で一番力が出るかを見極める時期にいる',
+      fu:'自分の核心的な強みが見えてきて、それを活かせる場所が定まる',
+      gd:'柔軟に役割を変えられる場面・2つの視点が必要な場面',
+      bd:'「あなたの専門は何ですか」と問われる場面',
+      nx:'今週、'+t1+'と'+t2+'どちらの仕事で力が出たかを記録してみる'
+    };
+  }
+
+  var ds=ty.ds.replace(/\n/g,'<br>');
+  var tp=ty.tp.replace(/\n/g,'<br>');
+  var wn=ty.wn.replace(/\n/g,'<br>');
+
+  var rc='<div class="r-type-badge">あなたのタイプ</div>'+
+    '<div class="r-type-name">'+ty.role+'</div>'+
+    '<div class="r-type-sub">'+ty.lb+'</div>'+
+    '<div class="r-catch">'+ty.ct+'</div>'+
+    '<div class="r-divider"></div>'+
+    '<div class="fb-block fb-base"><div class="fb-label">あなたはこんな場面で力が出る</div><div class="fb-body">'+ds+'</div></div>'+
+    '<div class="fb-block fb-tips"><div class="fb-label-tips">こう使われると一番力が出ます</div><div class="fb-body">'+tp+'</div></div>'+
+    '<div class="fb-block fb-warn"><div class="fb-label-warn">余裕がなくなると出やすいパターン</div><div class="fb-body">'+wn+'</div></div>';
+  document.getElementById('rcard').innerHTML=rc;
+
+  // スコアグリッド
+  var sorted=sc.sorted;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var sg='<div class="s-title">役割スコア</div><div class="scores-grid">';
+  for(var i=0;i<sorted.length;i++){
+    sg+='<div class="sc-card'+(i===0?' top':'')+'">'+
+        '<div class="sc-label">'+roleNames[sorted[i][0]]+'</div>'+
+        '<div class="sc-val">'+Math.round(sorted[i][1])+'</div></div>';
+  }
+  sg+='</div>';
+  document.getElementById('sgrid').innerHTML=sg;
+
+  // タイムラインと補足
+  var sb='<div class="ts-title">あなたの歩いてきた道と、これから</div>';
+  var phases=[['過去',ty.pa],['現在',ty.pr],['未来',ty.fu]];
+  for(var i=0;i<phases.length;i++){
+    sb+='<div class="ts-row"><div class="ts-phase">'+phases[i][0]+'</div><div class="ts-body">'+phases[i][1]+'</div></div>';
+  }
+  sb+='<div class="pos-wrap">';
+  sb+='<div class="pos-item"><div class="pos-icon pos-icon-g">◆</div><div class="pos-cont"><div class="pos-label">力が出やすい場面</div><div class="pos-body">'+ty.gd+'</div></div></div>';
+  sb+='<div class="pos-item"><div class="pos-icon pos-icon-b">◇</div><div class="pos-cont"><div class="pos-label">力が出にくい場面</div><div class="pos-body">'+ty.bd+'</div></div></div>';
+  sb+='<div class="pos-item"><div class="pos-icon pos-icon-n">→</div><div class="pos-cont"><div class="pos-label">今すぐできる一歩</div><div class="pos-body">'+ty.nx+'</div></div></div>';
+  sb+='</div>';
+
+  // 信頼度
+  sb+='<div class="shachi-box" style="margin-top:14px"><div class="s-title">役割スコアの信頼度</div>'+
+      '<div style="font-size:12px;font-weight:500;color:'+(sc.trustColor||'var(--text2)')+';margin-bottom:4px">'+(sc.trust||'-')+'</div>'+
+      '<div style="font-size:10px;color:var(--text3);line-height:1.6">役割スコアは自己申告と行動傾向の混合値です。信頼度は3層一致度で算出しています。</div></div>';
+
+  // Q34弱点フラグ
+  if(sc.wf){
+    var wfMsg='忙しい時に優先順位が落ちやすい領域です。意識的に守る工夫が有効です。';
+    var wfConflictMsg='';
+    if(sc.wfConflict){
+      var ty2=sc.typeKey?TYPES[sc.typeKey]:null;
+      var tn=ty2?ty2.role:(sc.topKey+' タイプ');
+      wfConflictMsg='<div style="background:var(--al);border-left:3px solid var(--amb);padding:8px 10px;margin-top:8px;border-radius:4px">'+
+        '<div style="font-size:10px;font-weight:500;color:var(--amb);margin-bottom:4px">このタイプと後回し傾向について</div>'+
+        '<div style="font-size:11px;color:var(--dark);line-height:1.7">'+
+        '「'+tn+'」という適性スコアと「'+sc.wf+'」は矛盾ではありません。<br>'+
+        'スコアは傾向の強さを、後回しフラグは追い込まれた時の優先判断を測っています。<br>'+
+        'この組み合わせは「得意なのに緊急場面で後回しになりやすい」ことを意味します。<br>'+
+        '面談で「忙しい夜に数字を確認できていますか？」を確認してもらうと改善のヒントが得られます。'+
+        '</div></div>';
+    }
+    sb+='<div class="shachi-box"><div class="s-title">後回しにしやすい傾向（Q34）</div>'+
+        '<div style="font-size:12px;color:var(--amb);margin-bottom:4px">'+sc.wf+'</div>'+
+        '<div style="font-size:10px;color:var(--text3);line-height:1.6">'+wfMsg+'</div>'+
+        wfConflictMsg+'</div>';
+  }
+
+  // ストレス系統
+  var strMax=Math.max.apply(null,Object.values(sc.str))||1;
+  var strNames={REL:'人間関係ストレス',AMB:'曖昧さストレス',NUM_S:'結果不明ストレス',FREE:'裁量不足ストレス',OVER:'抱え込みストレス'};
+  sb+='<div class="shachi-box"><div class="s-title">しんどくなりやすい環境</div>';
+  var strSorted=Object.keys(sc.str).sort(function(a,b){return sc.str[b]-sc.str[a];});
+  for(var i=0;i<Math.min(3,strSorted.length);i++){
+    var sv=sc.str[strSorted[i]]||0;
+    if(sv===0) continue;
+    var pct=Math.round(sv/strMax*100);
+    sb+='<div class="stress-row"><div class="stress-label">'+strNames[strSorted[i]]+'</div>'+
+        '<div class="stress-bar-wrap"><div class="stress-bar" style="width:'+pct+'%"></div></div>'+
+        '<div class="stress-val">'+sv+'</div></div>';
+  }
+  sb+='</div>';
+
+  document.getElementById('sbox').innerHTML=sb;
+  showOnly('s-result');
+}
+
+// ── 管理側レポート ──
+// ── N8N WEBHOOK URL（ここを自分のURLに変更する）──
+var WEBHOOK_URL = 'YOUR_N8N_WEBHOOK_URL_HERE';
+
+function sendResult(){
+  var name = document.getElementById('send-name').value.trim();
+  var store = document.getElementById('send-store').value.trim();
+  if(!name){ document.getElementById('send-status').textContent='氏名を入力してください'; return; }
+  if(!store){ document.getElementById('send-status').textContent='店舗を入力してください'; return; }
+  if(!lastSc){ document.getElementById('send-status').textContent='診断結果がありません。診断を完了してください'; return; }
+
+  var sc = lastSc;
+  var roleNames = {LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var abilityNames = {対人:'対人運用力',現場:'現場統率力',分析:'分析・構造化力',表現:'表現・訴求力'};
+
+  var sorted = sc.sorted || [];
+  var top1 = sorted[0] ? roleNames[sorted[0][0]] + '(' + Math.round(sorted[0][1]) + 'pt)' : '-';
+  var top2 = sorted[1] ? roleNames[sorted[1][0]] + '(' + Math.round(sorted[1][1]) + 'pt)' : '-';
+
+  var ty = TYPES[sc.typeKey] || {};
+  // 6役割スコア
+  var roleScores = {};
+  if(sc.sorted){ for(var i=0;i<sc.sorted.length;i++){ roleScores[roleNames[sc.sorted[i][0]]]=Math.round(sc.sorted[i][1]); } }
+
+  // 全40問の回答（選択肢番号とテキスト）
+  var allAnswers = {};
+  for(var i=0;i<TOTAL;i++){
+    var q=QS[i]; var a=ans[i];
+    var letters=['A','B','C','D'];
+    allAnswers['Q'+(i+1)] = (a!==null&&a!==undefined&&q.ch[a]) ?
+      letters[a]+': '+q.ch[a].t.substring(0,30) : '未回答';
+  }
+
+  var payload = {
+    name: name,
+    store: store,
+    date: new Date().toLocaleDateString('ja-JP'),
+    type: ty.role || sc.typeKey || '準タイプ',
+    hantei: sc.hantei,
+    top_role: top1,
+    second_role: top2,
+    natural_top: abilityNames[sc.ntTop] || sc.ntTop,
+    claimed_top: abilityNames[sc.clTop] || sc.clTop,
+    behavior_sim: abilityNames[sc.simTop] || sc.simTop,
+    trust: sc.trust,
+    gap: sc.gap ? 'あり' : 'なし',
+    eval_flag: sc.ef,
+    ea_score: sc.ea,
+    weakness_flag: sc.wf || 'なし',
+    stress_top: (function(){
+      var st = sc.str || {};
+      var best = null, bestV = -1;
+      var stNames = {REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
+      for(var k in st){ if((st[k]||0) > bestV){ bestV = st[k]; best = k; } }
+      return best ? stNames[best] : '-';
+    })(),
+    role_scores: JSON.stringify(roleScores),
+    all_answers: JSON.stringify(allAnswers)
+  };
+
+  var btn = document.getElementById('btn-send');
+  var status = document.getElementById('send-status');
+  btn.disabled = true;
+  status.style.color = 'var(--mid)';
+  status.textContent = '送信中...';
+
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(function(res){
+    if(res.ok){
+      status.style.color = 'var(--teal)';
+      status.textContent = '✓ 送信が完了しました。ありがとうございました。';
+    } else {
+      throw new Error('HTTP ' + res.status);
+    }
+  })
+  .catch(function(err){
+    status.style.color = 'var(--red)';
+    status.textContent = '送信に失敗しました。もう一度試すか、管理者に連絡してください。';
+    btn.disabled = false;
+    console.error('送信エラー:', err);
+  });
+}
+
+function buildAdmin(){
+  if(!lastSc) return;
+  var sc=lastSc;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var abilityNames={対人:'対人運用力',現場:'現場統率力',分析:'分析・構造化力',表現:'表現・訴求力'};
+  var strNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
+  var lrnNames={DO:'実践型（やりながら覚える）',WHY:'理由型（目的から理解する）',STEP:'手順型（整理して覚える）',FB:'FB型（フィードバックで伸びる）',CHALLENGE:'チャレンジ型（責任で伸びる）'};
+
+  var h='<div class="warn-box">【必ず読んでください】P1=優秀・P3=弱いではありません。P3は方向性未確定または追加確認が必要という意味です。<br>この診断だけで配置・昇格・降格を決めないでください。必ず面談と現場観察を組み合わせてください。</div>';
+
+  // 総合判定
+  var jcls=sc.hantei.indexOf('P1')>=0?'j-p1':(sc.hantei.indexOf('P2')>=0?'j-p2':'j-p3');
+  var jd={
+    'P1（主担当候補）':'スコア75点以上・差15pt以上・評価感度フラグ0〜1・弱点フラグ衝突なし。主担当として配置推奨。\n※P1=優秀・高能力ではありません。方向性の明確さの判定です。',
+    'P2（試験配置候補）':'スコア65点以上・差8pt以上・評価感度フラグ0〜3。試験配置＋週1面談を推奨。',
+    'P3（要面談・仮説未確定）':'スコアが低いか役割が拮抗しているか、フラグあり。配置を決める前に面談が必須。\n※P3は能力不足・弱い人ではありません。未使用強みや配置ミスマッチの可能性があります。'
+  }[sc.hantei]||'';
+
+  h+='<div class="ad-sec"><div class="ad-sec-title">総合判定（あくまで仮説）</div>'+
+     '<div class="j-box '+jcls+'"><div class="j-lbl" style="color:'+(sc.hantei.indexOf('P1')>=0?'var(--teal)':sc.hantei.indexOf('P2')>=0?'var(--amb)':'var(--red)')+'">'+sc.hantei+'</div>'+
+     '<div class="j-desc">'+jd.replace(/\n/g,'<br>')+'</div></div>'+
+     '<div style="font-size:10px;color:var(--text3);margin-top:6px">最終スコア: 1位 '+Math.round(sc.topScore)+'点  2位との差: '+Math.round(sc.scoreGap)+'pt  評価感度フラグ: '+sc.ef+'点</div></div>';
+
+  // 役割スコア
+  h+='<div class="ad-sec"><div class="ad-sec-title">役割適性スコア（0〜100）</div>'+
+     '<div style="font-size:9px;color:var(--text3);margin-bottom:6px">変換式の係数は暫定値。30名照合後に見直します。役割スコアは傾向の強さであり、現時点の実力を保証するものではありません。</div>'+
+     '<div class="scores-grid">';
+  for(var i=0;i<sc.sorted.length;i++){
+    h+='<div class="sc-card'+(i===0?' top':'')+'"><div class="sc-label">'+roleNames[sc.sorted[i][0]]+'</div>'+
+       '<div class="sc-val">'+Math.round(sc.sorted[i][1])+'</div></div>';
+  }
+  h+='</div></div>';
+
+  // 信頼度・乖離
+  h+='<div class="ad-sec"><div class="ad-sec-title">強みのズレ分析と信頼度</div>'+
+     '<div class="j-box '+(sc.trust.indexOf('高')>=0?'j-p1':sc.trust.indexOf('中')>=0?'j-p2':'j-p3')+'" style="margin-bottom:8px">'+
+     '<div class="j-lbl" style="color:'+sc.trustColor+'">'+sc.trust+'</div>'+
+     '<div class="j-desc">役割スコアは申告傾向ベースの仮説値です。3層の一致度で信頼度を算出しています。</div></div>'+
+     '<div class="prof-grid">'+
+     '<div class="prof-card"><div class="prof-lbl">仕事外での自然な傾向</div><div class="prof-val">'+abilityNames[sc.ntTop]+'</div></div>'+
+     '<div class="prof-card"><div class="prof-lbl">本人が思う自分の強み</div><div class="prof-val">'+abilityNames[sc.clTop]+'</div></div>'+
+     '<div class="prof-card"><div class="prof-lbl">場面想定から推定した行動傾向</div><div class="prof-val">'+abilityNames[sc.simTop]+'</div></div>'+
+     '<div class="prof-card"><div class="prof-lbl">強みのズレ</div><div class="prof-val" style="color:'+(sc.gap?'var(--amb)':'var(--teal)')+'">'+(sc.gap?'ズレあり（面談で確認）':'一致（信頼度高）')+'</div></div>'+
+     '</div></div>';
+
+  // プロファイル
+  h+='<div class="ad-sec"><div class="ad-sec-title">動機・環境・外部帰属のプロファイル</div><div class="prof-grid">'+
+     '<div class="prof-card"><div class="prof-lbl">覚え方のクセ</div><div class="prof-val">'+(lrnNames[sc.lrnTop]||'-')+'</div></div>'+
+     '<div class="prof-card"><div class="prof-lbl">原因をどこに置くか（ea）</div><div class="prof-val">'+sc.ea+'点<br><span style="font-size:9px;color:var(--text3)">高=外部要因重視</span></div></div>'+
+     '<div class="prof-card"><div class="prof-lbl">評価感度・外発志向</div><div class="prof-val">'+sc.ef+'点<br><span style="font-size:9px;color:var(--text3)">3点以上=評価基準の明示が効果的</span></div></div>';
+  if(sc.wf){
+    h+='<div class="prof-card"><div class="prof-lbl">後回しにしやすい傾向</div><div class="prof-val" style="color:var(--amb)">'+sc.wf+'</div></div>';
+  }
+  h+='</div></div>';
+
+  // フラグ
+  var flags=[];
+  if(sc.ef>=3) flags.push({t:'fw',n:'評価感度フラグ高め（'+sc.ef+'点）',d:'評価・肩書きへの感度が高い傾向。期待値・評価基準・役割責任を明確に伝える必要性が高い。'});
+  if(sc.ef>=1&&sc.ef<3) flags.push({t:'fc',n:'評価感度あり（'+sc.ef+'点）',d:'外発的評価への感度が高い傾向がある。昇格面談では動機の実態を確認する。'});
+  if(sc.gap) flags.push({t:'fw',n:'本人の認識と実際の動きがズレている',d:'本人の申告（'+abilityNames[sc.clTop]+'）と行動傾向（'+abilityNames[sc.simTop]+'）がズレている。面談で「力が出た仕事の場面」を確認する。'});
+  if(sc.ea>=3) flags.push({t:'fc',n:'原因を外に置きがち（ea:'+sc.ea+'点）',d:'自分で変えられると思っている範囲が狭い傾向。高=他責ではなく構造要因を重視するタイプ。面談で「今週から自分が変えられることは？」を確認する。'});
+  if(sc.wf&&sc.wfConflict){
+    var _tn2=sc.typeKey&&TYPES[sc.typeKey]?TYPES[sc.typeKey].role:(roleNames[sc.topKey]||sc.topKey);
+    flags.push({t:'fw',n:'適性スコアと後回し傾向の乖離（'+sc.wf+'）',
+      d:'【矛盾ではない】「'+_tn2+'」の適性と「'+sc.wf+'」は測っているものが違います。\n'+
+        'スコア=傾向の強さ、後回しフラグ=追い込まれた時の優先順位のクセ。\n'+
+        'この組み合わせは「得意なのに緊急場面で守れていない可能性」を示します。\n'+
+        '面談で「忙しい夜に['+sc.wf.replace('後回し','').replace('フラグ','').trim()+']をどう確保しているか」を確認する。'});
+  }
+  if(sc.wf&&!sc.wfConflict) flags.push({t:'fi',n:'弱点フラグあり（'+sc.wf+'）',d:'後回しにしやすい傾向はあるが、主役割との衝突は軽微。現場観察で確認する程度で問題ない。'});
+  if(flags.length===0) flags.push({t:'fi',n:'フラグなし',d:'現時点で注意フラグは検出されていません。面談は通常の内容で問題ありません。'});
+
+  h+='<div class="ad-sec"><div class="ad-sec-title">注意フラグ（'+flags.length+'件）</div>';
+  for(var i=0;i<flags.length;i++){
+    h+='<div class="flag-item"><div class="flag-icon '+flags[i].t+'">'+
+       (flags[i].t==='fw'?'!':flags[i].t==='fc'?'△':'✓')+'</div>'+
+       '<div><div class="flag-name">'+flags[i].n+'</div><div class="flag-desc">'+flags[i].d+'</div></div></div>';
+  }
+  h+='</div>';
+
+  // 面談で確認すること
+  var actions=[];
+  actions.push('「最近、一番力が出た仕事の場面を教えてください」');
+  if(sc.gap) actions.push('「'+abilityNames[sc.simTop]+'の仕事をしている時の気持ちを聞く（乖離の確認）」');
+  if(sc.ef>=2) actions.push('「評価された時に伸びる仕事と、評価がなくても続けられる仕事はそれぞれ何ですか？」');
+  if(sc.ea>=3) actions.push('「自分が今週から変えられることを一つ挙げるとしたら？」');
+  if(sc.wf) actions.push('「'+sc.wf+'の状況が続いた時、何が一番しんどいですか？」');
+
+  h+='<div class="ad-sec"><div class="act-title">面談で確認すること</div>';
+  for(var i=0;i<actions.length;i++) h+='<div class="act-item">'+actions[i]+'</div>';
+  h+='</div>';
+
+  h+='<div class="warn-box" style="margin-top:12px">再確認：この診断はあくまで仮説ツールです。面談と現場観察を必ず経てから最終判断をしてください。<br>※このHTMLはソースを開けば誰でも内容を確認できます。ファイルの配布管理を徹底してください。</div>';
+
+  document.getElementById('admcont').innerHTML=h;
+}
+
+</script>
+</body>
+</html>
