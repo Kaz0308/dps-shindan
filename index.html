@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DPS統合版診断 v2.2</title>
+<title>DPS統合版診断 v2.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -184,7 +184,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="s-cover" class="screen" style="display:block">
   <div class="cover-wrap">
     <div class="cover-brand">SHACHI GROUP</div>
-    <div class="cover-title">DPS統合版診断<br>v1.9</div>
+    <div class="cover-title">DPS統合版診断<br>v2.3</div>
     <div class="cover-sub">DIAGNOSTIC PLACEMENT SYSTEM</div>
     <div class="cover-desc">
       あなたの<strong>自然な傾向・役割適性・判断の癖・ストレス反応・成長タイプ</strong>を見つける診断です。<br>
@@ -1075,6 +1075,35 @@ function buildFieldProfile(sc){
     afterContactFit:afterContactFit,playerToTeachingFit:playerToTeachingFit,
     firstSmallRole:firstSmallRole,userCommentBlocks:userCommentBlocks,managerData:managerData};
 }
+// ── 回答品質チェック ──
+// 機械的回答・スコア平坦・P3+高一貫性などを検出する
+// ※あくまで参考フラグ。1フラグで即アウトではなく面談確認を促す目的
+function checkAnswerQuality(sc,ans){
+  var flags=[];
+  var va=ans.filter(function(a){return a!==null&&a!==undefined;});
+  var n=va.length;
+  // 1. 周期4パターン（A/B/C/Dを機械的に繰り返し）
+  if(n>=12){
+    var cyc=0;
+    for(var i=4;i<n;i++){if(va[i]===va[i%4]) cyc++;}
+    if(cyc>=n-4-2) flags.push('periodic');
+  }
+  // 2. 同一選択肢が8回以上連続
+  var maxRun=1,run=1;
+  for(var i=1;i<n;i++){
+    if(va[i]===va[i-1]) run++; else run=1;
+    if(run>maxRun) maxRun=run;
+  }
+  if(maxRun>=8) flags.push('consecutive');
+  // 3. 役割スコア1位〜3位の差が8pt以内（平坦すぎる）
+  var s=sc.sorted;
+  if(s.length>=3&&s[0][1]-s[2][1]<=8) flags.push('flat_scores');
+  // 4. P3なのに回答一貫性が「高（3層一致）」
+  if(sc.hantei==='P3'&&sc.trust&&sc.trust.indexOf('高（3層')>=0) flags.push('p3_high_trust');
+  // 5. 1位スコアが低く明確な役割仮説なし
+  if(sc.topScore<38) flags.push('low_score');
+  return{warn:flags.length>=1,flags:flags};
+}
 // ── 近接タイプ検索 ──
 function findAdjacentType(sc){
   var sorted=sc.sorted;
@@ -1094,6 +1123,8 @@ function findAdjacentType(sc){
 function showResult(){
   var sc=calcSc();
   lastSc=sc;
+  var qf=checkAnswerQuality(sc,ans);
+  sc.qualityFlag=qf;
   var ty=sc.typeKey?TYPES[sc.typeKey]:null;
   if(!ty){
     var roleNames2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
@@ -1189,6 +1220,11 @@ function showResult(){
   sb+='<div class="shachi-box" style="margin-top:14px"><div class="s-title">回答の一貫性</div>'+
       '<div style="font-size:12px;font-weight:500;color:'+(sc.trustColor||'var(--text2)')+';margin-bottom:4px">'+((function(t){if(t.indexOf('低')>=0) return '要確認';if(t.indexOf('中〜高')>=0) return '中〜高';if(t.indexOf('中')>=0) return '中';if(t.indexOf('高')>=0) return '高';return t;})(sc.trust||'-'))+'</div>'+
       '<div style="font-size:12px;color:var(--dark);line-height:1.85;margin-top:6px">'+buildTrustComment(sc)+'</div></div>';
+  if(qf.warn){
+    sb+='<div class="shachi-box" style="background:var(--al);border-left:3px solid var(--amb)">'+
+        '<div class="s-title" style="color:var(--amb)">回答の一貫性：要確認</div>'+
+        '<div style="font-size:11px;color:var(--dark);line-height:1.8">回答の並びやスコアの出方から、診断だけで判断するのは危険です。<br>面談で、実際に力が出た仕事の場面を確認してください。</div></div>';
+  }
   if(sc.wf){
     var wfMsg='忙しい時に優先順位が落ちやすい領域です。意識的に守る工夫が有効です。';
     var wfConflictMsg='';
@@ -1339,6 +1375,20 @@ function buildAdmin(){
   var strNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
   var lrnNames={DO:'実践型（やりながら覚える）',WHY:'理由型（目的から理解する）',STEP:'手順型（整理して覚える）',FB:'FB型（フィードバックで伸びる）',CHALLENGE:'チャレンジ型（責任で伸びる）'};
   var h='<div class="warn-box"><strong>【重要】このレポートは参考仮説です</strong><br>スコアと回答パターンから生成した統計的傾向の仮説であり、本人の能力・適性の最終評価ではありません。配置・昇格・降格はこの診断だけで決定しないでください。<br>「面談してから決める（P3）」は低評価ではなく、配置ミスを防ぐための確認ステップです。</div>';
+  if(sc.qualityFlag&&sc.qualityFlag.warn){
+    var _qfMsg={
+      periodic:'選択肢に規則的なパターンあり（A/B/C/D繰り返し等）',
+      consecutive:'同一選択肢が連続して選ばれています',
+      flat_scores:'役割スコアの1〜3位の差が8pt以内（平坦）',
+      p3_high_trust:'P3判定なのに回答一貫性が「高」',
+      low_score:'1位スコアが低く、明確な役割傾向が出ていません'
+    };
+    var _qfDetail=sc.qualityFlag.flags.map(function(f){return _qfMsg[f]||f;}).join(' ／ ');
+    h+='<div class="warn-box" style="background:var(--al);border:1px solid var(--amb)">'+
+       '<strong>回答の並びに注意フラグあり</strong><br>'+
+       '以下の点から、この回答だけで配置判断することを推奨しません。面談で「実際に力が出た仕事の場面」を確認してください。<br>'+
+       '<span style="font-size:9px;color:var(--amb)">検出フラグ: '+_qfDetail+'</span></div>';
+  }
   var jcls=sc.hantei==='P1'?'j-p1':(sc.hantei==='P2'||sc.hantei==='P2W'?'j-p2':'j-p3');
   var jMainLabel=sc.hantei==='P1'?'方向性の傾向が出ています。面談で意欲と納得感を確認してから小さく試してください':sc.hantei==='P2W'?'ある程度傾向は出ていますが弱点フラグがあります。小さく試しながら忙しい場面での動きを確認してください':sc.hantei==='P2'?'ある程度傾向は出ていますが確認の余地があります。試験的に任せて週1で状況を確認してください':'現時点では傾向が確定しにくい状態です。能力不足ではなく、強みの出方が複数に分かれています。配置前に面談を行ってください';
   var jd={
