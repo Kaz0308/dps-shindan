@@ -264,7 +264,7 @@ var DPS_CONFIG=(function(){
   function _hash(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}return h;}
   var _adminHash=-1705737528;
   return{
-    env:'test',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
+    env:'prod',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
     get webhookUrl(){
       return this.env==='prod'
         ?'https://ichirin38.app.n8n.cloud/webhook/dps-shindan'
