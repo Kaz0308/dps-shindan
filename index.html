@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DPS統合版診断 v2.3</title>
+<title>DPS統合版診断 v2.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -50,6 +50,12 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .r-type-sub{font-size:12px;color:var(--mid);margin-bottom:16px}
 .r-catch{font-size:16px;font-weight:500;color:var(--gold2);margin-bottom:16px;padding:10px 14px;border-left:3px solid var(--gold);background:var(--al);line-height:1.7}
 .r-divider{height:1px;background:var(--line);margin:16px 0}
+.persona-report{background:var(--bg3);border-radius:10px;padding:14px 16px;margin-bottom:4px;}
+.persona-report-title{font-size:9px;letter-spacing:.2em;color:var(--lit);margin-bottom:8px;font-weight:500;}
+.persona-report-body{font-size:12px;color:var(--dark);line-height:2.0;}
+.persona-report-body strong{color:var(--mid);}
+.persona-weak{margin-top:10px;padding:8px 10px;background:var(--bg4);border-left:2px solid var(--line);border-radius:4px;font-size:11px;color:var(--text3);line-height:1.8;}
+.persona-p3{margin-top:10px;padding:8px 10px;background:var(--al);border-left:2px solid var(--amb);border-radius:4px;font-size:11px;color:var(--dark);line-height:1.8;}
 .fb-block{margin-bottom:14px;padding:12px 14px;border-radius:6px}
 .fb-base{background:var(--bg3)}
 .fb-tips{background:var(--tl);border-left:3px solid var(--teal)}
@@ -184,7 +190,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 <div id="s-cover" class="screen" style="display:block">
   <div class="cover-wrap">
     <div class="cover-brand">SHACHI GROUP</div>
-    <div class="cover-title">DPS統合版診断<br>v2.3</div>
+    <div class="cover-title">DPS統合版診断<br>v2.4</div>
     <div class="cover-sub">DIAGNOSTIC PLACEMENT SYSTEM</div>
     <div class="cover-desc">
       あなたの<strong>自然な傾向・役割適性・判断の癖・ストレス反応・成長タイプ</strong>を見つける診断です。<br>
@@ -210,6 +216,8 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   </div>
 </div>
 <div id="s-result" class="screen">
+  <div id="rpersona"></div>
+  <div class="r-divider"></div>
   <div id="rcard"></div>
   <div class="r-divider"></div>
   <div id="rfield"></div>
@@ -264,7 +272,7 @@ var DPS_CONFIG=(function(){
   function _hash(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}return h;}
   var _adminHash=-1705737528;
   return{
-    env:'prod',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
+    env:'test',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
     get webhookUrl(){
       return this.env==='prod'
         ?'https://ichirin38.app.n8n.cloud/webhook/dps-shindan'
@@ -1078,6 +1086,121 @@ function buildFieldProfile(sc){
 // ── 回答品質チェック ──
 // 機械的回答・スコア平坦・P3+高一貫性などを検出する
 // ※あくまで参考フラグ。1フラグで即アウトではなく面談確認を促す目的
+function buildPersonaReport(sc){
+  var sorted=sc.sorted;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var rn=sc.rn||{};
+  var cp=sc.cp||{};
+  var nat=sc.nat||{};
+  var topKey=sc.topKey,secKey=sc.secKey;
+  var top1=sorted[0],top2=sorted.length>1?sorted[1]:null,top3=sorted.length>2?sorted[2]:null;
+  var gap12=top2?top1[1]-top2[1]:100;
+  var gap23=(top2&&top3)?top2[1]-top3[1]:100;
+  var prScore=rn['PR']||0,sysScore=rn['SYS']||0,eduScore=rn['EDU']||0;
+  var numScore=rn['NUM']||0,leadScore=rn['LEAD']||0,recScore=rn['REC']||0;
+  var cpRelation=(cp.contact||0)+(cp.trust||0)+(cp.crm||0)+(cp.mood||0);
+
+  // 1. 人物像の主軸
+  var axisHtml='';
+  if(topKey==='SYS'&&(prScore>=32||cpRelation>=4)){
+    var connectors=[];
+    if(prScore>=32) connectors.push('広報・見せ方');
+    if(cpRelation>=4) connectors.push('対人感度');
+    if(secKey&&secKey!=='SYS'&&secKey!=='PR'&&connectors.length<2) connectors.push(roleNames[secKey]);
+    axisHtml='この人は、<strong>整理・仕組み化を軸に</strong>、'+connectors.join('・')+'をつなぎ合わせられるタイプです。'
+      +'書類や業務を整えるというより、<strong>人・情報・目的・導線を整理して動きやすくする設計役</strong>に向いています。'
+      +'前に立って強く統率するより、人や情報が動きやすい状態をつくる側で力が出やすいです。';
+  } else if(topKey==='PR'){
+    if(sysScore>=32||numScore>=32){
+      axisHtml='この人は、<strong>広報・発信力を軸に</strong>、'+roleNames[secKey]+'の視点もつなぎ合わせられるタイプです。'
+        +'"前に出て発信する"というより、<strong>伝わる形に整えて届ける役割</strong>で力が出やすいです。'
+        +'情報・言葉・見せ方を整理して、動きを生む形に変換するポジションに向いています。';
+    } else {
+      axisHtml='この人は、<strong>広報・PR的な発信感度</strong>が回答に出ています。'
+        +'"前に出て目立つ"タイプというより、<strong>情報を伝わりやすい形に整える</strong>ことで力を発揮するタイプです。'
+        +(top2&&top2[1]>=38?'次いで'+roleNames[top2[0]]+'の傾向も出ており、この2つで配置仮説を考えると実態に近づきます。':'');
+    }
+  } else if(topKey==='LEAD'&&gap12<15&&top2){
+    axisHtml='この人は、<strong>'+roleNames[topKey]+'を軸に</strong>、<strong>'+roleNames[top2[0]]+'</strong>の両面を持つタイプです。'
+      +'どちらか一方だけを任せると本来の力が半分しか出ません。'
+      +'<strong>現場の動きと'+roleNames[top2[0]]+'を組み合わせる役割</strong>で力が出やすいです。';
+  } else if(gap12<10&&top2){
+    axisHtml='この人は、<strong>'+roleNames[topKey]+'と'+roleNames[top2[0]]+'が近い値</strong>で出ており、'
+      +'どちらか一方に特化しているというより、<strong>この2つをつなぐ複合型</strong>として理解される方が実態に近いです。'
+      +(gap23<10&&top3?'さらに'+roleNames[top3[0]]+'も近接しており、3つの視点を状況で使い分けるタイプです。':'');
+  } else if(gap12<14&&gap23<10&&top3){
+    axisHtml='この人は、<strong>'+roleNames[topKey]+'・'+roleNames[top2[0]]+'・'+roleNames[top3[0]]+'</strong>が近い値で出ており、'
+      +'1つの役割に特化するより、<strong>複数の視点を状況に応じて使い分けるタイプ</strong>として捉えると実態に近いです。';
+  } else {
+    axisHtml='この人は、<strong>'+roleNames[topKey]+'</strong>を軸に力が出るタイプです。';
+    if(top2&&top2[1]>=38) axisHtml+='次いで<strong>'+roleNames[top2[0]]+'</strong>の傾向も出ており、この2つの組み合わせで配置仮説を考えると実態に近づきます。';
+  }
+
+  // 2. 自己認識 vs 現場行動のズレ
+  var alignHtml='';
+  var aspirKey=sc.aspirTopKey;
+  if(aspirKey&&aspirKey!==topKey){
+    var aspirLbl=roleNames[aspirKey]||aspirKey;
+    var aptLbl=roleNames[topKey]||topKey;
+    alignHtml='本人は<strong>'+aspirLbl+'</strong>を自分の強みとして認識していますが、回答全体から見た適性仮説は<strong>'+aptLbl+'</strong>方向です。';
+    if(cpRelation>=4) alignHtml+='現場行動では<strong>対人運用力</strong>も出ています。';
+    alignHtml+='面談で「どちらの仕事で実際に力が出やすいか」を確認してください。';
+  } else if(aspirKey&&aspirKey===topKey){
+    var aptLbl=roleNames[topKey]||topKey;
+    alignHtml='本人の志向と適性仮説はともに<strong>'+aptLbl+'</strong>方向で一致しています。';
+    if(cpRelation>=4&&topKey!=='EDU'&&topKey!=='REC'){
+      alignHtml+='現場行動でも<strong>対人関係の運用力</strong>が出ており、人が動きやすい環境づくりへの関心が回答に表れています。';
+    }
+  }
+
+  // 3. 低スコア項目を状況で説明（「苦手」と断定しない）
+  var weakHtml='';
+  var lastItem=sorted[sorted.length-1];
+  var lastKey=lastItem[0],lastScore=lastItem[1];
+  if(sc.wf&&sc.wf.indexOf('対人')>=0&&cpRelation>=4){
+    weakHtml='対人そのものが苦手なのではなく、<strong>日常的な細かい声かけや先回りのケアは後回しになりやすい</strong>傾向があります。空気の変化や相手の違和感には反応できるため、対人ケアを仕組み化すると安定します。';
+  } else if(lastScore<38&&lastKey!==topKey){
+    var weakCtx={
+      LEAD:'「フロア全体を仕切る・責任を持って判断する」場面では、現時点の回答では優先度が低く出ています。今の配置や経験量の影響も考えられます。',
+      EDU:'「後輩を育てる・教える」場面では、現時点の回答量が少ない傾向があります。経験や機会が少ない可能性があります。',
+      NUM:'「数字を追いかける・目標に向けて管理する」場面では、今の回答では優先度が低く出ています。',
+      SYS:'「業務を整理・仕組み化する」場面では、今は他の役割を優先していることが回答から出ています。',
+      REC:'「採用・人を見極める」場面では、現時点では優先度が低く出ています。',
+      PR:'「情報を発信・見せ方を整える」場面では、今は優先度が低い傾向が出ています。'
+    };
+    weakHtml=weakCtx[lastKey]||'';
+  }
+
+  // 4. P3の場合の説明
+  var p3Html='';
+  if(sc.hantei==='P3'){
+    p3Html='スコアが複数の方向に分散しているため、診断だけで配置を決めるより、<strong>現場観察とセットで配置仮説を見るタイプ</strong>です。能力が低いのではなく、力の出し方が状況や環境によって変わりやすい柔軟型であることが多いです。';
+  }
+
+  // 5. 力が出やすい環境
+  var envMap={
+    LEAD:'現場での裁量があり、自分でペースをつくりながら周囲を動かせる環境で力を発揮しやすいです。',
+    EDU:'人の成長や変化を実感できる環境、後輩の変化が見える役割で力が出やすいです。',
+    NUM:'成果が数字で見え、改善のための裁量がある環境で力を発揮しやすいです。',
+    SYS:'目的を理解したうえで改善提案できる裁量があり、繰り返しの改善サイクルが回る環境で力が出ます。',
+    REC:'人を見極めて動かせる裁量があり、採用から定着まで関われる環境で力が出やすいです。',
+    PR:'目的が明確で、自分の言葉や視点を活かせる裁量がある環境で力を発揮しやすいです。'
+  };
+  var envHtml=envMap[topKey]||'';
+
+  // 組み立て
+  var bodyParts=[];
+  if(axisHtml) bodyParts.push(axisHtml);
+  if(alignHtml) bodyParts.push(alignHtml);
+  if(envHtml) bodyParts.push(envHtml);
+  var mainBody=bodyParts.join('<br>');
+  var extras='';
+  if(weakHtml) extras+='<div class="persona-weak">'+weakHtml+'</div>';
+  if(p3Html) extras+='<div class="persona-p3">'+p3Html+'</div>';
+  return '<div class="persona-report"><div class="persona-report-title">配置・育成レポート</div>'
+    +'<div class="persona-report-body">'+mainBody+'</div>'+extras+'</div>';
+}
+
 function checkAnswerQuality(sc,ans){
   var flags=[];
   var va=ans.filter(function(a){return a!==null&&a!==undefined;});
@@ -1125,6 +1248,7 @@ function showResult(){
   lastSc=sc;
   var qf=checkAnswerQuality(sc,ans);
   sc.qualityFlag=qf;
+  document.getElementById('rpersona').innerHTML=buildPersonaReport(sc);
   var ty=sc.typeKey?TYPES[sc.typeKey]:null;
   if(!ty){
     var roleNames2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
