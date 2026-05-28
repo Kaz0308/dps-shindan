@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DPS統合版診断 v2.4</title>
+<title>DPS統合版診断 v2.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -56,6 +56,23 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .persona-report-body strong{color:var(--mid);}
 .persona-weak{margin-top:10px;padding:8px 10px;background:var(--bg4);border-left:2px solid var(--line);border-radius:4px;font-size:11px;color:var(--text3);line-height:1.8;}
 .persona-p3{margin-top:10px;padding:8px 10px;background:var(--al);border-left:2px solid var(--amb);border-radius:4px;font-size:11px;color:var(--dark);line-height:1.8;}
+.pm-wrap{padding:2px 0 8px;}
+.pm-type-name{font-size:11px;letter-spacing:.08em;color:var(--text3);margin-bottom:2px;}
+.pm-catch{font-size:18px;font-weight:700;color:var(--mid);line-height:1.4;margin-bottom:12px;letter-spacing:-.01em;}
+.pm-section{margin-bottom:14px;}
+.pm-section-title{font-size:9px;letter-spacing:.18em;color:var(--lit);font-weight:600;margin-bottom:5px;text-transform:uppercase;}
+.pm-oneliner{font-size:13px;color:var(--dark);line-height:1.8;font-weight:500;}
+.pm-ara-list{list-style:none;padding:0;margin:0;}
+.pm-ara-list li{font-size:12px;color:var(--dark);line-height:1.7;padding:3px 0 3px 14px;position:relative;}
+.pm-ara-list li::before{content:"・";position:absolute;left:0;color:var(--teal);}
+.pm-strength{font-size:12px;color:var(--dark);line-height:2.0;}
+.pm-strength strong{color:var(--mid);}
+.pm-scene-list{list-style:none;padding:0;margin:0;}
+.pm-scene-list li{font-size:12px;color:var(--dark);line-height:1.7;padding:3px 0 3px 14px;position:relative;}
+.pm-scene-list li::before{content:"▶";position:absolute;left:0;color:var(--teal);font-size:8px;top:6px;}
+.pm-caution{font-size:12px;color:var(--dark);line-height:1.9;padding:10px 12px;background:var(--al);border-left:3px solid var(--amb);border-radius:4px;}
+.pm-action{font-size:12px;color:var(--dark);line-height:1.9;padding:10px 12px;background:var(--bg3);border-left:3px solid var(--teal);border-radius:4px;}
+.pm-action strong{color:var(--teal);}
 .fb-block{margin-bottom:14px;padding:12px 14px;border-radius:6px}
 .fb-base{background:var(--bg3)}
 .fb-tips{background:var(--tl);border-left:3px solid var(--teal)}
@@ -70,18 +87,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .sc-label{font-size:9px;color:var(--lit);margin-bottom:4px;line-height:1.4}
 .sc-val{font-size:16px;font-weight:700;color:var(--dark)}
 .sc-card.top .sc-val{color:var(--gold2)}
-.ts-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px}
-.ts-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
-.ts-phase{font-size:10px;font-weight:700;color:var(--lit);width:28px;flex-shrink:0;padding-top:2px}
-.ts-body{font-size:12px;color:var(--dark);line-height:1.7}
-.pos-wrap{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-.pos-item{display:flex;gap:10px;align-items:flex-start}
-.pos-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
-.pos-icon-g{background:var(--tl);color:var(--teal)}
-.pos-icon-b{background:var(--rl);color:var(--red)}
-.pos-icon-n{background:var(--al);color:var(--amb)}
-.pos-label{font-size:9px;color:var(--lit);margin-bottom:2px}
-.pos-body{font-size:12px;color:var(--dark);line-height:1.65}
 .shachi-box{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:12px}
 .s-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:8px}
 .s-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
@@ -94,41 +99,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .stress-label{font-size:10px;color:var(--mid);width:90px;flex-shrink:0}
 .stress-val{font-size:10px;color:var(--lit);width:20px;text-align:right}
 .weak-flag{display:inline-block;background:var(--al);border:1px solid var(--amb);color:var(--amb);font-size:10px;padding:3px 8px;border-radius:12px;margin:3px 3px 3px 0}
-.btn-pwd{background:transparent;border:1px solid var(--gold);color:var(--gold2);font-size:11px;letter-spacing:.2em;padding:10px 24px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:16px auto 0}
 .btn-restart{background:transparent;border:1px solid var(--line);color:var(--mid);font-size:11px;letter-spacing:.2em;padding:8px 20px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:8px auto 0}
-.pwd-wrap{text-align:center;padding:40px 0}
-.pwd-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:16px}
-.pwd-input{background:var(--bg3);border:1px solid var(--line);color:var(--dark);font-size:14px;padding:10px 14px;width:100%;max-width:260px;border-radius:4px;outline:none;text-align:center;font-family:inherit;letter-spacing:.3em}
-.pwd-input:focus{border-color:var(--gold)}
-.btn-pwd-submit{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 28px;cursor:pointer;border-radius:4px;font-family:inherit;margin-top:12px}
-.pwd-err{font-size:11px;color:var(--red);margin-top:8px;height:16px}
-.ad-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.ad-title{font-size:13px;font-weight:500;color:var(--gold2);letter-spacing:.1em}
-.btn-close{background:transparent;border:1px solid var(--line);color:var(--mid);font-size:10px;padding:6px 14px;cursor:pointer;border-radius:4px;font-family:inherit}
-.warn-box{background:var(--rl);border:1px solid var(--red);border-left:4px solid var(--red);border-radius:4px;padding:10px 14px;font-size:11px;color:var(--dark);line-height:1.75;margin-bottom:16px}
-.ad-sec{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px}
-.ad-sec-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-.j-box{border-radius:6px;padding:12px 14px;margin-bottom:8px}
-.j-p1{background:var(--tl);border-left:3px solid var(--teal)}
-.j-p2{background:var(--al);border-left:3px solid var(--amb)}
-.j-p3{background:var(--rl);border-left:3px solid var(--red)}
-.j-lbl{font-size:14px;font-weight:700;margin-bottom:4px}
-.j-desc{font-size:11px;color:var(--mid);line-height:1.7}
-.prof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}
-.prof-card{background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:8px 10px}
-.prof-lbl{font-size:9px;color:var(--lit);margin-bottom:3px}
-.prof-val{font-size:12px;font-weight:500;color:var(--dark)}
-.flag-item{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
-.flag-item:last-child{border-bottom:none}
-.flag-icon{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;margin-top:1px}
-.fw{background:var(--rl);color:var(--red)}
-.fc{background:var(--al);color:var(--amb)}
-.fi{background:var(--tl);color:var(--teal)}
-.flag-name{font-size:11px;font-weight:500;color:var(--dark)}
-.flag-desc{font-size:10px;color:var(--mid);line-height:1.6;margin-top:2px}
-.act-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:8px}
-.act-item{font-size:12px;color:var(--dark);padding:6px 0 6px 14px;position:relative;border-bottom:1px solid var(--line);line-height:1.6}
-.act-item::before{content:'›';position:absolute;left:0;color:var(--gold)}
 .send-box{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px}
 .send-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px}
 .send-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
@@ -138,41 +109,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .btn-send{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 28px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:0 auto}
 .btn-send:disabled{opacity:.4;cursor:default}
 .send-status{font-size:11px;margin-top:8px;text-align:center;min-height:16px}
-.field-section{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px}
-.field-section-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-.field-subtype-badge{display:inline-block;background:var(--al);border:1px solid var(--gold);color:var(--gold2);font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;margin-bottom:10px}
-.field-block{margin-bottom:10px;padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.8}
-.field-block-g{background:var(--tl);border-left:3px solid var(--teal)}
-.field-block-a{background:var(--al);border-left:3px solid var(--amb)}
-.field-block-b{background:var(--bg3);border-left:3px solid var(--line)}
-.field-block-label{font-size:9px;letter-spacing:.2em;color:var(--lit);margin-bottom:4px}
-.field-block-label-g{font-size:9px;letter-spacing:.2em;color:var(--teal);margin-bottom:4px}
-.field-block-label-a{font-size:9px;letter-spacing:.2em;color:var(--amb);margin-bottom:4px}
-.field-fit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
-.field-fit-card{background:var(--bg3);border:1px solid var(--line);border-radius:4px;padding:7px 9px}
-.field-fit-lbl{font-size:9px;color:var(--lit);margin-bottom:2px}
-.field-fit-val{font-size:11px;font-weight:700}
-.fit-high{color:var(--teal)}
-.fit-mid{color:var(--amb)}
-.fit-low{color:var(--mid)}
-
-/* ── 強化結果ブロック ── */
-.enh-section{margin:12px 0;}
-.enh-block{background:var(--card);border-radius:10px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--border);}
-.enh-lbl{font-size:10px;font-weight:700;color:var(--mid);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
-.enh-body{font-size:12px;color:var(--dark);line-height:1.85;}
-.enh-block.enh-reason{border-left:3px solid var(--teal);}
-.enh-block.enh-high{border-left:3px solid var(--gold);}
-.enh-block.enh-low{border-left:3px solid var(--mid);}
-.enh-block.enh-tasks{border-left:3px solid var(--teal);}
-.enh-block.enh-unsuitable{border-left:3px solid var(--amb);}
-.enh-block.enh-step{border-left:3px solid var(--acc);}
-.enh-task-list{list-style:none;padding:0;margin:4px 0 0;}
-.enh-task-list li{padding:3px 0 3px 14px;position:relative;font-size:12px;color:var(--dark);line-height:1.7;}
-.enh-task-list li::before{content:"▸";position:absolute;left:0;color:var(--teal);}
-.enh-step-list{list-style:none;padding:0;margin:4px 0 0;}
-.enh-step-list li{padding:4px 0 4px 14px;position:relative;font-size:12px;color:var(--dark);line-height:1.7;}
-.enh-step-list li::before{content:"→";position:absolute;left:0;color:var(--acc);}
 
 /* ── ストレス表示（本人向け改善版） ── */
 .stress-row2{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
@@ -183,14 +119,13 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 .stress-desc{font-size:11px;color:var(--text3);line-height:1.7;margin-top:5px;}
 
 /* ── prof-card wide variant ── */
-.prof-card-wide{grid-column:span 2;}
 </style>
 </head>
 <body>
 <div id="s-cover" class="screen" style="display:block">
   <div class="cover-wrap">
     <div class="cover-brand">SHACHI GROUP</div>
-    <div class="cover-title">DPS統合版診断<br>v2.4</div>
+    <div class="cover-title">DPS統合版診断<br>v2.8</div>
     <div class="cover-sub">DIAGNOSTIC PLACEMENT SYSTEM</div>
     <div class="cover-desc">
       あなたの<strong>自然な傾向・役割適性・判断の癖・ストレス反応・成長タイプ</strong>を見つける診断です。<br>
@@ -216,17 +151,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
   </div>
 </div>
 <div id="s-result" class="screen">
-  <div id="rpersona"></div>
-  <div class="r-divider"></div>
   <div id="rcard"></div>
   <div class="r-divider"></div>
-  <div id="rfield"></div>
-  <div class="r-divider"></div>
   <div id="sgrid"></div>
-  <div id="renhanced"></div>
   <div class="r-divider"></div>
   <div id="sbox"></div>
-  <button class="btn-pwd" onclick="goPwd()">経営・上司向けレポートを見る</button>
   <button class="btn-restart" onclick="doRestart()">もう一度診断する</button>
   <div class="send-box">
     <div class="send-title">結果を送信する</div>
@@ -245,40 +174,19 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
     <div class="send-status" id="send-status"></div>
   </div>
 </div>
-<div id="s-pwd" class="screen">
-  <div class="pwd-wrap">
-    <div class="pwd-title">経営・上司向けレポート<br>管理者パスワードを入力してください</div>
-    <input type="password" class="pwd-input" id="pwd-in" placeholder="••••••••" onkeydown="if(event.key==='Enter')chkPwd()">
-    <br>
-    <button class="btn-pwd-submit" onclick="chkPwd()">確認する</button>
-    <div class="pwd-err" id="pwd-err"></div>
-    <button class="btn-restart sec" onclick="backRes()" style="margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--mid);font-size:11px;padding:8px 20px;cursor:pointer;border-radius:4px;font-family:inherit">← 結果に戻る</button>
-  </div>
-</div>
-<div id="s-admin" class="screen">
-  <div class="ad-header">
-    <div class="ad-title">経営・上司向けレポート</div>
-    <button class="btn-close" onclick="backRes()">← 結果に戻る</button>
-  </div>
-  <div id="admcont"></div>
-</div>
 <script>
 // ── SECTION A: 設定オブジェクト（DPS_CONFIG）──
 // ⚠ このHTMLファイルはブラウザのソース表示で誰でも参照できます。
 //   管理者パスワードのハッシュは「管理者レポートの表示ガード」専用です。
 //   秘匿が必要な情報（判定ロジック・Webhook URLなど）はバックエンドに移行してください。
 var DPS_CONFIG=(function(){
-  // djb2-variant ハッシュ（表示制御のみ。秘匿情報の保護には使用しないこと）
-  function _hash(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}return h;}
-  var _adminHash=-1705737528;
   return{
     env:'test',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
     get webhookUrl(){
       return this.env==='prod'
         ?'https://ichirin38.app.n8n.cloud/webhook/dps-shindan'
         :'https://ichirin38.app.n8n.cloud/webhook-test/dps-shindan';
-    },
-    checkAdmin:function(v){return _hash(v)===_adminHash;}
+    }
   };
 })();
 var ans=[];
@@ -582,23 +490,147 @@ var TYPES={
   pa:'採用の現場で「なぜここで断られるのか」を考えてきた',pr:'採用歩留まりの改善に取り組んでいる',fu:'応募から採用までの全フローが安定する仕組みをつくる',
   gd:'採用フローの改善・面接対応の質向上を任される場面',bd:'採用基準が毎回変わる環境',nx:'今の採用フローで「一番離脱している箇所」を一つ確認する'}
 };
+// ── 本人向け「取扱説明書」データ（タイプ別）──
+var TYPE_PERSONAL={
+ 'LEAD-EDU':{
+  catch:'現場で人を育てる兄貴タイプ',
+  one:'場を回しながら、気づけば後輩が動けるようになっている人です。',
+  ara:['自分で動いた方が早いとわかっていても、あえて後輩に任せようとする','忙しい夜ほど、後輩の動きが気になる','まとめてほしいと育ててほしいを同時に任されると燃える','育成を後回しにしているとき、どこかで気にしている'],
+  str:'あなたの強みは、<strong>「現場を回す力」と「人を育てる力」が同時に動くこと</strong>です。<br>多くの人は、忙しければ現場優先で育成を後回しにします。でもあなたは、回しながら気を配れる。後輩が詰まったタイミングを見て、一言で解決できる距離感を持っています。<br>自分では「当たり前にやっているだけ」と思っていても、周りからは<strong>「あの人がいると場が安定する」「自然と後輩が育っている」</strong>と見られやすいです。',
+  sce:['混雑した夜でも後輩の動きを見ながら自分も動ける場面','新人が不安を出しているとき、タイミングよく声をかける場面','まとめる役割と育てる役割を同時に求められる場面','振り返りを短時間でできる場面'],
+  cau:'忙しさが続くと、育成を後回しにして<strong>自分で全部やりがちになります</strong>。周りからは「頼りになるけど、任せてくれない」と見えることがあります。一つだけ誰かに渡す、を意識しないと損します。',
+  act:'今週、後輩に一つだけ任せて、翌日「どうだった？」と聞く時間を作ってみてください。'},
+ 'LEAD-NUM':{
+  catch:'場を仕切りながら数字で証明する店長型',
+  one:'現場の流れを整えながら、結果を数字で語れる人です。',
+  ara:['直感で動きながら、後で数字で確認したくなる','空気が悪くなる前に数字の動きで気づける','「なんとなくうまくいった」で終わらせたくない','権限があいまいなまま責任だけ問われるとストレスになる'],
+  str:'あなたの強みは、<strong>感覚と数字を両方使えること</strong>です。<br>現場の空気を読みながら動いて、翌日には「あの時間帯の客単価はこうだった」と振り返れる。感覚だけで走る人と、数字だけ追う人の中間で、<strong>実態を掴みやすい位置にいます</strong>。<br>周りからは、「根拠を持って話してくれる」「動いた後で説明できる」人として見られやすいです。',
+  sce:['売上が落ちた理由を「なぜ」と掘り下げながら対策を出す場面','数字が悪い時間帯の現場に入って直接改善できる場面','目標と期限が明確に渡されている場面','営業終わりに数字を見ながら翌日の動きを決める場面'],
+  cau:'結果にこだわるあまり、<strong>現場の空気より数字優先になりやすい</strong>時があります。「数字が出ているから大丈夫」と思っていると、空気の悪さが後から数字に出てきます。現場の空気を定期的にチェックする習慣が損をしないための鍵です。',
+  act:'今週の数字で「なぜこうなったのか」が説明できないものを一つ特定して、仮説を一文立ててみてください。'},
+ 'LEAD-SYS':{
+  catch:'現場を整えて次の混乱を防ぐ人',
+  one:'今動かすより、次に詰まらないようにすることを同時に考える人です。',
+  ara:['同じトラブルが繰り返されると整理したくなる','「なんとなく回っている」だと落ち着かない','完璧に整えてから動こうとして、動き出しが遅くなることがある','仕組みがない環境で働き続けると疲れやすい'],
+  str:'あなたの強みは、<strong>現場を動かしながら「なぜ詰まるのか」を同時に見られること</strong>です。<br>多くの人は、詰まったら対処するだけで、構造には目が向きません。でもあなたは、動きながら原因を見て、次に同じことが起きない形を考えられる。<br>周りからは、<strong>「トラブルが起きた後にちゃんと整理してくれる人」「場当たり対応で終わらない人」</strong>として見られやすいです。',
+  sce:['繰り返し起きているトラブルの原因を整理できる場面','「なぜここで詰まるのか」を考える余裕がある場面','オペレーション改善・ルール整備を任される場面','現場の改善案を提案できる場面'],
+  cau:'整えることに集中しすぎると、<strong>「整える前は動けない」状態になりやすい</strong>です。完璧な仕組みを目指しているうちに、現場が待ちきれなくなります。「60点の仕組みで動かしながら直す」を意識しないと、強みが出るタイミングを逃します。',
+  act:'今週繰り返し起きているトラブルを一つ書き出して、「なぜ起きるか」を一行で書いてみてください。'},
+ 'EDU-SYS':{
+  catch:'教え方を仕組みに変える人',
+  one:'人を育てながら、「次の人にも使える形」を考えられる人です。',
+  ara:['教えているうちに「これ、誰でも教えられるようにしたい」と思う','育てた経験を次の人に活かしたくなる','手順が整っていないと不安になる','個別対応をしながら「共通点は何か」を探している'],
+  str:'あなたの強みは、<strong>「育てる力」と「整える力」が同時に動くこと</strong>です。<br>人に何かを教えるとき、多くの人は「この人限定の伝え方」になります。でもあなたは、教えながら「これを汎用化できないか」と考えられる。<br>個人の成長を見ながら、そこから誰でも使えるノウハウを引き出す力があります。周りからは、<strong>「教え上手」だけでなく、「仕組みを作ってくれる人」</strong>として見られやすいです。',
+  sce:['新人育成の流れを設計する場面','「なぜ伝わらないのか」を考えながら教え方を変える場面','教育マニュアルやガイドを整備する場面','一人の育成経験をチーム全体に横展開できる場面'],
+  cau:'整えることに時間をかけすぎて、<strong>目の前の人へのケアが後回しになること</strong>があります。マニュアルを磨いている間に、今いる人が不安になっていると損します。「仕組みを作る」と「今すぐフォローする」のバランスを意識してください。',
+  act:'今教えている内容を一つだけ、「次の人に渡せる一枚のメモ」にしてみてください。'},
+ 'EDU-REC':{
+  catch:'採ってから育てるまで見届ける人',
+  one:'人が「ここで続けられる」と思えるまでを支えることができる人です。',
+  ara:['採用後のギャップが気になる','新人が不安そうだとほっておけない','一人ひとりの理解度や状態を見ながら関わる','「全員に同じ対応」だと合わない人が出ると知っている'],
+  str:'あなたの強みは、<strong>「採る」から「定着する」まで視野を持てること</strong>です。<br>採用担当が「とにかく採る」で終わる中、あなたは「この人は続けられるか」「何が不安になりそうか」を採用段階から考えられる。<br>入社後の離脱が起きやすいポイントを事前に見ておける力は実は珍しいです。周りからは、<strong>「フォローが丁寧」「離職が起きにくくなる」</strong>と見られやすいです。',
+  sce:['採用から入社後3ヶ月まで伴走できる場面','新人の「辞めやすいポイント」を事前に拾える場面','面接で「定着できるか」まで見る場面','育成と採用をセットで設計する場面'],
+  cau:'一人ひとりに時間をかけすぎて、<strong>自分のキャパを超えやすい</strong>ことがあります。全員を同じ深さで見ようとすると体力的に限界が来ます。「誰を重点的に見るか」を決めないと、自分が疲弊して全体が回らなくなります。',
+  act:'今いる新人の「一番不安に感じていること」を一つ想像して、今日声をかけてみてください。'},
+ 'NUM-SYS':{
+  catch:'原因を見つけて勝ち筋を作る改善屋',
+  one:'数字の変化を見て、なぜかを探して、仕組みで解く人です。',
+  ara:['数字が悪いと「なぜか」が気になって止まらない','「感覚でうまくいった」より「再現できるか」の方が気になる','原因を特定せずに動くことに不安を感じる','改善の仕組みを作っているときが一番燃える'],
+  str:'あなたの強みは、<strong>「数字を見る目」と「仕組みで解く力」を持っていること</strong>です。<br>問題が起きたとき、多くの人は「とりあえず動く」か「分析するだけ」で止まります。でもあなたは、数字から原因を特定して、再発しないように構造を変えられる。<br>周りからは、<strong>「同じ失敗を繰り返さない人」「根拠を持って改善を動かせる人」</strong>として見られやすいです。',
+  sce:['KPI改善・業績分析を任される場面','繰り返し起きているミスの構造を分析できる場面','数字が落ちた原因を仮説立てして検証できる場面','改善施策の効果を測定できる場面'],
+  cau:'データと仕組みに集中するあまり、<strong>現場の人の感情や動きが見えにくくなること</strong>があります。「数字の裏に人がいる」ことを忘れると、改善案が現場で動かなくなります。数字分析の前後に、現場で一言確認する習慣が損をしないための鍵です。',
+  act:'今週の数字で「なぜこうなっているか」が説明できないものを一つ特定して、仮説を一文書いてみてください。'},
+ 'NUM-PR':{
+  catch:'効果を測りながら見せ方を変える人',
+  one:'「刺さっているか」を数字で確認しながら、発信の精度を上げる人です。',
+  ara:['イベントや企画の後、効果を確認したくなる','「なんとなく盛り上がった」で終わらせたくない','数字と見せ方の両方を同時に考えている','効果測定なしに動き続けることに違和感を感じる'],
+  str:'あなたの強みは、<strong>「感覚的な発信」を「再現できる発信」に変えられること</strong>です。<br>SNSや企画は「とりあえずやってみた」で終わりがちですが、あなたは「何が効いたのか」を数字で見て次に活かせる。<br>感性と分析の両方を持っているため、センスだけでも理屈だけでもない、使いやすい提案ができます。周りからは、<strong>「根拠を持って発信できる人」「企画の効果を説明できる人」</strong>として見られやすいです。',
+  sce:['集客施策の効果を測定して改善できる場面','SNSや広告の「何が効いたか」を分析する場面','イベントの企画から振り返りまで任される場面','発信ルールと効果測定をセットで設計できる場面'],
+  cau:'効果測定にこだわりすぎると、<strong>企画のスピードが落ちやすい</strong>ことがあります。「完璧なデータが揃ってから動く」を続けると機会を逃します。「まず小さく動いて計測する」を繰り返す形にすると前に進みやすいです。',
+  act:'今週の発信や企画で「何が一番効いたか」を一つ特定して、次に同じことをやる条件を書いてみてください。'},
+ 'REC-PR':{
+  catch:'言葉で人を引き寄せる採用広報型',
+  one:'「この職場に入りたい」と思わせる言葉と見せ方を考えられる人です。',
+  ara:['求人の言葉が刺さっていないと気になる','「いい人が来ない」は見せ方の問題かもと思う','ターゲットに合っていない発信を見ると修正したくなる','採用後のギャップが見せ方から来ていることに気づきやすい'],
+  str:'あなたの強みは、<strong>「採用の課題」を「伝わる言葉と見せ方」で解けること</strong>です。<br>求人がうまくいかない原因の多くは、条件ではなく言葉と見せ方にあります。あなたはそこを直感的に感じ取れる。<br>「刺さる言葉はどれか」「ターゲットに届いているか」を考えながら発信できるのは、採用にも広報にもなれる珍しい視点です。周りからは、<strong>「求人の言葉がうまい」「応募が来やすい発信を作れる人」</strong>として見られやすいです。',
+  sce:['求人文や採用SNSの改善を任される場面','「なぜ応募が来ないか」を言葉と見せ方から考える場面','店やスタッフの魅力を言語化する場面','採用ブランドを設計する場面'],
+  cau:'見せ方の改善に注力するあまり、<strong>採用後のフォローが薄くなりやすい</strong>ことがあります。「採ることに成功した後」の定着を意識しないと、また同じ採用コストがかかります。「採った後」まで視野を広げると、発信の内容も変わります。',
+  act:'今の求人文を読んで「一番引っかかりにくいポイント」を一つ特定して、言葉を一つ変えてみてください。'},
+ 'PR-SYS':{
+  catch:'違和感を"伝わる形"に整える人',
+  one:'現場や人の動きを見ながら、言葉・流れ・仕組みのズレに気づきやすいタイプです。',
+  ara:['目的が見えない指示だと動きにくい','話が散らかっていると整理したくなる','見せ方や言葉がズレていると気になる','人の空気は見ているのに、細かい声かけは抜けやすい'],
+  str:'あなたの強みは、ただ情報を整理することではありません。<br>現場で起きていること、人の動き、言葉のズレ、流れの詰まりを見て、<strong>「どこを整えれば動きやすくなるか」を考えられること</strong>です。<br>自分では普通に考えているだけでも、周りから見ると、<strong>ごちゃごちゃした状況を整理してくれる人、言葉にしにくい違和感を形にしてくれる人</strong>として見られやすいです。',
+  sce:['制作依頼や相談内容が散らかっているとき','SNSや求人文の見せ方を考えるとき','店舗やグループのブランドに合う言葉を探すとき','現場の流れが詰まっていて、原因を整理したいとき'],
+  cau:'気づいていることを頭の中だけで終わらせると、<strong>周りには伝わりません</strong>。また、忙しい時ほど細かい声かけや確認が抜けやすくなり、「見てくれていない」と受け取られることがあります。',
+  act:'気づいた違和感を一つだけメモして、「これ、こうしたらやりやすくなりそうです」と一言で誰かに共有してみてください。'},
+ 'SYS-REC':{
+  catch:'採用の流れを整えて安定させる人',
+  one:'採用がうまくいかない理由をフロー全体から見て、整えられる人です。',
+  ara:['採用の「どこで落ちているか」が気になる','フローが整っていないと同じ失敗が繰り返されると感じる','属人的な採用対応が気になる','「とりあえず採る」で進む環境に違和感がある'],
+  str:'あなたの強みは、<strong>採用の問題を「人」ではなく「仕組み」から解けること</strong>です。<br>採用がうまくいかない時、多くの人は「いい人が来ない」「面接が下手」で終わります。でもあなたは、「どのフローで詰まっているか」を見て、構造から改善できる。<br>属人的な採用対応を標準化する力は、組織が大きくなるほど価値が出ます。周りからは、<strong>「採用が安定してきた」「同じ失敗が減った」</strong>と感じてもらえやすいです。',
+  sce:['採用フロー全体を見直せる場面','「どのステップで歩留まりが落ちるか」を分析できる場面','面接対応・応募後連絡を標準化できる場面','採用KPIを設定して改善できる場面'],
+  cau:'仕組みを整えることに集中するあまり、<strong>応募者一人ひとりへの対応が薄くなること</strong>があります。「フローが整った」だけでは温度感が落ちて、採用の印象が変わることがあります。個別対応とフロー整備のバランスを意識してください。',
+  act:'今の採用フローで「一番詰まっているステップ」を一つ特定して、原因を一文書いてみてください。'},
+ 'LEAD-REC':{
+  catch:'現場のリアルを採用に変換する人',
+  one:'現場で見えていることを、採用・紹介・定着の改善につなげられる人です。',
+  ara:['現場にいると「この人は合いそう・合わなそう」がわかる','採用後に「思っていたのと違う」となる原因が見えやすい','新人が不安を出す場面が読めている','採用情報が現場の実態とズレていると気になる'],
+  str:'あなたの強みは、<strong>「現場を見る目」を採用・定着改善に使えること</strong>です。<br>採用担当が「どんな人が来るか」だけを見る中、あなたは「今の現場に何が必要か」「どんな人がここで続けられるか」を現場感から判断できる。<br>リアルな情報を持っているからこそ、求人の言葉も面接の判断も現実に近い精度になります。周りからは、<strong>「採用のズレが減った」「定着する人を採れるようになった」</strong>と見られやすいです。',
+  sce:['現場の魅力や課題をリアルに語れる面接場面','応募者に「実際の現場」を正確に伝えられる場面','新人の不安ポイントを早期に把握できる場面','採用〜定着をセットで改善できる場面'],
+  cau:'現場対応に追われすぎると、<strong>採用や定着への振り返りが後回しになりやすい</strong>です。「今の現場で手一杯」になると、採用の質が落ちたまま時間が経ちます。営業後に「新人の状態」を短時間だけ確認する習慣がないと損します。',
+  act:'今いる新人が「一番不安に感じていること」を一つ想像して、それを求人や面談で使える言葉にしてみてください。'},
+ 'LEAD-PR':{
+  catch:'現場を動かして外にも見せる人',
+  one:'現場を回しながら、その空気や魅力を外に伝えられる人です。',
+  ara:['現場でいいことが起きると「これ発信できる」と思う','両方やろうとして、どっちかが中途半端になりやすい','「映える現場」と「回る現場」を同時に考えている','発信のために現場を犠牲にしたくない'],
+  str:'あなたの強みは、<strong>現場を動かす力と、それを外に見せる力が同時にあること</strong>です。<br>現場をまとめるだけの人と、発信だけ上手な人は多くいます。でもあなたはどちらも持っている。<br>「この現場の空気を知ってほしい」という感覚を持ちながら動けるため、リアルで伝わる発信ができます。周りからは、<strong>「この店に入りたいと思わせてくれる」「現場と発信がズレていない」</strong>と見られやすいです。',
+  sce:['イベントの企画から当日運営・発信まで任される場面','現場の空気をSNSに変換できる場面','現場の信頼を持ちながら発信方針を決める場面','店舗ブランドと現場の実態が一致するように動ける場面'],
+  cau:'現場と発信の両方を同時に完璧にやろうとして、<strong>両方が中途半端になりやすい</strong>です。「今日は現場優先、今週は発信1本」のように切り替えを決めないと、どちらも「まあまあ」で終わります。',
+  act:'今週の現場で「発信できるポイント」を一つだけ見つけておいて、3行でメモしておいてください。'},
+ 'EDU-NUM':{
+  catch:'育成の効果を数字で証明できる人',
+  one:'人の成長を見ながら、それを数字でも確認できる人です。',
+  ara:['育成が効いているかどうか、数字で確認したくなる','「感覚的にうまくいった」より「何が効いたか」が気になる','育成の効果測定の仕組みがないと落ち着かない','感情的なフォローと論理的な分析を使い分けている'],
+  str:'あなたの強みは、<strong>育てることと、その効果を見えるようにすることが両立できること</strong>です。<br>多くの育成担当は「感覚的に教えている」か「数字しか見ない」に分かれます。でもあなたは両方できる。<br>「この人はここが成長した」という感覚を、定着率・売上の変化で確認できる。周りからは、<strong>「育成が機能しているかを説明できる人」</strong>として見られやすいです。',
+  sce:['育成KPIの設定と振り返りを任される場面','「誰の育成に時間をかけるか」を数字で判断できる場面','定着率や売上貢献を育成の文脈で分析できる場面','個人の成長と店舗数字の両方を同時に見る場面'],
+  cau:'数字を追うあまり、<strong>目の前の人への対応が機械的になりやすい</strong>ことがあります。「指標が悪いから指導する」だと、人は萎縮します。「数字は人の変化の結果」という意識を持つと育成と分析が両立します。',
+  act:'今担当している人の「成長を測れる指標」を一つ決めて、1週間後に確認する日程を入れてみてください。'},
+ 'NUM-REC':{
+  catch:'採用の詰まりを数字で解く人',
+  one:'「なぜ採れないのか」を数字と現場感で特定できる人です。',
+  ara:['採用率や歩留まりの数字が気になる','どこで応募者が離脱しているか追いたくなる','採用の課題を「感覚」ではなく「データ」で話したい','「とにかく採る」より「どこが改善できるか」が先に来る'],
+  str:'あなたの強みは、<strong>採用の問題を「感覚ではなくデータで解く」視点</strong>です。<br>採用を改善しようとしても、多くの場合は「媒体を変えてみよう」で終わります。でもあなたは、「応募数・面接率・採用率・定着率」のどこで詰まっているかを見て、改善箇所を特定できる。<br>周りからは、<strong>「採用の議論を前に進めてくれる人」</strong>として見られやすいです。',
+  sce:['採用KPIを設定して改善できる場面','どのステップで歩留まりが落ちているかを分析できる場面','媒体効果・応募後対応の改善を数字で提案できる場面','採用コストと採用質を同時に考えられる場面'],
+  cau:'数字分析に集中するあまり、<strong>応募者の気持ちや現場感が薄くなりやすい</strong>ことがあります。「データ上は正しい」でも現場の感覚と乖離していると改善が動かなくなります。現場のリアルを数字と照らし合わせる習慣がないと損します。',
+  act:'今の採用数字で「一番改善余地がある指標」を一つ特定して、その原因の仮説を書いてみてください。'},
+ 'PR-EDU':{
+  catch:'人の魅力を言葉にして外に届ける人',
+  one:'スタッフやキャストの強みを見つけて、それを伝わる形にできる人です。',
+  ara:['「この人のここを知ってほしい」と自然に思う','人の良さを見つけるのが得意','発信しながら「この人はどう見られたいか」を考えている','言葉の選び方で印象が変わることを知っている'],
+  str:'あなたの強みは、<strong>「人の魅力を引き出して言葉にする力」</strong>です。<br>発信が得意な人と、育成が得意な人は別々にいます。でもあなたは両方を持っていて、「この人のここが強み」を見つけて、それを外に伝わる言葉に変えられる。<br>周りからは、<strong>「この人と話すと自分のことをわかってもらえる気がする」</strong>と感じてもらえやすいです。',
+  sce:['キャストやスタッフのSNS・プロフィール発信を支援できる場面','「自分の強みがわからない」という人の強みを言語化する場面','採用や育成で「この人のどこをアピールするか」を考える場面','店舗や人の魅力を外に届ける発信を担う場面'],
+  cau:'発信に力を入れすぎて、<strong>育成の本質的なフォローが薄くなること</strong>があります。「いい発信ができた」だけで満足してしまうと、本人の成長が停滞することがあります。「発信は育成の結果として出るもの」という順番を意識すると安定します。',
+  act:'今担当しているスタッフの「発信できる強み」を一つ見つけて、本人に「ここ、あなたの強みだと思う」と伝えてみてください。'},
+ 'REC-NUM':{
+  catch:'採用フローを現場で改善し続ける人',
+  one:'「なぜここで落ちるのか」を現場感と数字で追える人です。',
+  ara:['採用フローのどこで詰まっているかが気になる','面接率・採用率・定着率のどれかが落ちると原因を考えたくなる','属人的な採用対応が標準化できていないと不安','「とりあえず採る」で進む環境に違和感がある'],
+  str:'あなたの強みは、<strong>採用の現場を見ながら、数字でも改善できること</strong>です。<br>採用改善は「感覚派」と「数字派」に分かれがちですが、あなたは現場感を持ちながら数字も追える。<br>「なぜここで断られるのか」「どのステップで応募者が離脱しているか」を両方から見られるため、改善の精度が上がります。周りからは、<strong>「採用がちゃんと機能するようになってきた」</strong>と見られやすいです。',
+  sce:['採用フローの改善を数字で確認しながら進められる場面','面接対応・応募後連絡の標準化を任される場面','「どこで離脱が起きているか」を現場で確認できる場面','採用歩留まり改善の施策を考えられる場面'],
+  cau:'現場の改善に集中するあまり、<strong>求人の見せ方（入口側）が後回しになること</strong>があります。フロー改善と入口改善はセットで動かさないと、片方だけでは効果が出にくいです。入口と出口の両方を定期的に確認する習慣がないと損します。',
+  act:'今の採用フローで「一番離脱が多いステップ」を一つ確認して、その原因の仮説を一文書いてみてください。'}
+};
+
 // ── 画面制御 ──
 function showOnly(id){
-  var ids=['s-cover','s-q','s-result','s-pwd','s-admin'];
+  var ids=['s-cover','s-q','s-result'];
   for(var i=0;i<ids.length;i++) document.getElementById(ids[i]).style.display='none';
   document.getElementById(id).style.display='block';
   window.scrollTo(0,0);
 }
 function startQ(){ans=new Array(TOTAL).fill(null);cur=0;renderQ();showOnly('s-q');}
 function doRestart(){startQ();}
-function goPwd(){showOnly('s-pwd');}
-function backRes(){showOnly('s-result');}
-function chkPwd(){
-  var v=document.getElementById('pwd-in').value;
-  document.getElementById('pwd-err').textContent='';
-  if(DPS_CONFIG.checkAdmin(v)){document.getElementById('pwd-in').value='';buildAdmin();showOnly('s-admin');}
-  else{document.getElementById('pwd-err').textContent='パスワードが違います';}
-}
 function renderQ(){
   var q=QS[cur];
   document.getElementById('q-bl').textContent=q.bll||'';
@@ -810,7 +842,7 @@ var ROLE_TASKS={
   NUM:['週次売上原因分析','客単価・指名・再来店の推移確認','特定曜日のKPIチェック','数字が落ちた原因の仮説立て','改善効果の数値確認'],
   SYS:['繰り返しミスの原因整理','営業導線の見直し','確認漏れ防止の仕組み作り','教育マニュアルの整備','ルールの言語化と共有'],
   REC:['応募後対応の改善','面接前後の不安拾い','新人定着の初期フォロー','紹介促進の声かけ','求人条件の見直し提案'],
-  PR:['SNS投稿ルールの整備','求人文の見直し','店やキャストの魅力言語化','ブランドとズレた投稿のチェック','発信を続ける運用ルール作り']
+  PR:['SNS投稿ルールの整備','店やキャストの魅力言語化','ブランドとズレた投稿のチェック','発信を続ける運用ルール作り','伝わる言葉・見せ方の整理']
 };
 var ROLE_UNSUITABLE={
   LEAD:'権限がないのに火消しだけ任せられる状態 / 現場対応ばかりで振り返りや改善の時間がない / 責任だけ重く判断範囲が曖昧 / 緊急対応だけが続いて次の仕組みに変える余裕がない——こうした状態では力が出にくくなります。',
@@ -826,7 +858,7 @@ var ROLE_FIRST_STEPS={
   NUM:['今週の売上で「なぜこうなったか」説明できないものを1つ特定する','客単価が低い時間帯の原因を1つ仮説立てる'],
   SYS:['今週繰り返し起きているトラブルを1つ書き出す','同じ質問が来る場面に対して、回答をメモ1枚にまとめる'],
   REC:['今いる新人の「辞めやすいポイント」を1つ書き出す','応募後対応で「改善できそうな点」を1つ特定する'],
-  PR:['今月の投稿で「ブランドとズレている」と感じるものを3つ選ぶ','求人文の一文をターゲット別に書き換えてみる','キャストの魅力を3つ言語化する']
+  PR:['今月の投稿で「ブランドとズレている」と感じるものを3つ選ぶ','キャストの魅力を3つ言語化する','「伝えたいことが伝わっているか」を1つの投稿で確認する']
 };
 function buildResultReason(sc){
   var sorted=sc.sorted;
@@ -955,11 +987,19 @@ function detectHiddenPotential(sc){
 }
 function buildFirstSmallRole(sc,fieldSubtype){
   var secKey=sc.secKey;
+  var topKey=sc.topKey;
+  var rn=sc.rn||{};
+  // PR候補タスクはREC上位かどうかで切り替える
+  var prSmall=(topKey==='REC'||(rn['REC']||0)>=42)
+    ? '求人文の見直し / 採用ページの改善点を1つ書き出す / 応募者へのフォロー文を整える'
+    : (topKey==='SYS'||(rn['SYS']||0)>=38)
+      ? '制作依頼の整理 / SNSや求人文の見せ方改善 / 店舗ブランドに合う言葉づくり / 業務フロー改善'
+      : 'SNS投稿案 / キャストや店の魅力整理 / 発信の見せ方を1つ改善する';
   var roleSmall={EDU:'新人1名の3日間フォロー / 営業後の振り返り同席 / キャストの不安拾い',
     NUM:'特定曜日の売上原因分析 / 22時以降の客単価チェック / 指名・再来店の簡易確認',
     SYS:'繰り返しのミスが起きる箇所の整理 / 営業導線の見直し / 確認漏れ防止の仕組み作り',
     REC:'応募後対応の改善 / 面接前後の不安拾い / 新人定着の初期フォロー',
-    PR:'求人文の見直し / SNS投稿案 / キャストや店の魅力整理',
+    PR:prSmall,
     LEAD:'混雑時のフロア判断 / トラブル初動対応 / 重要時間帯の現場責任'};
   if(fieldSubtype==='客席プレーヤー型') return '重要顧客対応 / アフター同行 / 関係維持の連絡 / 若手への接客同行';
   if(fieldSubtype==='プレーヤー兼育成型') return '重要顧客対応 + 新人への接客同行 / キャストの振り返り同席';
@@ -968,6 +1008,30 @@ function buildFirstSmallRole(sc,fieldSubtype){
   if(secKey&&roleSmall[secKey]) return roleSmall[secKey];
   return roleSmall['LEAD'];
 }
+function getBehaviorStrengthLabel(sc){
+  var cp=sc.cp||{};
+  var rn=sc.rn||{};
+  var nat=sc.nat||{};
+  var topKey=sc.topKey;
+  var cpRelation=(cp.contact||0)+(cp.trust||0)+(cp.crm||0)+(cp.mood||0);
+  // SYS上位 → 情報を整理して改善につなげる力
+  if(topKey==='SYS'||(rn['SYS']||0)>=45) return '情報を整理して改善につなげる力';
+  // NUM上位 → 数字の動きを見て判断する力
+  if(topKey==='NUM'||(rn['NUM']||0)>=45) return '数字の動きを見て判断する力';
+  // PR上位 → 伝わる形に整える力
+  if(topKey==='PR'||(rn['PR']||0)>=45) return '伝わる形に整える力';
+  // EDU上位 → 相手の状態を見て関わる力
+  if(topKey==='EDU'||(rn['EDU']||0)>=45) return '相手の状態を見て関わる力';
+  // REC上位 → 人を見極めて定着させる力
+  if(topKey==='REC'||(rn['REC']||0)>=42) return '人を見極めて定着させる力';
+  // 対人cp高め + nat対人強め → 相手の状態や空気を見る力
+  if(cpRelation>=5&&(nat['対人']||0)>=(nat['現場']||0)) return '相手の状態や空気を見る力';
+  // 対人cp高め → 対人運用力
+  if(cpRelation>=4) return '対人運用力';
+  // nat現場強め → 現場の違和感を拾う力
+  if((nat['現場']||0)>0) return '現場の違和感を拾う力';
+  return '状況を読んで動く力';
+}
 function buildUserFieldCommentBlocks(sc,fieldSubtype,hiddenPotential,firstSmallRole){
   var blocks=[];
   var strengthMap={
@@ -975,21 +1039,23 @@ function buildUserFieldCommentBlocks(sc,fieldSubtype,hiddenPotential,firstSmallR
     'プレーヤー兼育成型':'お客様との関係づくりだけでなく、自分の接客経験を後輩やキャストに伝える力も出ています。自分だけが売るより、同行・振り返り・距離感の教え方で力が出る可能性があります。',
     'フロア統率型':'あなたは現場の中でも特に<strong>フロア全体の流れを見て動く</strong>ことに強みが出やすいタイプです。店全体を俯瞰して詰まりを解消し、人を動かす判断ができます。',
     '現場特化型':'あなたは<strong>現場の中で価値が出やすい</strong>タイプです。忙しい夜でも場を回し続ける力、トラブルの初動対応、重要顧客への対応など、現場内でできることが揃っています。',
-    '現場土台の拡張型':'あなたは<strong>現場対応を土台にしながら、別の役割にも反応が出ている</strong>タイプです。現場の力を活かしつつ、別の方向にも少しずつ広げていける可能性があります。',
+    '現場土台の拡張型':'あなたは<strong>今の役割を土台にしながら、別の方向にも反応が出ている</strong>タイプです。現在の強みを活かしつつ、別の役割にも少しずつ広げていける可能性があります。',
     '営業マネジメント転用候補':'個人で関係を作るだけでなく、誰をどの席につけるか、どのタイミングで次回来店につなげるかなど、営業全体を見る力が出ています。感覚だけで終わらせず、結果を作る仕組みを考えられるタイプです。'
   };
   var b1body=strengthMap[fieldSubtype]||'あなたは<strong>現場の中で柔軟に対応できる</strong>タイプです。状況に応じて動きを変えながら場を支えることができます。';
   blocks.push({cls:'field-block-g',labelCls:'field-block-label-g',label:'あなたの現場での強み',body:b1body});
   var b2body='';
   if(hiddenPotential&&hiddenPotential.length>0){
-    b2body='現在は現場対応に強みが出ていますが、回答全体では以下への伸びしろも見えます。<br><strong>'+hiddenPotential.join(' / ')+'</strong>';
+    var _bsLabel=getBehaviorStrengthLabel(sc);
+    b2body='回答では<strong>'+_bsLabel+'</strong>が出ていますが、全体では以下への伸びしろも見えます。<br><strong>'+hiddenPotential.join(' / ')+'</strong>';
     var firstTask=firstSmallRole?firstSmallRole.split('/')[0].trim():'';
     if(firstTask) b2body+='<br>いきなり役割を変えるより、まずは「<strong>'+firstTask+'</strong>」から試すとよいです。';
   }else{
     if(fieldSubtype==='現場特化型'||fieldSubtype==='フロア統率型'){
       b2body='現在の回答では現場内での動きに一貫性があります。現場内で責任範囲を広げること——フロア責任・混雑時判断・トラブル初動・重要顧客対応——が次のステップになりそうです。';
     }else{
-      b2body='現場対応に集中している状態です。現場での経験を積みながら、少しずつ次の方向を見つけていく段階です。';
+      var _bsLabel2=getBehaviorStrengthLabel(sc);
+      b2body='現在は<strong>'+_bsLabel2+'</strong>に回答が集中しています。この力を活かしながら、少しずつ次の方向を見つけていく段階です。';
     }
   }
   blocks.push({cls:'field-block-a',labelCls:'field-block-label-a',label:'次に伸ばせそうな方向',body:b2body});
@@ -1012,10 +1078,10 @@ function buildManagerFieldData(sc,fieldSubtype,hiddenPotential,firstSmallRole,fi
     'プレーヤー兼育成型':'お客様との関係構築 / 後輩・キャストへの接客同行 / 振り返り同席 / 現場での経験の言語化',
     'フロア統率型':'フロア全体の流れの管理 / 混雑時の人員判断 / トラブル初動対応 / 現場責任者としての動き',
     '現場特化型':'現場での確実な動き / トラブル初動 / 重要時間帯の現場責任 / 混雑時のフロア対応',
-    '現場土台の拡張型':'現場対応（安定） + '+(sc.secKey?(roleNames[sc.secKey]||sc.secKey):'次役割')+'への転用準備',
+    '現場土台の拡張型':getBehaviorStrengthLabel(sc)+'（安定） + '+(sc.secKey?(roleNames[sc.secKey]||sc.secKey):'次役割')+'への転用準備',
     '営業マネジメント転用候補':'現場の動きと数字の両面を見る視点 / 売上改善の仮説立て / 営業全体の設計'
   };
-  var currentUsage=currentUsageMap[fieldSubtype]||'現場対応全般 / 状況に応じた柔軟な対応';
+  var currentUsage=currentUsageMap[fieldSubtype]||getBehaviorStrengthLabel(sc)+' / 状況に応じた柔軟な対応';
   var dangerRoleMap={
     '客席プレーヤー型':'いきなりフロア全体の管理を任せる / 数字責任だけを持たせる',
     'プレーヤー兼育成型':'育成専任にして現場から切り離す / 数字責任だけを持たせる',
@@ -1086,120 +1152,6 @@ function buildFieldProfile(sc){
 // ── 回答品質チェック ──
 // 機械的回答・スコア平坦・P3+高一貫性などを検出する
 // ※あくまで参考フラグ。1フラグで即アウトではなく面談確認を促す目的
-function buildPersonaReport(sc){
-  var sorted=sc.sorted;
-  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
-  var rn=sc.rn||{};
-  var cp=sc.cp||{};
-  var nat=sc.nat||{};
-  var topKey=sc.topKey,secKey=sc.secKey;
-  var top1=sorted[0],top2=sorted.length>1?sorted[1]:null,top3=sorted.length>2?sorted[2]:null;
-  var gap12=top2?top1[1]-top2[1]:100;
-  var gap23=(top2&&top3)?top2[1]-top3[1]:100;
-  var prScore=rn['PR']||0,sysScore=rn['SYS']||0,eduScore=rn['EDU']||0;
-  var numScore=rn['NUM']||0,leadScore=rn['LEAD']||0,recScore=rn['REC']||0;
-  var cpRelation=(cp.contact||0)+(cp.trust||0)+(cp.crm||0)+(cp.mood||0);
-
-  // 1. 人物像の主軸
-  var axisHtml='';
-  if(topKey==='SYS'&&(prScore>=32||cpRelation>=4)){
-    var connectors=[];
-    if(prScore>=32) connectors.push('広報・見せ方');
-    if(cpRelation>=4) connectors.push('対人感度');
-    if(secKey&&secKey!=='SYS'&&secKey!=='PR'&&connectors.length<2) connectors.push(roleNames[secKey]);
-    axisHtml='この人は、<strong>整理・仕組み化を軸に</strong>、'+connectors.join('・')+'をつなぎ合わせられるタイプです。'
-      +'書類や業務を整えるというより、<strong>人・情報・目的・導線を整理して動きやすくする設計役</strong>に向いています。'
-      +'前に立って強く統率するより、人や情報が動きやすい状態をつくる側で力が出やすいです。';
-  } else if(topKey==='PR'){
-    if(sysScore>=32||numScore>=32){
-      axisHtml='この人は、<strong>広報・発信力を軸に</strong>、'+roleNames[secKey]+'の視点もつなぎ合わせられるタイプです。'
-        +'"前に出て発信する"というより、<strong>伝わる形に整えて届ける役割</strong>で力が出やすいです。'
-        +'情報・言葉・見せ方を整理して、動きを生む形に変換するポジションに向いています。';
-    } else {
-      axisHtml='この人は、<strong>広報・PR的な発信感度</strong>が回答に出ています。'
-        +'"前に出て目立つ"タイプというより、<strong>情報を伝わりやすい形に整える</strong>ことで力を発揮するタイプです。'
-        +(top2&&top2[1]>=38?'次いで'+roleNames[top2[0]]+'の傾向も出ており、この2つで配置仮説を考えると実態に近づきます。':'');
-    }
-  } else if(topKey==='LEAD'&&gap12<15&&top2){
-    axisHtml='この人は、<strong>'+roleNames[topKey]+'を軸に</strong>、<strong>'+roleNames[top2[0]]+'</strong>の両面を持つタイプです。'
-      +'どちらか一方だけを任せると本来の力が半分しか出ません。'
-      +'<strong>現場の動きと'+roleNames[top2[0]]+'を組み合わせる役割</strong>で力が出やすいです。';
-  } else if(gap12<10&&top2){
-    axisHtml='この人は、<strong>'+roleNames[topKey]+'と'+roleNames[top2[0]]+'が近い値</strong>で出ており、'
-      +'どちらか一方に特化しているというより、<strong>この2つをつなぐ複合型</strong>として理解される方が実態に近いです。'
-      +(gap23<10&&top3?'さらに'+roleNames[top3[0]]+'も近接しており、3つの視点を状況で使い分けるタイプです。':'');
-  } else if(gap12<14&&gap23<10&&top3){
-    axisHtml='この人は、<strong>'+roleNames[topKey]+'・'+roleNames[top2[0]]+'・'+roleNames[top3[0]]+'</strong>が近い値で出ており、'
-      +'1つの役割に特化するより、<strong>複数の視点を状況に応じて使い分けるタイプ</strong>として捉えると実態に近いです。';
-  } else {
-    axisHtml='この人は、<strong>'+roleNames[topKey]+'</strong>を軸に力が出るタイプです。';
-    if(top2&&top2[1]>=38) axisHtml+='次いで<strong>'+roleNames[top2[0]]+'</strong>の傾向も出ており、この2つの組み合わせで配置仮説を考えると実態に近づきます。';
-  }
-
-  // 2. 自己認識 vs 現場行動のズレ
-  var alignHtml='';
-  var aspirKey=sc.aspirTopKey;
-  if(aspirKey&&aspirKey!==topKey){
-    var aspirLbl=roleNames[aspirKey]||aspirKey;
-    var aptLbl=roleNames[topKey]||topKey;
-    alignHtml='本人は<strong>'+aspirLbl+'</strong>を自分の強みとして認識していますが、回答全体から見た適性仮説は<strong>'+aptLbl+'</strong>方向です。';
-    if(cpRelation>=4) alignHtml+='現場行動では<strong>対人運用力</strong>も出ています。';
-    alignHtml+='面談で「どちらの仕事で実際に力が出やすいか」を確認してください。';
-  } else if(aspirKey&&aspirKey===topKey){
-    var aptLbl=roleNames[topKey]||topKey;
-    alignHtml='本人の志向と適性仮説はともに<strong>'+aptLbl+'</strong>方向で一致しています。';
-    if(cpRelation>=4&&topKey!=='EDU'&&topKey!=='REC'){
-      alignHtml+='現場行動でも<strong>対人関係の運用力</strong>が出ており、人が動きやすい環境づくりへの関心が回答に表れています。';
-    }
-  }
-
-  // 3. 低スコア項目を状況で説明（「苦手」と断定しない）
-  var weakHtml='';
-  var lastItem=sorted[sorted.length-1];
-  var lastKey=lastItem[0],lastScore=lastItem[1];
-  if(sc.wf&&sc.wf.indexOf('対人')>=0&&cpRelation>=4){
-    weakHtml='対人そのものが苦手なのではなく、<strong>日常的な細かい声かけや先回りのケアは後回しになりやすい</strong>傾向があります。空気の変化や相手の違和感には反応できるため、対人ケアを仕組み化すると安定します。';
-  } else if(lastScore<38&&lastKey!==topKey){
-    var weakCtx={
-      LEAD:'「フロア全体を仕切る・責任を持って判断する」場面では、現時点の回答では優先度が低く出ています。今の配置や経験量の影響も考えられます。',
-      EDU:'「後輩を育てる・教える」場面では、現時点の回答量が少ない傾向があります。経験や機会が少ない可能性があります。',
-      NUM:'「数字を追いかける・目標に向けて管理する」場面では、今の回答では優先度が低く出ています。',
-      SYS:'「業務を整理・仕組み化する」場面では、今は他の役割を優先していることが回答から出ています。',
-      REC:'「採用・人を見極める」場面では、現時点では優先度が低く出ています。',
-      PR:'「情報を発信・見せ方を整える」場面では、今は優先度が低い傾向が出ています。'
-    };
-    weakHtml=weakCtx[lastKey]||'';
-  }
-
-  // 4. P3の場合の説明
-  var p3Html='';
-  if(sc.hantei==='P3'){
-    p3Html='スコアが複数の方向に分散しているため、診断だけで配置を決めるより、<strong>現場観察とセットで配置仮説を見るタイプ</strong>です。能力が低いのではなく、力の出し方が状況や環境によって変わりやすい柔軟型であることが多いです。';
-  }
-
-  // 5. 力が出やすい環境
-  var envMap={
-    LEAD:'現場での裁量があり、自分でペースをつくりながら周囲を動かせる環境で力を発揮しやすいです。',
-    EDU:'人の成長や変化を実感できる環境、後輩の変化が見える役割で力が出やすいです。',
-    NUM:'成果が数字で見え、改善のための裁量がある環境で力を発揮しやすいです。',
-    SYS:'目的を理解したうえで改善提案できる裁量があり、繰り返しの改善サイクルが回る環境で力が出ます。',
-    REC:'人を見極めて動かせる裁量があり、採用から定着まで関われる環境で力が出やすいです。',
-    PR:'目的が明確で、自分の言葉や視点を活かせる裁量がある環境で力を発揮しやすいです。'
-  };
-  var envHtml=envMap[topKey]||'';
-
-  // 組み立て
-  var bodyParts=[];
-  if(axisHtml) bodyParts.push(axisHtml);
-  if(alignHtml) bodyParts.push(alignHtml);
-  if(envHtml) bodyParts.push(envHtml);
-  var mainBody=bodyParts.join('<br>');
-  var extras='';
-  if(weakHtml) extras+='<div class="persona-weak">'+weakHtml+'</div>';
-  if(p3Html) extras+='<div class="persona-p3">'+p3Html+'</div>';
-  return '<div class="persona-report"><div class="persona-report-title">配置・育成レポート</div>'
-    +'<div class="persona-report-body">'+mainBody+'</div>'+extras+'</div>';
-}
 
 function checkAnswerQuality(sc,ans){
   var flags=[];
@@ -1248,7 +1200,6 @@ function showResult(){
   lastSc=sc;
   var qf=checkAnswerQuality(sc,ans);
   sc.qualityFlag=qf;
-  document.getElementById('rpersona').innerHTML=buildPersonaReport(sc);
   var ty=sc.typeKey?TYPES[sc.typeKey]:null;
   if(!ty){
     var roleNames2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
@@ -1261,18 +1212,58 @@ function showResult(){
       gd:'柔軟に役割を変えられる場面・2つの視点が必要な場面',bd:'「あなたの専門は何ですか」と問われる場面',
       nx:'今週、'+t1+'と'+t2+'どちらの仕事で力が出たかを記録してみる'};
   }
-  var ds=ty.ds.replace(/\n/g,'<br>');var tp=ty.tp.replace(/\n/g,'<br>');var wn=ty.wn.replace(/\n/g,'<br>');
   var _adjType=findAdjacentType(sc);
   var _confTip=sc.confidence>=70?'比較的まとまった傾向':sc.confidence>=50?'ある程度の傾向あり':'傾向の確認が必要';
-  var rc='<div class="r-type-badge">今の回答から見えた傾向</div>'+
-    '<div class="r-type-name">'+ty.role+'</div>'+
-    '<div class="r-type-sub">'+ty.lb+'</div>'+
-    '<div class="r-catch">'+ty.ct+'</div>'+
-    '<div style="font-size:9px;color:var(--text3);margin:6px 0 10px;padding:5px 10px;background:var(--bg4);border-radius:4px;line-height:1.6">今の回答パターンからの仮説（目安: '+_confTip+'）。断定ではなく面談・現場観察の起点としてください。</div>'+
+  // ── 本人向け「取扱説明書」表示 ──
+  var _tp=TYPE_PERSONAL[sc.typeKey]||null;
+  // 準タイプ用フォールバック
+  if(!_tp){
+    var _rn2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+    var _t1=_rn2[sc.topKey]||sc.topKey,_t2=_rn2[sc.secKey]||sc.secKey;
+    _tp={
+      catch:_t1+'と'+_t2+'の両面を持つタイプ',
+      one:'どちらか一方に特化しているというより、2つをつなぐ視点で力が出やすい人です。',
+      ara:['どちらの役割でも動ける分、どこに集中するか迷いやすい','場面によって違う強みが出ることに気づいている','「専門は？」と聞かれると答えにくいことがある','幅広く動けるが、軸を決めると一気に力が出やすい'],
+      str:'あなたの強みは、<strong>'+_t1+'と'+_t2+'の両面を持てること</strong>です。<br>どちらか一方だけを任せると本来の力が半分しか出ません。この2つを組み合わせる場面で一番力が発揮されます。<br>周りからは、<strong>「どっちもできる人」「使いやすい視点を持っている人」</strong>として見られやすいです。',
+      sce:[_t1+'の力が必要な場面',_t2+'の力が必要な場面','どちらも同時に必要な場面','役割の切り替えが求められる場面'],
+      cau:'役割が定まっていない状態が続くと、<strong>どちらも中途半端になりやすい</strong>です。「今は何をメインにやるか」を決めないと、強みが分散します。',
+      act:'今週、'+_t1+'と'+_t2+'のどちらで力が出たかを記録してみてください。'
+    };
+  }
+  // あるある・場面をHTML化
+  function _listHtml(arr,cls){var h='<ul class="'+cls+'">';for(var i=0;i<arr.length;i++) h+='<li>'+arr[i]+'</li>';return h+'</ul>';}
+  var rc='<div class="pm-wrap">'+
+    '<div class="pm-section">'+
+      '<div class="pm-type-name">'+ty.role+'</div>'+
+      '<div class="pm-catch">'+_tp.catch+'</div>'+
+    '</div>'+
     '<div class="r-divider"></div>'+
-    '<div class="fb-block fb-base"><div class="fb-label">あなたはこんな場面で力が出る</div><div class="fb-body">'+ds+'</div></div>'+
-    '<div class="fb-block fb-tips"><div class="fb-label-tips">こう使われると一番力が出ます</div><div class="fb-body">'+tp+'</div></div>'+
-    '<div class="fb-block fb-warn"><div class="fb-label-warn">余裕がなくなると出やすいパターン</div><div class="fb-body">'+wn+'</div></div>';
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">あなたを一言でいうと</div>'+
+      '<div class="pm-oneliner">'+_tp.one+'</div>'+
+    '</div>'+
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">あなたのあるある</div>'+
+      _listHtml(_tp.ara,'pm-ara-list')+
+    '</div>'+
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">あなたの強み</div>'+
+      '<div class="pm-strength">'+_tp.str+'</div>'+
+    '</div>'+
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">強みが出やすい場面</div>'+
+      _listHtml(_tp.sce,'pm-scene-list')+
+    '</div>'+
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">気をつけないと損しやすいこと</div>'+
+      '<div class="pm-caution">'+_tp.cau+'</div>'+
+    '</div>'+
+    '<div class="pm-section">'+
+      '<div class="pm-section-title">明日から試す1アクション</div>'+
+      '<div class="pm-action"><strong>→ </strong>'+_tp.act+'</div>'+
+    '</div>'+
+    '<div style="font-size:9px;color:var(--text3);margin-top:10px;padding:5px 10px;background:var(--bg4);border-radius:4px;line-height:1.6">今の回答パターンからの仮説（目安: '+_confTip+'）。断定ではなく面談・現場観察の起点としてください。</div>'+
+  '</div>';
   if(_adjType){
     rc+='<div class="r-divider"></div>'+
       '<div style="padding:10px 12px;background:var(--bg3);border-radius:6px;border-left:2px solid var(--line)">'+
@@ -1283,17 +1274,6 @@ function showResult(){
       '</div>';
   }
   document.getElementById('rcard').innerHTML=rc;
-  // 現場プロファイル（本人向け）
-  var fp=sc.fieldProfile;
-  var fieldTitle=sc.topKey==='LEAD'?'現場での強み':'あなたの力が出やすい役割';
-  var rfHtml='<div class="field-section"><div class="field-section-title">'+fieldTitle+'</div>';
-  rfHtml+='<div class="field-subtype-badge">'+fp.fieldSubtype+'</div>';
-  for(var fi=0;fi<fp.userCommentBlocks.length;fi++){
-    var blk=fp.userCommentBlocks[fi];
-    rfHtml+='<div class="field-block '+blk.cls+'"><div class="'+blk.labelCls+'">'+blk.label+'</div><div class="fb-body">'+blk.body+'</div></div>';
-  }
-  rfHtml+='</div>';
-  document.getElementById('rfield').innerHTML=rfHtml;
   // スコアグリッド
   var sorted=sc.sorted;
   var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
@@ -1314,60 +1294,8 @@ function showResult(){
     sg+='<div style="font-size:10px;color:var(--text3);margin-top:6px">志向・適性仮説ともに同方向：'+_aptLbl+'</div>';
   }
   document.getElementById('sgrid').innerHTML=sg;
-  // 強化結果ブロック
-  var re='<div class="enh-section">';
-  var reasonHtml=buildResultReason(sc);
-  if(reasonHtml) re+='<div class="enh-block enh-reason"><div class="enh-lbl">スコアの読み方</div><div class="enh-body">'+reasonHtml+'</div></div>';
-  var highHtml=buildHighScoreMeaning(sc);
-  if(highHtml) re+='<div class="enh-block enh-high"><div class="enh-lbl">このスコアが高い人の特徴</div><div class="enh-body">'+highHtml+'</div></div>';
-  var tasksHtml=buildSuitableTasks(sc);
-  if(tasksHtml) re+='<div class="enh-block enh-tasks"><div class="enh-lbl">力が出やすい仕事の場面</div>'+tasksHtml+'</div>';
-  var unsuitHtml=buildUnsuitableAssignment(sc);
-  if(unsuitHtml) re+='<div class="enh-block enh-unsuitable"><div class="enh-lbl">力が出にくくなる配置パターン</div><div class="enh-body">'+unsuitHtml+'</div></div>';
-  var lowHtml=buildLowScoreMeaning(sc);
-  if(lowHtml) re+='<div class="enh-block enh-low"><div class="enh-lbl">スコアが低い領域について</div><div class="enh-body">'+lowHtml+'</div></div>';
-  var stepHtml=buildFirstSmallStep(sc);
-  if(stepHtml) re+='<div class="enh-block enh-step"><div class="enh-lbl">今すぐできる小さな一歩</div>'+stepHtml+'</div>';
-  re+='</div>';
-  document.getElementById('renhanced').innerHTML=re;
-  // タイムラインと補足
-  var sb='<div class="ts-title">あなたの歩いてきた道と、これから</div>';
-  var phases=[['過去',ty.pa],['現在',ty.pr],['未来',ty.fu]];
-  for(var i=0;i<phases.length;i++){
-    sb+='<div class="ts-row"><div class="ts-phase">'+phases[i][0]+'</div><div class="ts-body">'+phases[i][1]+'</div></div>';
-  }
-  sb+='<div class="pos-wrap">';
-  sb+='<div class="pos-item"><div class="pos-icon pos-icon-g">◆</div><div class="pos-cont"><div class="pos-label">力が出やすい場面</div><div class="pos-body">'+ty.gd+'</div></div></div>';
-  sb+='<div class="pos-item"><div class="pos-icon pos-icon-b">◇</div><div class="pos-cont"><div class="pos-label">力が出にくい場面</div><div class="pos-body">'+ty.bd+'</div></div></div>';
-  sb+='<div class="pos-item"><div class="pos-icon pos-icon-n">→</div><div class="pos-cont"><div class="pos-label">今すぐできる一歩</div><div class="pos-body">'+ty.nx+'</div></div></div>';
-  sb+='</div>';
-  sb+='<div class="shachi-box" style="margin-top:14px"><div class="s-title">回答の一貫性</div>'+
-      '<div style="font-size:12px;font-weight:500;color:'+(sc.trustColor||'var(--text2)')+';margin-bottom:4px">'+((function(t){if(t.indexOf('低')>=0) return '要確認';if(t.indexOf('中〜高')>=0) return '中〜高';if(t.indexOf('中')>=0) return '中';if(t.indexOf('高')>=0) return '高';return t;})(sc.trust||'-'))+'</div>'+
-      '<div style="font-size:12px;color:var(--dark);line-height:1.85;margin-top:6px">'+buildTrustComment(sc)+'</div></div>';
-  if(qf.warn){
-    sb+='<div class="shachi-box" style="background:var(--al);border-left:3px solid var(--amb)">'+
-        '<div class="s-title" style="color:var(--amb)">回答の一貫性：要確認</div>'+
-        '<div style="font-size:11px;color:var(--dark);line-height:1.8">回答の並びやスコアの出方から、診断だけで判断するのは危険です。<br>面談で、実際に力が出た仕事の場面を確認してください。</div></div>';
-  }
-  if(sc.wf){
-    var wfMsg='忙しい時に優先順位が落ちやすい領域です。意識的に守る工夫が有効です。';
-    var wfConflictMsg='';
-    if(sc.wfConflict){
-      var ty2=sc.typeKey?TYPES[sc.typeKey]:null;
-      var tn=ty2?ty2.role:(sc.topKey+' タイプ');
-      wfConflictMsg='<div style="background:var(--al);border-left:3px solid var(--amb);padding:8px 10px;margin-top:8px;border-radius:4px">'+
-        '<div style="font-size:10px;font-weight:500;color:var(--amb);margin-bottom:4px">このタイプと後回し傾向について</div>'+
-        '<div style="font-size:11px;color:var(--dark);line-height:1.7">'+
-        '「'+tn+'」という適性スコアと「'+sc.wf+'」は矛盾ではありません。<br>'+
-        'スコアは傾向の強さを、後回しフラグは追い込まれた時の優先判断を測っています。<br>'+
-        'この組み合わせは「得意なのに緊急場面で後回しになりやすい」ことを意味します。<br>'+
-        '面談で「忙しい夜に数字を確認できていますか？」を確認してもらうと改善のヒントが得られます。'+
-        '</div></div>';
-    }
-    sb+='<div class="shachi-box"><div class="s-title">後回しにしやすい傾向（Q34）</div>'+
-        '<div style="font-size:12px;color:var(--amb);margin-bottom:4px">'+sc.wf+'</div>'+
-        '<div style="font-size:10px;color:var(--text3);line-height:1.6">'+wfMsg+'</div>'+wfConflictMsg+'</div>';
-  }
+  // ストレスがたまりやすい場面
+  var sb='';
   var strMax=Math.max.apply(null,Object.values(sc.str))||1;
   var strLabels={
     REL:'人間関係で気を使うストレス',
@@ -1404,9 +1332,71 @@ function showResult(){
   document.getElementById('sbox').innerHTML=sb;
   showOnly('s-result');
 }
-// ── 管理側レポート ──
-// ── SECTION B: Webhook 設定 ──
-// 👇 本番公開時は SECTION A の DPS_CONFIG.env を 'prod' に変更するだけです
+// ── Webhook 設定 / LLM分析用ペイロード ──
+function buildLLMPayload(sc,name,store){
+  var aptCodeMap={N:'対人',B:'現場',C:'分析',D:'表現'};
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var letters=['A','B','C','D'];
+  var stressNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
+  // ストレストップ
+  var stressTop='';var stressMax=-1;
+  for(var sk in (sc.str||{})){if((sc.str[sk]||0)>stressMax){stressMax=sc.str[sk];stressTop=stressNames[sk]||sk;}}
+  // hidden_potential（HTML除去）
+  var hiddenStr='';
+  if(sc.fieldProfile&&sc.fieldProfile.hiddenPotential){
+    var hp=sc.fieldProfile.hiddenPotential;
+    hiddenStr=(Array.isArray(hp)?hp.join(' / '):String(hp)).replace(/<[^>]+>/g,'');
+  }
+  // カテゴリスコア（日本語キー）
+  var catScores={};
+  for(var i=0;i<sc.sorted.length;i++) catScores[roleNames[sc.sorted[i][0]]]=Math.round(sc.sorted[i][1]);
+  // 回答配列（Q1〜Q45、LLMが意味を読める形）
+  var answersArr=[];
+  for(var qi=0;qi<QS.length;qi++){
+    var q=QS[qi];var a=ans[qi];
+    var entry={
+      q_no:qi+1,block:q.bl,block_label:q.bll,question:q.tx,
+      selected_letter:'未回答',selected_text:'未回答',
+      tags:{aptitude:'',role:{},stress:'',learning_style:'',weak_flag:'',customer_response:{}}
+    };
+    if(a!==null&&a!==undefined&&q.ch[a]){
+      var ch=q.ch[a];
+      entry.selected_letter=letters[a];
+      entry.selected_text=ch.t;
+      entry.tags={
+        aptitude:aptCodeMap[ch.a]||'',
+        role:ch.r||{},
+        stress:ch.st||'',
+        learning_style:ch.ls||'',
+        weak_flag:ch.wf||'',
+        customer_response:ch.cp||{}
+      };
+    }
+    answersArr.push(entry);
+  }
+  var llmPayload={
+    basic_info:{name:name,store:store,date:new Date().toLocaleDateString('ja-JP')},
+    diagnosis_result:{
+      type_name:(TYPES[sc.typeKey]?TYPES[sc.typeKey].role:null)||sc.topKey+'-'+sc.secKey,
+      p_rank:sc.hantei,
+      self_top:sc.clTop,
+      natural_top:sc.ntTop,
+      behavior_top:sc.simTop,
+      trust:sc.trust||'',
+      gap:sc.gap?'あり':'なし',
+      weak_flag:sc.wf||'なし',
+      stress_factor:stressTop,
+      field_subtype:(sc.fieldProfile&&sc.fieldProfile.fieldSubtype)||'',
+      hidden_potential:hiddenStr,
+      stay_field_fit:(sc.fieldProfile&&sc.fieldProfile.stayFieldFit)||'',
+      expansion_fit:(sc.fieldProfile&&sc.fieldProfile.expansionFit)||''
+    },
+    category_scores:catScores,
+    answers:answersArr
+  };
+  var promptBase='あなたは、SHACHI GROUPの人材配置・育成を支援する診断レポート作成AIです。\n\nこの診断は、人を評価するためではなく、配置・育成・面談の仮説を作るためのものです。\n\n以下の採点済みデータと全回答をもとに、管理者向けの詳細レポートを作成してください。\n\n重要ルール：\n- 点数や判定は変更しない\n- 診断結果を断定しすぎない\n- 「この人は絶対に〇〇」と書かない\n- 「能力が低い」「向いていない」「使えない」などの評価表現は禁止\n- 「回答上は」「傾向があります」「配置仮説としては」「面談で確認してください」という表現を使う\n- P3は低評価ではなく、複数傾向が近い／現場観察とセットで確認する段階として説明する\n- 低スコアは「できない」ではなく「今回の回答では優先度が低く出ている領域」として説明する\n- 「現場対応」という広すぎる表現は避け、実際の回答傾向に応じて具体化する\n- 「対人後回し」は、対人が苦手という意味にしない。対人系回答が多い場合は、日常的な細かい声かけが後回しになりやすいが、空気の変化や相手の違和感には反応できる可能性がある、と説明する\n- 「求人文の見直し」は、求人・採用が1位または上位で、かつ広報・PRも高い場合のみ優先提案として出す\n- 必ずQ番号や回答内容を根拠として使う\n- 固定テンプレートではなく、この人の回答内容に合わせたカスタマイズされた人物像にする\n\n出力項目：\n1. 総合人物像\n2. 回答から見える強み\n3. 本人が自覚していない可能性のある強み\n4. 向いている役割\n5. 任せるとズレやすい仕事\n6. モチベーションが上がる条件\n7. 腐りやすい条件\n8. 指導・育成時の注意\n9. 面談で確認すべき質問\n10. 回答上の根拠';
+  return{llm_analysis_payload:llmPayload,llm_prompt_base:promptBase};
+}
 var WEBHOOK_URL=DPS_CONFIG.webhookUrl;
 function sendResult(){
   var name=document.getElementById('send-name').value.trim();
@@ -1462,6 +1452,12 @@ function sendResult(){
     player_to_teaching_fit:sc.fieldProfile.playerToTeachingFit,
     customer_response_scores:JSON.stringify(sc.cp||{})
   };
+  // LLM分析用ペイロードを追加（採点はコード側で完結、LLMには分析材料として渡す）
+  var _llmData=buildLLMPayload(sc,name,store);
+  payload.llm_analysis_payload=JSON.stringify(_llmData.llm_analysis_payload);
+  payload.llm_prompt_base=_llmData.llm_prompt_base;
+  payload.llm_report_status='pending';
+  payload.llm_admin_report='';
   var btn=document.getElementById('btn-send');
   var status=document.getElementById('send-status');
   btn.disabled=true;status.style.color='var(--mid)';status.textContent='送信中...';
@@ -1489,142 +1485,6 @@ function validateSendForm(name,store){
   if(!store) return '店舗を入力してください';
   if(!lastSc) return '診断結果がありません。診断を完了してください';
   return null;
-}
-// ── SECTION F: 管理者レポート生成 ──
-function buildAdmin(){
-  if(!lastSc) return;
-  var sc=lastSc;
-  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
-  var abilityNames={'対人':'対人運用力','現場':'現場統率力','分析':'分析・構造化力','表現':'表現・訴求力'};
-  var strNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
-  var lrnNames={DO:'実践型（やりながら覚える）',WHY:'理由型（目的から理解する）',STEP:'手順型（整理して覚える）',FB:'FB型（フィードバックで伸びる）',CHALLENGE:'チャレンジ型（責任で伸びる）'};
-  var h='<div class="warn-box"><strong>【重要】このレポートは参考仮説です</strong><br>スコアと回答パターンから生成した統計的傾向の仮説であり、本人の能力・適性の最終評価ではありません。配置・昇格・降格はこの診断だけで決定しないでください。<br>「面談してから決める（P3）」は低評価ではなく、配置ミスを防ぐための確認ステップです。</div>';
-  if(sc.qualityFlag&&sc.qualityFlag.warn){
-    var _qfMsg={
-      periodic:'選択肢に規則的なパターンあり（A/B/C/D繰り返し等）',
-      consecutive:'同一選択肢が連続して選ばれています',
-      flat_scores:'役割スコアの1〜3位の差が8pt以内（平坦）',
-      p3_high_trust:'P3判定なのに回答一貫性が「高」',
-      low_score:'1位スコアが低く、明確な役割傾向が出ていません'
-    };
-    var _qfDetail=sc.qualityFlag.flags.map(function(f){return _qfMsg[f]||f;}).join(' ／ ');
-    h+='<div class="warn-box" style="background:var(--al);border:1px solid var(--amb)">'+
-       '<strong>回答の並びに注意フラグあり</strong><br>'+
-       '以下の点から、この回答だけで配置判断することを推奨しません。面談で「実際に力が出た仕事の場面」を確認してください。<br>'+
-       '<span style="font-size:9px;color:var(--amb)">検出フラグ: '+_qfDetail+'</span></div>';
-  }
-  var jcls=sc.hantei==='P1'?'j-p1':(sc.hantei==='P2'||sc.hantei==='P2W'?'j-p2':'j-p3');
-  var jMainLabel=sc.hantei==='P1'?'方向性の傾向が出ています。面談で意欲と納得感を確認してから小さく試してください':sc.hantei==='P2W'?'ある程度傾向は出ていますが弱点フラグがあります。小さく試しながら忙しい場面での動きを確認してください':sc.hantei==='P2'?'ある程度傾向は出ていますが確認の余地があります。試験的に任せて週1で状況を確認してください':'現時点では傾向が確定しにくい状態です。能力不足ではなく、強みの出方が複数に分かれています。配置前に面談を行ってください';
-  var jd={
-    'P1':'回答のスコアと傾向がある程度まとまっています（参考仮説）。この方向で小さく任せてみることを検討してください。面談で本人の意欲と納得感も確認してください。<br><span style="font-size:9px;color:var(--text3)">仮説根拠: スコア75pt以上・差15pt以上・感度フラグ0〜1・弱点衝突なし ／ 判定コード: P1</span>',
-    'P2':'ある程度の傾向は出ていますが、まだ確認の余地があります（暫定判定）。試験的に小さく任せてみて、週1で状況を確認してください。<br><span style="font-size:9px;color:var(--text3)">仮説根拠: スコア65pt以上・差8pt以上・感度フラグ0〜3 ／ 判定コード: P2</span>',
-    'P3':'現時点の回答だけでは傾向を絞り込むのが難しい状態です（面談要確認）。能力が低いという意味ではなく、強みの出方が複数に分かれています。<br>配置を決める前に面談で確認してください。<br><strong style="color:var(--teal)">悪い評価ではありません。配置ミスを防ぐための確認ステップです。</strong><br><span style="font-size:9px;color:var(--text3)">判定コード: P3</span>',
-    'P2W':'ある程度傾向は出ていますが、主傾向と後回しフラグに確認ポイントがあります（暫定・弱点確認推奨）。能力が低いという意味ではありません。<br>まずは小さな役割で試しながら、忙しい場面での動きを面談と現場観察で確認してください。<br><span style="font-size:9px;color:var(--text3)">判定コード: P2W</span>'}[sc.hantei]||'';
-  h+='<div class="ad-sec"><div class="ad-sec-title">配置の方向性（あくまで仮説）</div>'+
-     '<div class="j-box '+jcls+'">'+
-     '<div class="j-lbl" style="color:'+(sc.hantei==='P1'?'var(--teal)':(sc.hantei==='P2'||sc.hantei==='P2W')?'var(--amb)':'var(--red)')+'">'+jMainLabel+'</div>'+
-     '<div class="j-desc">'+jd+'</div></div>'+
-     '<div style="font-size:10px;color:var(--text3);margin-top:6px">最終スコア: 1位 '+Math.round(sc.topScore)+'点  2位との差: '+Math.round(sc.scoreGap)+'pt  確信度目安: '+sc.confidence+'%（暫定）  評価感度フラグ: '+sc.ef+'点</div></div>';
-  h+='<div class="ad-sec"><div class="ad-sec-title">役割適性スコア（0〜100）</div>'+
-     '<div style="font-size:9px;color:var(--text3);margin-bottom:6px">変換式の係数は暫定値。30名照合後に見直します。役割スコアは傾向の強さであり、現時点の実力を保証するものではありません。</div>'+
-     '<div class="scores-grid">';
-  for(var i=0;i<sc.sorted.length;i++){
-    h+='<div class="sc-card'+(i===0?' top':'')+'"><div class="sc-label">'+roleNames[sc.sorted[i][0]]+'</div>'+
-       '<div class="sc-val">'+Math.round(sc.sorted[i][1])+'</div></div>';
-  }
-  h+='</div></div>';
-  var _aspirLblA=roleNames[sc.aspirTopKey]||sc.aspirTopKey;
-  var _aptLblA=roleNames[sc.topKey]||sc.topKey;
-  var _aspirMatch=(sc.aspirTopKey===sc.topKey);
-  h+='<div class="ad-sec"><div class="ad-sec-title">志向スコア vs 適性仮説スコア</div>'+
-     '<div style="font-size:9px;color:var(--text3);margin-bottom:8px">志向=B-ブロック申告（やりたい役割）／ 適性仮説=自然傾向・場面行動から推定（暫定値）<br>2軸がズレている場合、面談で「どちらの仕事で力が出やすいか」を確認してください。</div>'+
-     '<div class="prof-grid">'+
-     '<div class="prof-card"><div class="prof-lbl">適性仮説（1位）</div><div class="prof-val">'+_aptLblA+'</div></div>'+
-     '<div class="prof-card"><div class="prof-lbl">志向（1位）</div><div class="prof-val" style="color:var(--amb)">'+_aspirLblA+'</div></div>'+
-     '<div class="prof-card prof-card-wide"><div class="prof-lbl">一致状況</div>'+
-     '<div class="prof-val" style="color:'+(_aspirMatch?'var(--teal)':'var(--amb)')+'">'+(_aspirMatch?'一致（同方向）':_aspirLblA+'を志向、'+_aptLblA+'が適性仮説1位（面談で確認を）')+'</div></div></div></div>';
-  var _trustCls=sc.trust.indexOf('低')>=0?'j-p3':(sc.trust.indexOf('中〜高')>=0?'j-p1':sc.trust.indexOf('中')>=0?'j-p2':'j-p1');
-  var _gapMsg=sc.gap?'面談で確認したい点あり（申告・行動・自然がすべて異なる）':'一貫性あり（通常範囲）';
-  h+='<div class="ad-sec"><div class="ad-sec-title">回答一貫性と信頼度</div>'+
-     '<div class="j-box '+_trustCls+'" style="margin-bottom:8px">'+
-     '<div class="j-lbl" style="color:'+sc.trustColor+'">'+sc.trust+'</div>'+
-     '<div class="j-desc">'+buildTrustComment(sc)+'</div></div>'+
-     '<div class="prof-grid">'+
-     '<div class="prof-card"><div class="prof-lbl">仕事外での自然な傾向</div><div class="prof-val">'+abilityNames[sc.ntTop]+'</div></div>'+
-     '<div class="prof-card"><div class="prof-lbl">本人が思う自分の強み</div><div class="prof-val">'+abilityNames[sc.clTop]+'</div></div>'+
-     '<div class="prof-card"><div class="prof-lbl">場面想定から推定した行動傾向</div><div class="prof-val">'+abilityNames[sc.simTop]+'</div></div>'+
-     '<div class="prof-card"><div class="prof-lbl">強みのズレ（3層総合）</div><div class="prof-val" style="color:'+(sc.gap?'var(--amb)':'var(--teal)')+'">'+_gapMsg+'</div></div>'+
-     '</div></div>';
-  h+='<div class="ad-sec"><div class="ad-sec-title">動機・環境・外部帰属のプロファイル</div><div class="prof-grid">'+
-     '<div class="prof-card"><div class="prof-lbl">覚え方のクセ</div><div class="prof-val">'+(lrnNames[sc.lrnTop]||'-')+'</div></div>'+
-     '<div class="prof-card prof-card-wide"><div class="prof-lbl">原因の捉え方</div>'+
-     '<div class="prof-val">'+(['本人要因を見やすい','標準的','環境側にも原因を見る傾向','環境側に寄りやすい'][Math.min(sc.ea,3)])+'</div>'+
-     '<div style="font-size:9px;color:var(--text3);line-height:1.6;margin-top:3px">'+
-       (sc.ea===0?'自分が変えるべき点を中心に考えやすい傾向。行動に落としやすい反面、環境要因を見落とすこともあります。':
-        sc.ea===1?'原因の見方がバランスよく出ています。本人課題と環境課題の両方を確認できます。':
-        sc.ea===2?'配置・役割・教え方など、環境にも原因があると捉えやすいタイプです。本人だけの問題にせず、環境側の改善も検討してください。<br>面談では「本人が次に変えられることは何か」もセットで確認してください。':
-        '環境や周囲の影響を強く感じやすいタイプです。本人の行動変化を引き出す面談では、「今週から自分が変えられることを1つ決める」という問いが効果的です。')+
-     '</div>'+
-     '<div style="font-size:9px;color:var(--text3);margin-top:3px">内部スコア: '+sc.ea+'点（0=本人要因重視 / 3=外部要因寄り）</div></div>'+
-     '<div class="prof-card"><div class="prof-lbl">評価感度・外発志向</div><div class="prof-val">'+sc.ef+'点<br><span style="font-size:9px;color:var(--text3)">3点以上=評価基準の明示が効果的</span></div></div>';
-  if(sc.wf) h+='<div class="prof-card"><div class="prof-lbl">後回しにしやすい傾向</div><div class="prof-val" style="color:var(--amb)">'+sc.wf+'</div></div>';
-  h+='</div></div>';
-  var flags=[];
-  if(sc.ef>=3) flags.push({t:'fw',n:'評価感度フラグ高め（'+sc.ef+'点）',d:'評価・肩書きへの感度が高い傾向。期待値・評価基準・役割責任を明確に伝える必要性が高い。'});
-  if(sc.ef>=1&&sc.ef<3) flags.push({t:'fc',n:'評価感度あり（'+sc.ef+'点）',d:'外発的評価への感度が高い傾向がある。昇格面談では動機の実態を確認する。'});
-  if(sc.gap) flags.push({t:'fw',n:'申告・行動・自然傾向が一致していない（面談で確認したい点あり）',d:'本人の申告（'+abilityNames[sc.clTop]+'）・行動傾向（'+abilityNames[sc.simTop]+'）・自然な傾向（'+abilityNames[sc.ntTop]+'）がすべて異なります。面談で「力が出た仕事の場面を教えてください」と確認してください。'});
-  if(sc.ea>=3) flags.push({t:'fc',n:'原因を環境側に置きやすい傾向（'+sc.ea+'点）',d:'配置・役割・教え方など環境の影響を強く感じやすい傾向。面談では「今週から自分が変えられることを1つ決める」という問いを使ってください。'});
-  if(sc.wf&&sc.wfConflict){
-    var _tn2=sc.typeKey&&TYPES[sc.typeKey]?TYPES[sc.typeKey].role:(roleNames[sc.topKey]||sc.topKey);
-    flags.push({t:'fw',n:'適性スコアと後回し傾向の乖離（'+sc.wf+'）',
-      d:'【矛盾ではない】「'+_tn2+'」の適性と「'+sc.wf+'」は測っているものが違います。\nスコア=傾向の強さ、後回しフラグ=追い込まれた時の優先順位のクセ。\n面談で「忙しい夜に['+sc.wf.replace('後回し','').replace('フラグ','').trim()+']をどう確保しているか」を確認する。'});
-  }
-  if(sc.wf&&!sc.wfConflict) flags.push({t:'fi',n:'弱点フラグあり（'+sc.wf+'）',d:'後回しにしやすい傾向はあるが、主役割との衝突は軽微。現場観察で確認する程度で問題ない。'});
-  if(flags.length===0) flags.push({t:'fi',n:'フラグなし',d:'現時点で注意フラグは検出されていません。面談は通常の内容で問題ありません。'});
-  h+='<div class="ad-sec"><div class="ad-sec-title">注意フラグ（'+flags.length+'件）</div>';
-  for(var i=0;i<flags.length;i++){
-    h+='<div class="flag-item"><div class="flag-icon '+flags[i].t+'">'+(flags[i].t==='fw'?'!':flags[i].t==='fc'?'△':'✓')+'</div>'+
-       '<div><div class="flag-name">'+flags[i].n+'</div><div class="flag-desc">'+flags[i].d+'</div></div></div>';
-  }
-  h+='</div>';
-  var actions=['「最近、一番力が出た仕事の場面を教えてください」'];
-  if(sc.gap) actions.push('「'+abilityNames[sc.simTop]+'の仕事をしている時の気持ちを聞く（乖離の確認）」');
-  if(sc.ef>=2) actions.push('「評価された時に伸びる仕事と、評価がなくても続けられる仕事はそれぞれ何ですか？」');
-  if(sc.ea>=3) actions.push('「自分が今週から変えられることを一つ挙げるとしたら？」');
-  if(sc.wf) actions.push('「'+sc.wf+'の状況が続いた時、何が一番しんどいですか？」');
-  h+='<div class="ad-sec"><div class="act-title">面談で確認すること</div>';
-  for(var i=0;i<actions.length;i++) h+='<div class="act-item">'+actions[i]+'</div>';
-  h+='</div>';
-  // ── 現場プロファイル詳細（管理側）──
-  var fp2=lastSc.fieldProfile;
-  var md=fp2.managerData;
-  var fitCls=function(v){return v==='高'?'fit-high':v==='中'?'fit-mid':'fit-low';};
-  var adminProfileTitle=sc.topKey==='LEAD'?'現場プロファイル詳細':'配置・伸ばし方プロファイル詳細';
-  h+='<div class="ad-sec"><div class="ad-sec-title">'+adminProfileTitle+'</div>';
-  h+='<div class="field-subtype-badge">'+md.fieldSubtype+'</div>';
-  h+='<div class="field-fit-grid">';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">現場適合度</div><div class="field-fit-val '+fitCls(fp2.currentFieldFit)+'">'+fp2.currentFieldFit+'</div></div>';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">現場維持推奨</div><div class="field-fit-val '+fitCls(fp2.stayFieldFit)+'">'+fp2.stayFieldFit+'</div></div>';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">役割拡張適性</div><div class="field-fit-val '+fitCls(fp2.expansionFit)+'">'+fp2.expansionFit+'</div></div>';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">プレーヤー適性</div><div class="field-fit-val '+fitCls(fp2.playerFit)+'">'+fp2.playerFit+'</div></div>';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">育成転用可能性</div><div class="field-fit-val">'+md.playerToEdu+'</div></div>';
-  h+='<div class="field-fit-card"><div class="field-fit-lbl">営業MG転用可能性</div><div class="field-fit-val">'+md.playerToMgmt+'</div></div>';
-  h+='</div>';
-  h+='<div style="margin-top:10px"><div style="font-size:9px;letter-spacing:.2em;color:var(--lit);margin-bottom:4px">現在使える力</div>';
-  h+='<div style="font-size:11px;color:var(--dark);line-height:1.75">・'+md.currentUsage.replace(/ \/ /g,'<br>・')+'</div></div>';
-  if(md.hiddenPotentialList&&md.hiddenPotentialList.length>0){
-    h+='<div style="margin-top:10px"><div style="font-size:9px;letter-spacing:.2em;color:var(--amb);margin-bottom:4px">隠れ適性（面談で確認）</div>';
-    h+='<div style="font-size:11px;color:var(--dark);line-height:1.75">・'+md.hiddenPotentialList.join('<br>・')+'</div></div>';
-  }
-  h+='<div style="margin-top:10px"><div style="font-size:9px;letter-spacing:.2em;color:var(--teal);margin-bottom:4px">最初に任せる小さな役割</div>';
-  h+='<div style="font-size:11px;color:var(--dark);line-height:1.75">・'+md.firstSmallRole.replace(/ \/ /g,'<br>・').replace(/ \+ /g,'<br>・')+'</div></div>';
-  h+='<div style="margin-top:10px"><div style="font-size:9px;letter-spacing:.2em;color:var(--red);margin-bottom:4px">任せると危ない役割</div>';
-  h+='<div style="font-size:11px;color:var(--dark);line-height:1.75">・'+md.dangerRole.replace(/ \/ /g,'<br>・')+'</div></div>';
-  h+='<div style="margin-top:10px"><div class="act-title">現場プロファイルの面談確認ポイント</div>';
-  for(var pi=0;pi<md.interviewPoints.length;pi++) h+='<div class="act-item">'+md.interviewPoints[pi]+'</div>';
-  h+='</div></div>';
-  h+='<div class="warn-box" style="margin-top:12px"><strong>【再確認】この診断はあくまで仮説ツールです</strong><br>面談と現場観察を必ず経てから最終配置判断をしてください。<br>※ このHTMLファイルはブラウザのソース表示で誰でも閲覧できます。管理者パスワードのハッシュも含め、重要な秘匿情報はこのファイルに含めないでください。ファイルの配布管理を徹底してください。</div>';
-  document.getElementById('admcont').innerHTML=h;
 }
 </script>
 </body>
