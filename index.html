@@ -181,7 +181,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 //   秘匿が必要な情報（判定ロジック・Webhook URLなど）はバックエンドに移行してください。
 var DPS_CONFIG=(function(){
   return{
-    env:'test',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
+    env:'prod',  // 'test' → 'prod' に変更するだけでWebhookが切り替わります
     get webhookUrl(){
       return this.env==='prod'
         ?'https://ichirin38.app.n8n.cloud/webhook/dps-shindan'
