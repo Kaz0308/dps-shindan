@@ -354,7 +354,7 @@ qs.push({bl:'H',bll:'客席対応',tx:'後輩やキャストがお客様との�
 return qs;
 })();
 var TOTAL=QS.length;
-var RDIR_THEO_MAX={LEAD:28,EDU:27,NUM:20,SYS:31,REC:6,PR:10}; // EDU/NUM/PRは客席対応ブロック追加分を反映
+var RDIR_THEO_MAX={LEAD:28,EDU:27,NUM:20,SYS:31,REC:16,PR:16}; // EDU/NUM/PRは客席対応ブロック追加分を反映
 // ── SECTION C: スコア閾値定数 ──
 var SCORE_THRESHOLDS={P1_TOP:75,P1_GAP:15,P1_EF_MAX:1,P2_TOP:65,P2_GAP:8,P2_EF_MAX:3};
 // ── 重みづけ定数（暫定値 ── 30名以上の実績照合後に更新予定）──
@@ -762,10 +762,13 @@ function calcSc(){
   var trust=tobj.label;var trustColor=tobj.color;
   var topScore=sorted[0][1];
   var scoreGap=sorted[0][1]-sorted[1][1];
-  var wfConflict=false;
-  if(wf){var conflicts={LEAD:['現場後回し'],EDU:['育成後回し','対人後回し'],NUM:['数字後回し'],
-                        SYS:['現場後回し'],REC:['対人後回し','育成後回し'],PR:['数字後回し']};
-    if(conflicts[topKey]&&conflicts[topKey].indexOf(wf)>=0) wfConflict=true;}
+  var conflictStrength=0;
+  if(wf){
+    var conflicts={LEAD:['現場後回し'],EDU:['育成後回し','対人後回し'],NUM:['数字後回し'],
+                   SYS:['現場後回し'],REC:['対人後回し','育成後回し'],PR:['数字後回し']};
+    if(conflicts[topKey]&&conflicts[topKey].indexOf(wf)>=0) conflictStrength+=1;
+  }
+  var wfConflict=(conflictStrength>=1)&&(scoreGap>=8);
   // 志向スコア正規化（B-ブロック申告から抽出 ── 「やりたい役割」の参考値）
   var _aspirMax=Math.max.apply(null,Object.values(rdirAspir))||1;
   var aspir={};for(var _ak in rdirAspir) aspir[_ak]=Math.round((rdirAspir[_ak]/_aspirMax)*100);
@@ -773,8 +776,8 @@ function calcSc(){
   var hantei='';
   var T=SCORE_THRESHOLDS;
   // clTop===simTop は必須条件から外し確信度ボーナスへ（ズレ=減点ではなく要確認ポイント）
-  if(topScore>=T.P1_TOP&&scoreGap>=T.P1_GAP&&ef<=T.P1_EF_MAX&&!wfConflict){hantei='P1';}
-  else if(topScore>=T.P2_TOP&&scoreGap>=T.P2_GAP&&ef<=T.P2_EF_MAX){hantei=wfConflict?'P2W':'P2';}
+  if(topScore>=T.P1_TOP&&scoreGap>=T.P1_GAP&&!wfConflict){hantei='P1';}
+  else if(topScore>=T.P2_TOP&&scoreGap>=T.P2_GAP){hantei=wfConflict?'P2W':'P2';}
   else{hantei='P3';}
   // 確信度目安（暫定式 ── 実績照合後に更新）
   var _ab=(clTop===simTop)?8:0; // 3層一致ボーナス（必須条件ではなく加点）
@@ -1273,6 +1276,23 @@ function showResult(){
       '<div style="font-size:9px;color:var(--text3);margin-top:4px">3位スコア（'+_adjType.thirdKey+': '+_adjType.thirdScore+'点）が2位に近いため参考として表示</div>'+
       '</div>';
   }
+  // 回答品質フラグの表示
+  if(qf.warn){
+    var flagMessages={
+      periodic:'回答が一定のパターンになっている可能性があります',
+      consecutive:'同じ選択肢が続いて選ばれています',
+      flat_scores:'役割スコアの差が小さく、傾向が読み取りにくい状態です',
+      p3_high_trust:'複数の傾向が近く、面談での確認が必要です',
+      low_score:'全体的にスコアが低く出ています'
+    };
+    var flagTexts=qf.flags.map(function(f){return flagMessages[f]||f;});
+    rc='<div style="margin-bottom:14px;padding:10px 14px;background:var(--al);border-left:3px solid var(--amb);border-radius:6px;">'+
+       '<div style="font-size:10px;letter-spacing:.2em;color:var(--amb);margin-bottom:4px">この結果について</div>'+
+       '<div style="font-size:12px;color:var(--dark);line-height:1.8">'+
+       flagTexts.join('<br>')+
+       '<br><span style="color:var(--mid)">結果は参考として見てください。面談でこの傾向を確認することを推奨します。</span>'+
+       '</div></div>'+rc;
+  }
   document.getElementById('rcard').innerHTML=rc;
   // スコアグリッド
   var sorted=sc.sorted;
@@ -1329,6 +1349,13 @@ function showResult(){
         '</div>';
   }
   sb+='</div>';
+  if(sc.ef>=2){
+    sb+='<div style="margin-top:10px;padding:10px 12px;background:var(--bl);border-left:3px solid var(--blu);border-radius:6px;font-size:12px;color:var(--dark);line-height:1.8">'+
+        '<strong style="color:var(--blu)">評価・承認への感度</strong><br>'+
+        '評価や昇格の動きに反応しやすいタイプです。認められることがモチベーションになる反面、'+
+        '評価が見えない状態が続くと意欲が下がりやすい傾向があります。'+
+        '</div>';
+  }
   document.getElementById('sbox').innerHTML=sb;
   showOnly('s-result');
 }
@@ -1404,6 +1431,7 @@ function sendResult(){
   var _vErr=validateSendForm(name,store);
   if(_vErr){document.getElementById('send-status').textContent=_vErr;return;}
   var sc=lastSc;
+  var qf=sc.qualityFlag||{warn:false,flags:[]};
   var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
   var abilityNames={'対人':'対人運用力','現場':'現場統率力','分析':'分析・構造化力','表現':'表現・訴求力'};
   var sorted=sc.sorted||[];
@@ -1456,12 +1484,14 @@ function sendResult(){
   var _llmData=buildLLMPayload(sc,name,store);
   payload.llm_analysis_payload=JSON.stringify(_llmData.llm_analysis_payload);
   payload.llm_prompt_base=_llmData.llm_prompt_base;
+  payload.quality_flags=qf.flags.join(',')||'none';
+  payload.quality_warn=qf.warn?'1':'0';
   payload.llm_report_status='pending';
   payload.llm_admin_report='';
   var btn=document.getElementById('btn-send');
   var status=document.getElementById('send-status');
   btn.disabled=true;status.style.color='var(--mid)';status.textContent='送信中...';
-  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json','x-dps-token':'shachi-dps-2026-xxxx'},body:JSON.stringify(payload)})
   .then(function(res){
     if(res.ok){status.style.color='var(--teal)';status.textContent='✓ 送信が完了しました。ありがとうございました。';}
     else{throw new Error('HTTP '+res.status);}
