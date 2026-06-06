@@ -186,18 +186,16 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino
 </div>
 <script>
 // ── SECTION A: 設定オブジェクト（DPS_CONFIG）──
-// ⚠ このHTMLファイルはブラウザのソース表示で誰でも参照できます。
-// 秘匿が必要な情報（判定ロジック・Webhook URL・トークンなど）はバックエンドに移行してください。
+// ✅ このHTMLに秘密情報（認証トークン・n8nのWebhook URL）は含まれていません。
+// 送信は中継プロキシ（Cloudflare Worker）経由で行います。
+// トークンとn8nのURLはWorker側の環境変数（Secret）で管理します。
+// 設置手順は同梱の dps-relay-README.md を参照してください。
 var DPS_CONFIG=(function(){
   return{
-    env:'prod', // 'test' → 'prod' に変更するだけでWebhookが切り替わります
-    // ⚠ このトークンはHTMLソースから見えます。定期的に更新してください。
-    // 本番運用ではバックエンド側での検証に移行することを推奨します。
-    webhookToken:'shachi-dps-2026-xxxx',
+    env:'prod', // 'test' にするとWorker経由でn8nのテスト用Webhookに送信されます
+    relayUrl:'https://dps-relay.ichirin38.workers.dev',
     get webhookUrl(){
-      return this.env==='prod'
-        ?'https://ichirin38.app.n8n.cloud/webhook/dps-shindan'
-        :'https://ichirin38.app.n8n.cloud/webhook-test/dps-shindan';
+      return this.env==='prod'?this.relayUrl:this.relayUrl+'?env=test';
     }
   };
 })();
@@ -1632,7 +1630,7 @@ function sendResult(){
   var btn=document.getElementById('btn-send');
   var status=document.getElementById('send-status');
   btn.disabled=true;status.style.color='var(--mid)';status.textContent='送信中...';
-  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json','x-dps-token':DPS_CONFIG.webhookToken},body:JSON.stringify(payload)})
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(function(res){
       if(res.ok){status.style.color='var(--teal)';status.textContent='✓ 送信が完了しました。ありがとうございました。';}
       else{throw new Error('HTTP '+res.status);}
