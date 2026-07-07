@@ -5,7 +5,1956 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DPS統合版診断 v2.9</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style><!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DPS統合版診断 v2.9</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <style>
+:root{
+--bg:#F1EFE8;--bg2:#FAFAF8;--bg3:#EDEBE2;--bg4:#E5E2D8;
+--dark:#2C2C2A;--mid:#5F5E5A;--lit:#888780;
+--line:#DDDBD2;--gold:#C9A96E;--gold2:#8A6830;
+--teal:#1D9E75;--tl:#E1F5EE;
+--amb:#BA7517;--al:#FAEEDA;
+--red:#A32D2D;--rl:#FCEBEB;
+--blu:#185FA5;--bl:#E6F1FB;
+--text:var(--dark);--text2:var(--mid);--text3:var(--lit);
+--card:var(--bg2);--border:var(--line);--acc:var(--gold2);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif;font-size:14px;line-height:1.75;min-height:100vh}
+.screen{display:none;padding:24px 20px 80px;max-width:680px;margin:0 auto}
+.cover-wrap{text-align:center;padding:40px 0 20px}
+.cover-brand{font-size:10px;letter-spacing:.4em;color:var(--lit);margin-bottom:12px}
+.cover-title{font-family:'Noto Serif JP',serif;font-size:26px;font-weight:600;color:var(--dark);line-height:1.4;margin-bottom:8px}
+.cover-sub{font-size:15px;color:var(--dark);letter-spacing:.03em;line-height:1.7;margin-bottom:20px;font-weight:400}
+.cover-desc{font-size:12px;color:var(--mid);line-height:1.85;margin-bottom:12px;text-align:left;padding:0 2px}
+.btn-start{background:var(--dark);color:var(--bg);border:none;font-size:13px;letter-spacing:.3em;padding:14px 40px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:0 auto}
+.btn-start:hover{opacity:.85}
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.q-block-label{font-size:10px;letter-spacing:.3em;color:var(--gold2);font-weight:500}
+.q-progress-wrap{flex:1;margin:0 12px;height:3px;background:var(--line);border-radius:2px}
+.q-progress-bar{height:3px;background:var(--gold);border-radius:2px;transition:width .3s}
+.q-progress-num{font-size:10px;color:var(--lit)}
+.q-number{font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:6px;letter-spacing:.1em}
+.q-text{font-size:15px;font-weight:500;color:var(--dark);margin-bottom:16px;line-height:1.75}
+.q-note{font-size:11px;color:var(--amb);margin-bottom:12px;padding:6px 10px;border-left:2px solid var(--amb);background:var(--al);line-height:1.6}
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.choice{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:12px 14px;cursor:pointer;transition:all .15s;font-size:13px;color:var(--dark);line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.choice:hover{border-color:var(--gold);background:var(--bg3)}
+.choice.selected{border-color:var(--gold);background:var(--al)}
+.choice-letter{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--lit)}
+.choice.selected .choice-letter{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.btn-nav{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 24px;cursor:pointer;border-radius:4px;font-family:inherit}
+.btn-nav:disabled{opacity:.35;cursor:default}
+.btn-nav.sec{background:transparent;border:1px solid var(--line);color:var(--mid)}
+.r-type-badge{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:4px}
+.r-type-name{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;color:var(--dark);margin-bottom:4px}
+.r-type-sub{font-size:12px;color:var(--mid);margin-bottom:16px}
+.r-catch{font-size:16px;font-weight:500;color:var(--gold2);margin-bottom:16px;padding:10px 14px;border-left:3px solid var(--gold);background:var(--al);line-height:1.7}
+.r-divider{height:1px;background:var(--line);margin:16px 0}
+.persona-report{background:var(--bg3);border-radius:10px;padding:14px 16px;margin-bottom:4px;}
+.persona-report-title{font-size:9px;letter-spacing:.2em;color:var(--lit);margin-bottom:8px;font-weight:500;}
+.persona-report-body{font-size:12px;color:var(--dark);line-height:2.0;}
+.persona-report-body strong{color:var(--mid);}
+.persona-weak{margin-top:10px;padding:8px 10px;background:var(--bg4);border-left:2px solid var(--line);border-radius:4px;font-size:11px;color:var(--text3);line-height:1.8;}
+.persona-p3{margin-top:10px;padding:8px 10px;background:var(--al);border-left:2px solid var(--amb);border-radius:4px;font-size:11px;color:var(--dark);line-height:1.8;}
+.pm-wrap{padding:2px 0 8px;}
+.pm-type-name{font-size:11px;letter-spacing:.08em;color:var(--text3);margin-bottom:2px;}
+.pm-catch{font-size:18px;font-weight:700;color:var(--mid);line-height:1.4;margin-bottom:12px;letter-spacing:-.01em;}
+.pm-section{margin-bottom:14px;}
+.pm-section-title{font-size:9px;letter-spacing:.18em;color:var(--lit);font-weight:600;margin-bottom:5px;text-transform:uppercase;}
+.pm-oneliner{font-size:13px;color:var(--dark);line-height:1.8;font-weight:500;}
+.pm-ara-list{list-style:none;padding:0;margin:0;}
+.pm-ara-list li{font-size:12px;color:var(--dark);line-height:1.7;padding:3px 0 3px 14px;position:relative;}
+.pm-ara-list li::before{content:"・";position:absolute;left:0;color:var(--teal);}
+.pm-strength{font-size:12px;color:var(--dark);line-height:2.0;}
+.pm-strength strong{color:var(--mid);}
+.pm-scene-list{list-style:none;padding:0;margin:0;}
+.pm-scene-list li{font-size:12px;color:var(--dark);line-height:1.7;padding:3px 0 3px 14px;position:relative;}
+.pm-scene-list li::before{content:"▶";position:absolute;left:0;color:var(--teal);font-size:8px;top:6px;}
+.pm-caution{font-size:12px;color:var(--dark);line-height:1.9;padding:10px 12px;background:var(--al);border-left:3px solid var(--amb);border-radius:4px;}
+.pm-action{font-size:12px;color:var(--dark);line-height:1.9;padding:10px 12px;background:var(--bg3);border-left:3px solid var(--teal);border-radius:4px;}
+.pm-action strong{color:var(--teal);}
+.fb-block{margin-bottom:14px;padding:12px 14px;border-radius:6px}
+.fb-base{background:var(--bg3)}
+.fb-tips{background:var(--tl);border-left:3px solid var(--teal)}
+.fb-warn{background:var(--rl);border-left:3px solid var(--red)}
+.fb-label{font-size:10px;letter-spacing:.2em;color:var(--lit);margin-bottom:4px}
+.fb-label-tips{font-size:10px;letter-spacing:.2em;color:var(--teal);margin-bottom:4px}
+.fb-label-warn{font-size:10px;letter-spacing:.2em;color:var(--red);margin-bottom:4px}
+.fb-body{font-size:13px;line-height:1.8;color:var(--dark)}
+.scores-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sc-card{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:10px 8px;text-align:center}
+.sc-card.top{border-color:var(--gold)}
+.sc-label{font-size:9px;color:var(--lit);margin-bottom:4px;line-height:1.4}
+.sc-val{font-size:16px;font-weight:700;color:var(--dark)}
+.sc-card.top .sc-val{color:var(--gold2)}
+.shachi-box{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:12px}
+.s-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:8px}
+.s-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.s-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.s-lbl{font-size:11px;color:var(--mid);flex:1}
+.s-val{font-size:11px;font-weight:500}
+.stress-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.stress-bar-wrap{flex:1;height:6px;background:var(--line);border-radius:3px}
+.stress-bar{height:6px;background:var(--amb);border-radius:3px}
+.stress-label{font-size:10px;color:var(--mid);width:90px;flex-shrink:0}
+.stress-val{font-size:10px;color:var(--lit);width:20px;text-align:right}
+.weak-flag{display:inline-block;background:var(--al);border:1px solid var(--amb);color:var(--amb);font-size:10px;padding:3px 8px;border-radius:12px;margin:3px 3px 3px 0}
+.btn-restart{background:transparent;border:1px solid var(--line);color:var(--mid);font-size:11px;letter-spacing:.2em;padding:8px 20px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:8px auto 0}
+.send-box{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px}
+.send-title{font-size:10px;letter-spacing:.3em;color:var(--gold2);margin-bottom:10px}
+.send-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.send-label{font-size:11px;color:var(--mid)}
+.send-input{background:var(--bg3);border:1px solid var(--line);color:var(--dark);font-size:13px;padding:9px 12px;border-radius:4px;outline:none;font-family:inherit;width:100%}
+.send-input:focus{border-color:var(--gold)}
+.btn-send{background:var(--dark);color:var(--bg);border:none;font-size:12px;letter-spacing:.2em;padding:10px 28px;cursor:pointer;border-radius:4px;font-family:inherit;display:block;margin:0 auto}
+.btn-send:disabled{opacity:.4;cursor:default}
+.send-status{font-size:11px;margin-top:8px;text-align:center;min-height:16px}
+.stress-row2{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.stress-row2:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.stress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.stress-label2{font-size:12px;font-weight:600;color:var(--dark);}
+.stress-lv{font-size:11px;font-weight:700;letter-spacing:.03em;}
+.stress-desc{font-size:11px;color:var(--text3);line-height:1.7;margin-top:5px;}
+/* placement block */
+.pl-arc-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:8px 10px;background:var(--bg2);border-radius:6px;border:1px solid var(--line)}
+.pl-arc-row.top{border-color:var(--gold)}
+.pl-arc-badge{font-size:9px;letter-spacing:.15em;color:var(--gold2);flex-shrink:0;padding-top:2px}
+.pl-arc-name{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:2px}
+.pl-arc-desc{font-size:11px;color:var(--text2);line-height:1.6}
+.pl-meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.pl-meta-chip{font-size:10px;padding:3px 10px;border-radius:12px;background:var(--bg4);color:var(--mid)}
+</style>
+</head>
+<body>
+<div id="s-cover" class="screen" style="display:block">
+<div class="cover-wrap">
+<div class="cover-brand">SHACHI GROUP</div>
+<div class="cover-title">DPS統合版診断</div>
+<div class="cover-sub">あなたの強みの出方、つまずきやすい場面、伸びやすい教え方がわかる診断です。</div>
+<div class="cover-desc">
+評価のためではなく、あなたの強みや働き方の傾向を知るための診断です。<br>
+考えすぎず、いちばん近いものを選んでください。
+</div>
+<div style="font-size:11px;color:var(--lit);letter-spacing:.05em;margin-bottom:22px">全45問 &nbsp;／&nbsp; 約12〜18分</div>
+<div style="margin-bottom:16px;text-align:left;padding:0 4px;">
+<div style="font-size:11px;color:var(--mid);margin-bottom:6px;">役職<span style="color:var(--red)">（必須）</span></div>
+<select id="user-role" style="background:var(--bg3);border:1px solid var(--line);color:var(--dark);font-size:13px;padding:8px 12px;border-radius:4px;font-family:inherit;width:100%;">
+<option value="">選択してください</option>
+<optgroup label="現場管理職">
+<option value="manager">マネージャー / 店長 / 副店長</option>
+<option value="leader">主任</option>
+</optgroup>
+<optgroup label="スタッフ">
+<option value="staff">スタッフ</option>
+</optgroup>
+</select>
+<div id="role-error" style="font-size:11px;color:var(--red);min-height:14px;margin-top:6px"></div>
+</div>
+<button id="main-start" class="btn-start" onclick="startQ()">診断をはじめる</button>
+</div>
+</div>
+<div id="s-q" class="screen">
+<div class="q-header">
+<div class="q-block-label" id="q-bl"></div>
+<div class="q-progress-wrap"><div class="q-progress-bar" id="q-bar"></div></div>
+<div class="q-progress-num" id="q-num"></div>
+</div>
+<div class="q-number" id="q-no"></div>
+<div class="q-text" id="q-tx"></div>
+<div id="q-note-wrap"></div>
+<div class="choices" id="q-choices"></div>
+<div class="nav">
+<button class="btn-nav sec" onclick="gBack()" id="btn-back">← 戻る</button>
+<button class="btn-nav" onclick="gNext()" id="btn-next" disabled>次へ →</button>
+</div>
+</div>
+<div id="s-result" class="screen">
+<div id="rcard"></div>
+<div class="r-divider"></div>
+<div id="sgrid"></div>
+<div class="r-divider"></div>
+<div id="sbox"></div>
+<button class="btn-restart" onclick="doRestart()">もう一度診断する</button>
+<div class="send-box">
+<div class="send-title">結果を送信する</div>
+<div style="font-size:11px;color:var(--mid);margin-bottom:10px;line-height:1.6">
+診断結果を保存するために、氏名と店舗を入力してください。<br>送信内容は、今後の配置や育成を考える参考情報として活用します。
+</div>
+<div class="send-row">
+<div class="send-label">氏名</div>
+<input class="send-input" id="send-name" placeholder="例：田中 翔" type="text">
+</div>
+<div class="send-row">
+<div class="send-label">店舗</div>
+<input class="send-input" id="send-store" placeholder="例：ジェネルー" type="text">
+</div>
+<button class="btn-send" onclick="sendResult()" id="btn-send">結果を送信する</button>
+<div class="send-status" id="send-status"></div>
+</div>
+</div>
+<script>
+var DPS_CONFIG=(function(){
+  return{
+    env:'prod',
+    relayUrl:'https://dps-relay.ichirin38.workers.dev',
+    get webhookUrl(){
+      return this.env==='prod'?this.relayUrl:this.relayUrl+'?env=test';
+    }
+  };
+})();
+var ans=[];
+var lastSc=null;
+var cur=0;
+var userRole='';
+var N='対人',B='現場',C='分析',D='表現';
+var LEAD='LEAD',EDU='EDU',NUM='NUM',SYS='SYS',REC='REC',PR='PR';
+var QS=(function(){
+var qs=[];
+// A. 自然傾向 6問 (idx 0-5)
+qs.push({bl:'A',bll:'自然傾向',tx:'人と関わった後の自分に近いのは？',
+ch:[{t:'人と話したことで元気になる',a:N},{t:'一人で整理する時間がほしくなる',a:C},
+{t:'相手によって疲れ方が大きく変わる',a:N,a2:C},{t:'その場では平気だが後から疲れが出る',a:C,ov:'OVER'}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'新しい場所や人間関係に入るとき、自分に近いのは？',
+ch:[{t:'まず自分から話しかけて関係を作る',a:N},{t:'まず観察して、空気を見てから入る',a:C},
+{t:'役割や立場がわかると動きやすい',a:B},{t:'誰かに紹介されると入りやすい',a:N,w:1}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'物事を理解するとき、近いのは？',
+ch:[{t:'全体像や可能性から考える',a:D},{t:'実際の事例や過去の経験から考える',a:B},
+{t:'目的や意味がわかると理解しやすい',a:C},{t:'手順や流れが整理されると理解しやすい',a:C,a2:B,w:1}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'会話で自分が自然にしやすいのは？',
+ch:[{t:'アイデアや今後の可能性を広げる',a:D},{t:'実際にあった出来事や現実的な話をする',a:B},
+{t:'相手の気持ちや空気を読みながら話す',a:N},{t:'話の結論や筋道を整理する',a:C}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'判断をするとき、自然に重視しやすいのは？',
+ch:[{t:'合理性や正しさ',a:C},{t:'周囲の気持ちや関係性',a:N},
+{t:'結果につながるかどうか',a:C,a2:B,w:1},{t:'今の現場で無理なくできるか',a:B}]});
+qs.push({bl:'A',bll:'自然傾向',tx:'意見が割れたとき、自分に近いのは？',
+ch:[{t:'論点を整理して正しい方向を決めたい',a:C},{t:'まず感情的なしこりを残さないようにしたい',a:N},
+{t:'最終的に結果が出る方を選びたい',a:B,a2:C,w:1},{t:'現場が動きやすい落とし所を探したい',a:B}]});
+// B. 役割申告 8問 (idx 6-13)
+qs.push({bl:'B',bll:'役割申告',tx:'自分が一番やる気になる任され方は？',
+ch:[{t:'この現場をまとめてほしい',a:B,r:{LEAD:3}},{t:'この子を育ててほしい',a:N,r:{EDU:3}},
+{t:'この数字を改善してほしい',a:C,r:{NUM:3}},{t:'この仕組みを整えてほしい',a:C,r:{SYS:3}}]});
+qs.push({bl:'B',bll:'役割申告',note:'SNSをあまり使っていない場合は「もし関わるとしたら」で考えてください。',tx:'もう一つ選ぶなら、やる気になる任され方は？',
+ch:[{t:'求人や採用を強くしてほしい',a:N,r:{REC:3}},{t:'SNSや見せ方を考えてほしい',a:D,r:{PR:3}},
+{t:'店舗の空気や営業を立て直してほしい',a:B,r:{LEAD:2}},{t:'新しい企画やイベントを考えてほしい',a:D,r:{PR:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'新人スタッフが入った初日、あなたの動きに近いのは？',
+ch:[{t:'声をかけて緊張をほぐす',a:N,r:{EDU:2}},{t:'その人の性格や動きを観察する',a:C},
+{t:'ルールや流れを先に教える',a:B,r:{SYS:2}},{t:'まず現場で一緒に動かしながら教える',a:B,r:{LEAD:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'誰かに仕事を教えるとき、自分に近いのは？',
+ch:[{t:'まず自分がやって見せる',a:B,r:{EDU:1},ls:'DO'},{t:'手順を整理して順番に教える',a:C,r:{SYS:1},ls:'STEP'},
+{t:'相手の理解度に合わせて教え方を変える',a:N,r:{EDU:2}},{t:'なぜ必要なのか、目的から説明する',a:C,r:{EDU:1},ls:'WHY'}]});
+qs.push({bl:'B',bll:'役割申告',tx:'店舗の売上が落ちているとき、最初に気になるのは？',
+ch:[{t:'店内の空気やスタッフの動き',a:N,r:{LEAD:1}},{t:'来客数・単価・指名数などの数字',a:C,r:{NUM:3}},
+{t:'キャストや黒服がどう感じているか',a:N,r:{EDU:1}},{t:'営業の流れや仕組みに問題がないか',a:C,r:{SYS:3}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'新しいイベントを考えるとき、重視するのは？',
+ch:[{t:'お客様が面白いと思うインパクト',a:D,r:{PR:3}},{t:'現場が無理なく回せるか',a:B,r:{LEAD:2}},
+{t:'売上や集客につながるか',a:C,r:{NUM:3}},{t:'店舗やグループのブランドに合っているか',a:D,r:{PR:2}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'求人がうまくいっていないとき、まず考えるのは？',
+ch:[{t:'条件や待遇が弱いのではないか',a:C,r:{REC:2,NUM:1}},{t:'見せ方や言葉が刺さっていないのではないか',a:D,r:{REC:2,PR:1}},
+{t:'今いるスタッフの紹介を増やせないか',a:N,r:{REC:2}},{t:'応募後の対応や面接導線に問題がないか',a:C,r:{REC:2,SYS:1}}]});
+qs.push({bl:'B',bll:'役割申告',tx:'SNSや広告を見るとき、自分が気になりやすいのは？',
+ch:[{t:'目を引くか、印象に残るか',a:D,r:{PR:2}},{t:'ターゲットに刺さる言葉になっているか',a:D,r:{PR:2,REC:1}},
+{t:'店舗の世界観と合っているか',a:D,r:{PR:2}},{t:'結果として応募や来店につながっているか',a:C,r:{NUM:2,PR:1}}]});
+// C. 判断の癖 7問 (idx 14-20)
+qs.push({bl:'C',bll:'判断の癖',tx:'営業中にトラブルが起きたとき、最初の動きに近いのは？',
+ch:[{t:'自分が前に出て、その場を収める',a:B,r:{LEAD:2}},{t:'状況を整理して、誰に何を任せるか決める',a:C,r:{LEAD:1}},
+{t:'関係者の感情を見ながら場を落ち着かせる',a:N,r:{EDU:1}},{t:'原因を確認して、再発防止まで考える',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'部下が同じミスを繰り返したとき、最初に思うのは？',
+ch:[{t:'本人の意識や責任感を高める必要がある',a:B,r:{LEAD:1}},{t:'教え方や伝え方が合っていなかったかもしれない',a:N,r:{EDU:2}},
+{t:'ミスが起きやすい仕組みになっているかもしれない',a:C,r:{SYS:2}},{t:'今の配置や任せている仕事が合っていないかもしれない',a:C,r:{EDU:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'店長が独自のやり方で成果を出しているが、グループ方針とは少しズレている。どうする？',
+ch:[{t:'成果が出ているなら、ある程度尊重する',a:B,r:{NUM:1}},{t:'方針とのズレを確認し、必要なら話し合う',a:C,r:{LEAD:1}},
+{t:'他店舗への影響が出る前にルールを揃える',a:C,r:{SYS:2}},{t:'本人の意図を聞き、良い部分は横展開する',a:C,r:{EDU:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'会議で話がまとまらないとき、自分がしやすい動きは？',
+ch:[{t:'結論を出すために話を前に進める',a:B,r:{LEAD:2}},{t:'それぞれの意見を聞いて整理する',a:N,r:{EDU:1}},
+{t:'目的に戻して、論点を絞る',a:C,r:{NUM:1}},{t:'実行できる案に落とし込む',a:C,r:{SYS:1}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'急に人が足りなくなったとき、あなたの判断に近いのは？',
+ch:[{t:'自分も現場に入ってまず回す',a:B,r:{LEAD:2}},{t:'他店舗や周囲に協力を依頼する',a:N},
+{t:'何を削れば営業が回るか整理する',a:C,r:{SYS:1,LEAD:1}},{t:'そもそも人手不足が起きにくい体制を考える',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'上から曖昧な指示が来たとき、自分に近いのは？',
+ch:[{t:'まず動きながら形にしていく',a:B,ls:'DO'},{t:'意図を確認してから動く',a:C,st:'AMB'},
+{t:'現場に伝わるように噛み砕く',a:N,r:{EDU:1,LEAD:1}},{t:'目的・期限・担当を整理してから進める',a:C,r:{SYS:2}}]});
+qs.push({bl:'C',bll:'判断の癖',tx:'数字は悪くないが、現場の空気が悪い。あなたはどう見る？',
+ch:[{t:'数字が出ているなら、まず大きな問題ではない',a:C,r:{NUM:1}},{t:'空気の悪さは後から数字に出るので早めに見る',a:N},
+{t:'誰が原因かより、構造的な原因を探す',a:C,r:{SYS:2}},{t:'店長や中心人物の関わり方を確認する',a:N,r:{EDU:1,LEAD:1}}]});
+// D. ストレス反応 5問 (idx 21-25)
+qs.push({bl:'D',bll:'ストレス反応',tx:'一番ストレスを感じやすい状況は？',
+ch:[{t:'人間関係が悪く、空気がギスギスしている',st:'REL'},{t:'ルールや役割が曖昧で、動き方が見えない',st:'AMB'},
+{t:'数字が悪いのに原因が見えない',st:'NUM_S'},{t:'自分の意見や提案を出せない',st:'FREE'}]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'忙しさが続いたとき、自分に出やすい反応は？',
+ch:[{t:'周りへの言い方が強くなる',st:'OVER'},{t:'一人で抱え込みやすくなる',st:'OVER'},
+{t:'細かい確認や管理が雑になる',st:'OVER'},{t:'先のことを考える余裕がなくなる',st:'OVER'}]});
+// D23 (idx 23): pl追加
+qs.push({bl:'D',bll:'ストレス反応',tx:'評価されていないと感じたとき、自分に近いのは？',
+ch:[
+{t:'結果で見返そうとする',ls:'CHALLENGE',pl:{pro:2,purposeSelf:1,evalExternal:1}},
+{t:'口には出さないが、やる気が落ちる',st:'REL',pl:{contributor:1,evalExternal:1}},
+{t:'なぜ評価されないのか確認したくなる',ls:'WHY',pl:{pro:1,evalExternal:1,evalSelf:1}},
+{t:'自分の役割が合っていないのではと考える',st:'FREE',pl:{meister:1,purposeSelf:1}}
+]});
+// D24 (idx 24): pl追加
+qs.push({bl:'D',bll:'ストレス反応',tx:'苦手な上司・先輩のタイプは？',
+ch:[
+{t:'感情で指示が変わる人',st:'AMB',pl:{partner:1,purposeTeam:1}},
+{t:'細かく管理しすぎる人',st:'FREE',pl:{meister:2,purposeSelf:1,evalSelf:1}},
+{t:'目的を説明せずに指示だけ出す人',ls:'WHY',pl:{partner:2,purposeTeam:1,evalSelf:1}},
+{t:'現場を見ずに数字だけで判断する人',st:'REL',pl:{contributor:1,partner:1,purposeTeam:1}}
+]});
+qs.push({bl:'D',bll:'ストレス反応',tx:'自分が腐りやすい環境は？',
+ch:[{t:'頑張っても任される範囲が増えない環境',ls:'CHALLENGE',st:'FREE'},{t:'人間関係に気を使い続ける環境',st:'REL'},
+{t:'ルールがなく、その場しのぎが多い環境',st:'AMB'},{t:'新しい挑戦や変化がない環境',st:'FREE'}]});
+// E. 成長タイプ 4問 (idx 26-29)
+qs.push({bl:'E',bll:'成長タイプ',tx:'自分が伸びやすい教えられ方は？',
+ch:[{t:'実際にやらせてもらいながら覚える',ls:'DO'},{t:'理由や目的を説明されると理解しやすい',ls:'WHY'},
+{t:'手順や基準を整理してもらうと動きやすい',ls:'STEP'},{t:'こまめにフィードバックをもらうと伸びやすい',ls:'FB'}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'任されると成長しやすいのは？',
+ch:[{t:'少し背伸びする現場責任',a:B,r:{LEAD:2},ls:'CHALLENGE'},{t:'人を育てる役割',a:N,r:{EDU:2}},
+{t:'数字改善の目標',a:C,r:{NUM:2},ls:'CHALLENGE'},{t:'仕組みやルール作り',a:C,r:{SYS:2}}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'注意や指摘を受けたとき、自分に近いのは？',
+ch:[{t:'その場で受け止めて、すぐ行動を変える',ls:'DO'},{t:'一度持ち帰って、自分の中で整理する',ls:'WHY'},
+{t:'納得できる理由があれば素直に変える',ls:'WHY'},{t:'言い方によって受け取り方が大きく変わる',st:'REL'}]});
+qs.push({bl:'E',bll:'成長タイプ',tx:'注意や指摘を受けた後、実際にどう動きやすいですか？',
+ch:[{t:'すぐ行動に移す',a:B,ls:'DO'},{t:'まず振り返ってから動く',a:C,ls:'WHY'},
+{t:'似たミスをしないための仕組みを考える',a:C,r:{SYS:2},ls:'STEP'},{t:'誰かに話して整理する',a:N,ls:'FB'}]});
+// F. 行動場面 7問 (idx 30-36)
+qs.push({bl:'F',bll:'行動場面',tx:'金曜の22時、店が急にバタついている。最初に手をつけやすいのはどれですか？',
+ch:[{t:'動きが止まっている新人黒服',a:N,r:{EDU:1}},{t:'空気を重くしているキャスト',a:N},
+{t:'店全体の流れと詰まり',a:B,r:{LEAD:1}},{t:'今日の自分の担当範囲の中で、崩れると一番影響が大きい場所',a:B,r:{LEAD:2},rx:1}]});
+qs.push({bl:'F',bll:'行動場面',tx:'担当しているスタッフの同じミスが3週続いています。今すぐ取れる動きとして近いのはどれですか？',
+ch:[{t:'自分の教え方や声のかけ方を変える',a:N,r:{EDU:2},ea:0},{t:'本人の理解の仕方や向き不向きを見直す',a:C,ea:2},
+{t:'役割の割り当てや担当の決め方を見直す',a:C,r:{SYS:1},ea:1},{t:'店の忙しさや環境が原因ではないか確認する',a:B,ea:2}]});
+qs.push({bl:'F',bll:'行動場面',tx:'売上を持っているキャストがいる一方で、周りのキャストとの空気が悪い。今夜の営業が始まる前に、最初に見やすいのはどれですか？',
+ch:[{t:'本人が今何を求めているか',a:N,r:{EDU:1},rx:2},{t:'周りのキャストの反応や空気',a:N},
+{t:'店がそのキャストにどれだけ依存しているか',a:C,r:{NUM:1}},{t:'まず売上への影響を抑えること',a:B,r:{LEAD:1}}]});
+qs.push({bl:'F',bll:'行動場面',fo:1,tx:'人手が足りない夜、全部は守れません。後ろに回しやすいのはどれですか？',note:'この設問は「後回しにしやすいもの」を選んでください。正直に答えることで、あなたの優先順位のクセが見えます。',
+ch:[{t:'キャストへの細かい声かけ',wf:'対人後回し'},{t:'新人黒服への確認',wf:'育成後回し'},
+{t:'店内全体の流れ確認',wf:'現場後回し'},{t:'売上・客単価・指名状況などの数字確認',wf:'数字後回し'}]});
+qs.push({bl:'F',bll:'行動場面',tx:'新しいスタッフが辞めそうな雰囲気を出している。ただし今日は週末で店が混んでおり、店長も接客対応中です。今すぐあなたが取る行動に近いのはどれですか？',
+ch:[{t:'隙を見て声をかけて本音を聞く',a:N,r:{EDU:1}},{t:'まず周囲のスタッフから最近の様子を確認する',a:C},
+{t:'今は営業を優先し、終わってから話す時間を作る',a:B,r:{LEAD:1}},{t:'店長が戻り次第すぐ共有して、フォロー体制を考える',a:C,r:{SYS:1,EDU:1}}]});
+qs.push({bl:'F',bll:'行動場面',tx:'クレームが入りました。まだ大事になっていません。ただし別のテーブルも対応中で、自分が動けるのは1つだけです。最初に取りやすい情報はどれですか？',
+ch:[{t:'今どのくらい空気が悪くなりそうか',a:B,r:{LEAD:1}},{t:'その場で実際に何が起きたか',a:C},
+{t:'誰がどう関わっていたか',a:N,ea:1},{t:'前にも似た流れがあったか',a:C,r:{SYS:1}}]});
+qs.push({bl:'F',bll:'行動場面',tx:'注意したスタッフが、その後から明らかに落ち込んでいる。営業は続いている。あなたの動きに近いのはどれですか？',
+ch:[{t:'少し時間を置いて、営業後にフォローする',a:N,r:{EDU:1}},{t:'隙を見て声をかけて気持ちを確認する',a:N,r:{EDU:1}},
+{t:'まず仕事を続けてもらう（切り替えが大事）',a:B,r:{LEAD:1}},{t:'落ち込みの原因を一緒に整理する',a:C,r:{SYS:1,EDU:1}}]});
+// G. 評価感度 3問 (idx 37-39)
+// G37 (idx 37): 既存タグ変更なし、plのみ追加
+qs.push({bl:'G',bll:'もう少しだけ',tx:'先輩が主任に昇格した。その時、自分に近いのはどれですか？',
+ch:[
+{t:'自分も早くその役割を持ちたいと感じた',ef:1,ls:'CHALLENGE',pl:{pro:2,purposeSelf:1,evalExternal:1}},
+{t:'どんな仕事をするのか・どう動くのかが気になった',a:C,pl:{meister:1,purposeSelf:1,evalSelf:1}},
+{t:'自分が次は誰かを育てる番だと感じた',a:N,r:{EDU:2},pl:{partner:2,purposeTeam:1,evalSelf:1}},
+{t:'特に何も感じず、今の仕事に集中した',a:B,pl:{meister:1,purposeSelf:1}}
+]});
+// G38 (idx 38): pl追加
+qs.push({bl:'G',bll:'もう少しだけ',tx:'自分より後輩が先に評価されたとき、近いのはどれですか？',
+ch:[
+{t:'悔しいが、自分も結果を出そうと思う',ls:'CHALLENGE',pl:{pro:2,purposeSelf:1,evalExternal:1}},
+{t:'なぜ評価されたのか理由を知りたい',a:C,ls:'WHY',pl:{pro:1,evalExternal:1,evalSelf:1}},
+{t:'自分の見られ方が気になってやる気が落ちる',ef:2,st:'REL',pl:{contributor:1,evalExternal:2}},
+{t:'特に気にせず、自分の役割に集中する',a:B,pl:{meister:1,evalSelf:1}}
+]});
+// G39 (idx 39): pl追加
+qs.push({bl:'G',bll:'最後の1問',tx:'注意されたとき、一番引っかかりやすいのはどれですか？',
+ch:[
+{t:'内容が正しいかどうか',a:C,ls:'WHY',pl:{meister:1,evalSelf:2}},
+{t:'言い方や態度',st:'REL',pl:{contributor:1,evalExternal:1}},
+{t:'自分の評価が下がったのではないか',ef:2,pl:{pro:1,evalExternal:2}},
+{t:'次にどう直せばいいか',ls:'DO',ls2:'FB',pl:{partner:1,purposeTeam:1}}
+]});
+// H. 客席対応 5問 (idx 40-44): cpタグ変更なし、plのみ追加
+qs.push({bl:'H',bll:'客席対応',tx:'お客様との距離感を作る時、自分に近いのは？',
+ch:[
+{t:'まず相手の話を聞いて安心感を作る',a:N,cp:{trust:2,player:1},pl:{partner:2,purposeTeam:1}},
+{t:'ノリやテンポで場を盛り上げる',a:B,cp:{mood:2,player:2},pl:{pro:2,evalExternal:1}},
+{t:'好みや行動パターンを覚えて次につなげる',a:C,cp:{crm:2,next:2},pl:{meister:1,purposeSelf:1,evalSelf:1}},
+{t:'店やキャストの魅力が伝わるように紹介する',a:D,r:{PR:1},cp:{pr:2,next:1},pl:{contributor:1,purposeTeam:1,evalExternal:1}}
+]});
+qs.push({bl:'H',bll:'客席対応',tx:'お客様と営業後も関係を続ける時、自分に近いのは？',
+ch:[
+{t:'こまめに連絡して関係を切らさない',a:N,cp:{contact:2,player:1},pl:{partner:2,purposeTeam:1,evalExternal:1}},
+{t:'相手の温度感を見て、連絡頻度を調整する',a:C,cp:{crm:2,contact:1},pl:{meister:2,evalSelf:1}},
+{t:'次回来店につながる話題や約束を作る',a:C,cp:{next:3,sales:1},pl:{pro:2,purposeSelf:1,evalExternal:1}},
+{t:'自分だけで抱えず、店全体で関係を残す',a:B,cp:{mgmt:2,next:1},pl:{contributor:2,purposeTeam:1}}
+]});
+qs.push({bl:'H',bll:'客席対応',tx:'アフターや営業後の付き合いについて、自分に近いのは？',
+ch:[
+{t:'関係を深めるために、自分も積極的に動く',a:N,cp:{after:2,player:2},pl:{pro:2,purposeSelf:1,evalExternal:1}},
+{t:'行くべき相手かどうか、売上や関係性を見て判断する',a:C,cp:{sales:2,crm:1},pl:{meister:2,purposeSelf:1,evalSelf:1}},
+{t:'キャストや店にとってプラスになる形を考える',a:B,cp:{mgmt:2,sales:1},pl:{contributor:2,purposeTeam:1}},
+{t:'無理に自分が前に出るより、必要な時だけ支える',a:B,cp:{support:2},pl:{partner:1,purposeTeam:1,evalSelf:1}}
+]});
+qs.push({bl:'H',bll:'客席対応',tx:'自分がうまくいった接客を後輩に教えるなら、何を伝えますか？',
+ch:[
+{t:'その時の空気やタイミング',a:B,cp:{sense:2,player:1},pl:{meister:2,evalSelf:1}},
+{t:'相手のタイプ別の距離の詰め方',a:N,r:{EDU:1},cp:{teach:2,crm:1},pl:{partner:1,purposeTeam:1}},
+{t:'連絡頻度や次回来店につなげる流れ',a:C,r:{NUM:1},cp:{teach:1,next:2},pl:{pro:1,purposeSelf:1,evalExternal:1}},
+{t:'自分で何度も席について覚えるしかない',a:B,cp:{player:2,teach:-1},pl:{meister:1,purposeSelf:1,evalSelf:1}}
+]});
+qs.push({bl:'H',bll:'客席対応',tx:'後輩やキャストがお客様との距離を縮められない時、まず見るのは？',
+ch:[
+{t:'表情や声のトーンが硬くないか',a:N,r:{EDU:1},cp:{teach:2,trust:1},pl:{partner:2,purposeTeam:1}},
+{t:'話す内容がお客様に合っているか',a:C,cp:{crm:2,teach:1},pl:{meister:1,purposeSelf:1,evalSelf:1}},
+{t:'次につなげる連絡や約束ができているか',a:C,r:{NUM:1},cp:{next:2,mgmt:1},pl:{pro:1,purposeSelf:1,evalExternal:1}},
+{t:'そもそも席に出る回数が足りているか',a:B,cp:{player:1,volume:2},pl:{contributor:1,purposeTeam:1}}
+]});
+return qs;
+})();
+var TOTAL=QS.length;
+var RDIR_THEO_MAX={LEAD:28,EDU:27,NUM:20,SYS:31,REC:6,PR:10};
+var SCORE_THRESHOLDS={P1_TOP:75,P1_GAP:15,P1_EF_MAX:1,P2_TOP:65,P2_GAP:8,P2_EF_MAX:3};
+var WEIGHTS={
+CLM_MIX:0.55,SIM_MIX:0.45,D_CLM:0.65,D_SIM:0.35,AB_CONV:0.28,RDIR_W:0.38,SIM_W:0.34
+};
+var BBLOCK_IDX=[6,7,8,9,10,11,12,13];
+// ── placement ラベル定義 ──
+var PLACEMENT_LABEL={
+pro:{name:'プロ型',desc:'成果・評価・報酬など、基準が明確な環境で力を発揮しやすい'},
+meister:{name:'マイスター型',desc:'自分の基準や専門性を磨き、こだわりを活かす配置で力を発揮しやすい'},
+partner:{name:'パートナー型',desc:'チーム目的を自分ごととして捉え、自走・右腕的な役割で力を発揮しやすい'},
+contributor:{name:'コントリビューター型',desc:'貢献が見える環境や、感謝・承認が返ってくる役割で力を発揮しやすい'}
+};
+var TYPES={
+'LEAD-EDU':{
+role:'統率×育成傾向',lb:'動かせば、人が育つ',ct:'現場を制し、人を育てる主任・店長補佐',
+ds:'忙しい夜に店をまとめながら、気づけば後輩が動けるようになっている。\n誰かを育てながら場を回す——それがあなたの一番の強みです。',
+tp:'「まとめてほしい」と「この子を見てほしい」を同時に任せるとエンジンがかかります。\nどちらか一方だけでは力が半減しやすいです。',
+wn:'忙しさが続くと、育成を後回しにして自分で抱えがちになります。\n「一つだけ誰かに渡す」習慣が次のステージへの鍵です。',
+pa:'現場で動きながら、先輩の背中を見て覚えてきた',pr:'教えながら回す、両立の難しさと醍醐味を感じている',fu:'自分のやり方を持った後輩が、また誰かを育てる連鎖をつくる',
+gd:'バタつく現場で後輩と一緒に動く場面',bd:'育成だけ・数字だけを切り離して任される場面',nx:'今週後輩に一つだけ任せて、結果を聞く時間を作る'},
+'LEAD-NUM':{
+role:'統率×数字傾向',lb:'場を制し、数字で証明する',ct:'売上責任を持つ店長・営業責任者',
+ds:'店の流れを整えながら、数字にしっかり目を向けられる。\n感覚だけで終わらせず、結果で語ることができるタイプです。',
+tp:'「この店をまとめてほしい、かつ数字を上げてほしい」という明確な責任を渡すと力が出ます。\n曖昧な期待値のままでは動きが止まりやすいです。',
+wn:'結果にこだわるあまり、現場の空気より数字優先になりやすい局面があります。\n空気が先に崩れると、数字も後から崩れることを意識すると強くなります。',
+pa:'現場を任されながら、結果を問われる経験を積んできた',pr:'数字と現場の両方を見る難しさと面白さにいる',fu:'自分が動かなくてもチームが結果を出す仕組みをつくる',
+gd:'目標と権限が明確に渡されている場面',bd:'権限がないのに責任だけ問われる場面',nx:'今週の数字の弱い時間帯を一つ特定して、仮説を立てる'},
+'LEAD-SYS':{
+role:'統率×仕組み傾向',lb:'整えれば、現場が動く',ct:'現場改善・オペレーション整備',
+ds:'場を回しながら「なぜ詰まるのか」を見る目がある。\n仕組みを整えることで、次の混乱を防ぐことができるタイプです。',
+tp:'「現場のオペレーションを整えてほしい」という任せ方で力が出ます。\n感覚的な「うまくやって」ではなく、課題が見えている状態で渡すと動きやすいです。',
+wn:'整えることに集中するあまり、整える前から動けない状態になりやすいことがあります。\n「完璧より60点で動く」を意識すると突破口が開きます。',
+pa:'なぜこの流れになっているのかを考えながら現場を経験してきた',pr:'改善と運用を両立させる難しさの中にいる',fu:'自分がいなくても回る仕組みを残す',
+gd:'「なぜ詰まるのか」を考えられる余裕がある場面',bd:'毎日の緊急対応に追われる場面',nx:'今週の繰り返し起きているトラブルを一つだけ書き出す'},
+'EDU-SYS':{
+role:'育成×仕組み傾向',lb:'教えたことが仕組みになる',ct:'教育マニュアル・研修設計',
+ds:'人の成長を見ながら、それを形にできる。\n「育てる」と「整える」が同時にできるのがあなたの強みです。',
+tp:'「このポジションの育成を仕組みにしてほしい」という任せ方で力が出ます。\n個別対応だけを任せると強みが半分しか出ません。',
+wn:'整えることに時間をかけすぎて、目の前の人のケアが後回しになることがあります。\n仕組みと個別フォローのバランスを意識すると安定します。',
+pa:'教えながら「なぜこの教え方が通じないのか」を考えてきた',pr:'育成と制度設計の両方を求められる場面にいる',fu:'自分が作った育成の仕組みで、後輩が後輩を育てる状態にする',
+gd:'新人育成とマニュアル整備を同時に任される場面',bd:'緊急対応や現場のバタつきが続く場面',nx:'今教えている内容を一つだけ「次の人に渡せる形」にする'},
+'EDU-REC':{
+role:'育成×採用傾向',lb:'入口から育てる',ct:'新人定着・採用後フォロー',
+ds:'採用した人が定着するまでの流れを見ることができる。\n「採る」だけでなく「育てる」まで見届けるのが強みです。',
+tp:'採用から入社後フォローまでをセットで任せると力が出ます。\n採用だけ・育成だけでは強みが切れてしまいます。',
+wn:'一人ひとりに時間をかけすぎて、自分のキャパを超えやすいことがあります。\n「全員を同じように見る」より「誰を重点的に見るか」を決めると安定します。',
+pa:'採用に関わりながら、入社後のギャップを近くで見てきた',pr:'採用と定着の両方を見る難しさの中にいる',fu:'定着率が上がる採用・育成の流れを設計する',
+gd:'採用から3ヶ月の伴走をセットで任される場面',bd:'採用基準も育成方針も曖昧な環境',nx:'今いる新人の「辞めやすいポイント」を一つ書き出す'},
+'NUM-SYS':{
+role:'数字×仕組み傾向',lb:'数字で見て、仕組みで解く',ct:'業績改善・KPI管理',
+ds:'数字の変化を見ながら、原因を仕組みに落とし込める。\n感覚ではなく構造で問題を解くタイプです。',
+tp:'「この数字を改善する仕組みをつくってほしい」という任せ方で力が出ます。\n数字だけ・仕組みだけでは動きが鈍くなります。',
+wn:'データと仕組みに集中するあまり、現場の人の動きや感情が見えにくくなることがあります。\n数字の裏に人がいることを意識すると、改善の精度が上がります。',
+pa:'数字を見ながら「なぜこうなるのか」を考えてきた',pr:'分析と実行を繋ぐ役割の難しさの中にいる',fu:'自分がいなくても数字が改善し続ける仕組みを残す',
+gd:'KPI改善・業績分析を任される場面',bd:'感覚や空気で動く現場に一人で入る場面',nx:'今週の数字で「なぜこうなっているか」が説明できないものを一つ特定する'},
+'NUM-PR':{
+role:'数字×発信傾向',lb:'数字と見せ方で集客する',ct:'集客施策・イベント改善',
+ds:'集客の効果を数字で見ながら、見せ方を改善できる。\n「なんとなく盛り上がった」で終わらせず、再現性にこだわるタイプです。',
+tp:'「この集客施策の効果を測りながら改善してほしい」という任せ方で力が出ます。',
+wn:'効果測定にこだわるあまり、企画のスピードが落ちやすいことがあります。\n「まず小さく動いて計測する」を繰り返すと前に進みやすいです。',
+pa:'イベントや企画の効果が出た・出なかった経験を積んできた',pr:'創造性と再現性の両立に取り組んでいる',fu:'再現性のある集客の仕組みをつくる',
+gd:'施策の企画から効果測定まで任される場面',bd:'効果測定なしにただ実行だけを求められる場面',nx:'今週の企画の「効いた指標」を一つ特定する'},
+'REC-PR':{
+role:'採用×発信傾向',lb:'見せ方で人を集める',ct:'求人広報・採用SNS',
+ds:'求人の見せ方と言葉を考えながら、応募者の動きをイメージできる。\n「いい人が来ない」を見せ方から変えられるタイプです。',
+tp:'「求人の見せ方と採用SNSを任せてほしい」という形で渡すと力が出ます。',
+wn:'見せ方の改善に注力するあまり、採用後のフォローが薄くなりやすいことがあります。\n「採った後」まで視野を持つと定着率が上がります。',
+pa:'求人や採用の言葉を考えながら、反応の違いを見てきた',pr:'採用広報の価値を証明しようとしている',fu:'「この店に入りたい」と思わせる採用ブランドをつくる',
+gd:'求人SNSの改善・応募者とのやり取りを任される場面',bd:'採用基準が曖昧で何でも任される場面',nx:'今の求人文の「引っかかりやすいポイント」を一つ書き直す'},
+'PR-SYS':{
+role:'発信×仕組み傾向',lb:'世界観を仕組みにする',ct:'ブランド運用・投稿ルール整備',
+ds:'店の見え方や世界観を考えながら、それを続けられる形に整えられる。\n「なんとなくかっこいい」を再現可能にできるタイプです。',
+tp:'「店のブランドと投稿ルールを整えてほしい」という任せ方で力が出ます。',
+wn:'世界観にこだわりすぎて、現場の動きやすさが後回しになることがあります。\n「現場が使える形」にこだわると実装精度が上がります。',
+pa:'店の見せ方や発信の統一感が気になる経験を積んできた',pr:'ブランドと運用の両立に向き合っている',fu:'誰が投稿してもブレないブランドの仕組みをつくる',
+gd:'SNS運用ルールの設計・世界観の言語化を任される場面',bd:'毎日の緊急対応に追われる場面',nx:'今の投稿で「これはブランドとズレている」を一つ特定する'},
+'SYS-REC':{
+role:'仕組み×採用傾向',lb:'採用を仕組みで安定させる',ct:'面接導線・採用フロー改善',
+ds:'採用の流れを見ながら、どこで詰まっているかを整理できる。\n「なぜ採れないのか」を仕組みから解くタイプです。',
+tp:'「採用フローの改善を任せてほしい」という形で渡すと力が出ます。',
+wn:'仕組みを整えることに注力するあまり、応募者一人ひとりへの対応が薄くなることがあります。\nフローと個別対応のバランスを意識すると安定します。',
+pa:'採用の流れを見ながら「なぜここで止まるのか」を考えてきた',pr:'採用フロー改善の価値を証明しようとしている',fu:'採用の歩留まりが安定的に改善する仕組みをつくる',
+gd:'採用フロー全体を任される場面',bd:'採用基準が毎回変わる環境',nx:'今の採用フローで「一番詰まっている箇所」を一つ特定する'},
+'LEAD-REC':{
+role:'統率×採用傾向',lb:'現場を見て、人を集める',ct:'現場感を採用・紹介・定着につなげる役割',
+ds:'現場の空気やスタッフの動きを見ながら、採用や定着につながる違和感を拾えるタイプです。\n求人だけを机上で考えるより、現場のリアルな魅力や不安を採用に活かすことで力が出ます。',
+tp:'「現場のリアルを求人や紹介につなげてほしい」という任せ方で力が出ます。\n現場対応と採用・定着支援をセットで任せると強みが出やすいです。',
+wn:'現場対応に追われすぎると、採用や定着の振り返りが後回しになりやすいです。\n営業後に新人・応募者・紹介の状況を確認する時間を固定すると安定します。',
+pa:'現場で人の動きや空気を見ながら、誰が合いそうか・どこで不安が出るかを感じ取ってきた',
+pr:'現場対応と採用・定着の接続に向き合っている',
+fu:'現場のリアルな魅力が求人・紹介・定着に反映される状態をつくる',
+gd:'新人の不安拾い・紹介促進・応募後フォロー・現場の魅力を求人に変換する場面',
+bd:'採用だけを机上で考える場面・現場から完全に切り離される場面',
+nx:'今いる新人が不安に感じやすいポイントを1つ書き出し、求人や面談で伝える言葉に変える'},
+'LEAD-PR':{
+role:'統率×発信傾向',lb:'現場と発信を両立する',ct:'イベント現場・SNSに強い店長候補',
+ds:'現場を動かしながら、それを外に伝える力がある。\n「映える現場をつくる」が自然にできるタイプです。',
+tp:'現場統率と店舗発信をセットで任せると力が出ます。',
+wn:'どちらも完璧にやろうとして、両方が中途半端になりやすいことがあります。\n「今日は現場、今週は発信」と切り替えを決めると安定します。',
+pa:'現場を回しながら「これ映えるな」と思う感覚を持ち続けてきた',pr:'現場と発信の両立の難しさの中にいる',fu:'現場の空気が外にも伝わる発信をつくる',
+gd:'イベントの企画から当日の運営・発信まで任される場面',bd:'どちらか一方だけを求められる場面',nx:'今週の現場で「発信できるポイント」を一つ見つけておく'},
+'EDU-NUM':{
+role:'育成×数字傾向',lb:'育成を数字で見る',ct:'育成KPI・定着率改善担当',
+ds:'人の成長を見ながら、それを数字でも追える。\n「感覚的にうまくいった」で終わらせず、再現性を求めるタイプです。',
+tp:'「定着率や育成の数字を改善してほしい」という任せ方で力が出ます。',
+wn:'数字を追うあまり、目の前の人への対応が機械的になりやすいことがあります。\n「数字は人の変化の結果」という意識を持つと温度感が保てます。',
+pa:'育成に関わりながら「何が効いているのか」を考えてきた',pr:'育成と効果測定を繋ぐ役割の難しさの中にいる',fu:'定着率・成長速度が改善する育成の仕組みをつくる',
+gd:'育成KPIの設計・定着率改善を任される場面',bd:'成果測定のない環境で育成だけを任される場面',nx:'今担当している人の「成長を測れる指標」を一つ設定する'},
+'NUM-REC':{
+role:'数字×採用傾向',lb:'数字で採用を解剖する',ct:'応募数・採用率・CPAなどの採用数値分析担当',
+ds:'採用の数字を見ながら、どこに問題があるかを特定できる。\n「なんとなく採れていない」を数字で解くタイプです。',
+tp:'採用数値の分析と改善提案をセットで任せると力が出ます。',
+wn:'数字分析に集中するあまり、応募者の気持ちや現場感が薄くなりやすいことがあります。',
+pa:'採用に関わりながら「どこで詰まっているのか」を数字で追ってきた',pr:'採用データの読み方を磨いている',fu:'採用コストと採用質を両立させる仕組みをつくる',
+gd:'採用KPIの分析・改善提案を任される場面',bd:'データが整備されていない環境',nx:'今の採用数字で「最も改善余地がある指標」を一つ特定する'},
+'PR-EDU':{
+role:'発信×育成傾向',lb:'発信で人を育てる',ct:'キャスト発信・スタッフ広報担当',
+ds:'店の見え方を考えながら、スタッフの魅力を引き出して発信できる。\n「この人を知ってほしい」という視点で動けるタイプです。',
+tp:'キャストや黒服の発信・魅力づくりをセットで任せると力が出ます。',
+wn:'発信に力を入れすぎて、育成の本質部分が薄くなりやすいことがあります。\n「発信は育成の結果として出るもの」という順番を意識すると安定します。',
+pa:'人の魅力を見ながら、どう伝えるかを考えてきた',pr:'育成と発信を組み合わせる新しい役割の中にいる',fu:'スタッフ一人ひとりの強みが外に伝わる環境をつくる',
+gd:'キャスト発信・スタッフのSNS支援を任される場面',bd:'数字責任だけを求められる場面',nx:'今担当しているスタッフの「発信できる強み」を一つ見つける'},
+'REC-NUM':{
+role:'採用×数字傾向',lb:'採用の現場を数字で改善する',ct:'応募後導線・面接率・採用歩留まり改善担当',
+ds:'採用の現場を見ながら、歩留まりを改善できる。\n「なぜここで落ちるのか」を現場感と数字で解くタイプです。',
+tp:'採用現場の改善と効果測定をセットで任せると力が出ます。',
+wn:'現場の改善に集中するあまり、発信側（求人の見せ方）が後回しになることがあります。',
+pa:'採用の現場で「なぜここで断られるのか」を考えてきた',pr:'採用歩留まりの改善に取り組んでいる',fu:'応募から採用までの全フローが安定する仕組みをつくる',
+gd:'採用フローの改善・面接対応の質向上を任される場面',bd:'採用基準が毎回変わる環境',nx:'今の採用フローで「一番離脱している箇所」を一つ確認する'}
+};
+var TYPE_PERSONAL={
+'LEAD-EDU':{
+catch:'現場で人を育てる兄貴タイプ',
+one:'場を回しながら、気づけば後輩が動けるようになっている人です。',
+ara:['自分で動いた方が早いとわかっていても、あえて後輩に任せようとする','忙しい夜ほど、後輩の動きが気になる','まとめてほしいと育ててほしいを同時に任されると燃える','育成を後回しにしているとき、どこかで気にしている'],
+str:'あなたの強みは、<strong>「現場を回す力」と「人を育てる力」が同時に動くこと</strong>です。<br>多くの人は、忙しければ現場優先で育成を後回しにします。でもあなたは、回しながら気を配れる。後輩が詰まったタイミングを見て、一言で解決できる距離感を持っています。<br>自分では「当たり前にやっているだけ」と思っていても、周りからは<strong>「あの人がいると場が安定する」「自然と後輩が育っている」</strong>と見られやすいです。',
+sce:['混雑した夜でも後輩の動きを見ながら自分も動ける場面','新人が不安を出しているとき、タイミングよく声をかける場面','まとめる役割と育てる役割を同時に求められる場面','振り返りを短時間でできる場面'],
+cau:'忙しさが続くと、育成を後回しにして<strong>自分で全部やりがちになります</strong>。周りからは「頼りになるけど、任せてくれない」と見えることがあります。一つだけ誰かに渡す、を意識しないと損します。',
+act:'今週、後輩に一つだけ任せて、翌日「どうだった？」と聞く時間を作ってみてください。'},
+'LEAD-NUM':{
+catch:'場を仕切りながら数字で証明する店長型',
+one:'現場の流れを整えながら、結果を数字で語れる人です。',
+ara:['直感で動きながら、後で数字で確認したくなる','空気が悪くなる前に数字の動きで気づける','「なんとなくうまくいった」で終わらせたくない','権限があいまいなまま責任だけ問われるとストレスになる'],
+str:'あなたの強みは、<strong>感覚と数字を両方使えること</strong>です。<br>現場の空気を読みながら動いて、翌日には「あの時間帯の客単価はこうだった」と振り返れる。感覚だけで走る人と、数字だけ追う人の中間で、<strong>実態を掴みやすい位置にいます</strong>。<br>周りからは、「根拠を持って話してくれる」「動いた後で説明できる」人として見られやすいです。',
+sce:['売上が落ちた理由を「なぜ」と掘り下げながら対策を出す場面','数字が悪い時間帯の現場に入って直接改善できる場面','目標と期限が明確に渡されている場面','営業終わりに数字を見ながら翌日の動きを決める場面'],
+cau:'結果にこだわるあまり、<strong>現場の空気より数字優先になりやすい</strong>時があります。「数字が出ているから大丈夫」と思っていると、空気の悪さが後から数字に出てきます。現場の空気を定期的にチェックする習慣が損をしないための鍵です。',
+act:'今週の数字で「なぜこうなったのか」が説明できないものを一つ特定して、仮説を一文立ててみてください。'},
+'LEAD-SYS':{
+catch:'現場を整えて次の混乱を防ぐ人',
+one:'今動かすより、次に詰まらないようにすることを同時に考える人です。',
+ara:['同じトラブルが繰り返されると整理したくなる','「なんとなく回っている」だと落ち着かない','完璧に整えてから動こうとして、動き出しが遅くなることがある','仕組みがない環境で働き続けると疲れやすい'],
+str:'あなたの強みは、<strong>現場を動かしながら「なぜ詰まるのか」を同時に見られること</strong>です。<br>多くの人は、詰まったら対処するだけで、構造には目が向きません。でもあなたは、動きながら原因を見て、次に同じことが起きない形を考えられる。<br>周りからは、<strong>「トラブルが起きた後にちゃんと整理してくれる人」「場当たり対応で終わらない人」</strong>として見られやすいです。',
+sce:['繰り返し起きているトラブルの原因を整理できる場面','「なぜここで詰まるのか」を考える余裕がある場面','オペレーション改善・ルール整備を任される場面','現場の改善案を提案できる場面'],
+cau:'整えることに集中しすぎると、<strong>「整える前は動けない」状態になりやすい</strong>です。完璧な仕組みを目指しているうちに、現場が待ちきれなくなります。「60点の仕組みで動かしながら直す」を意識しないと、強みが出るタイミングを逃します。',
+act:'今週繰り返し起きているトラブルを一つ書き出して、「なぜ起きるか」を一行で書いてみてください。'},
+'EDU-SYS':{
+catch:'教え方を仕組みに変える人',
+one:'人を育てながら、「次の人にも使える形」を考えられる人です。',
+ara:['教えているうちに「これ、誰でも教えられるようにしたい」と思う','育てた経験を次の人に活かしたくなる','手順が整っていないと不安になる','個別対応をしながら「共通点は何か」を探している'],
+str:'あなたの強みは、<strong>「育てる力」と「整える力」が同時に動くこと</strong>です。<br>人に何かを教えるとき、多くの人は「この人限定の伝え方」になります。でもあなたは、教えながら「これを汎用化できないか」と考えられる。<br>個人の成長を見ながら、そこから誰でも使えるノウハウを引き出す力があります。周りからは、<strong>「教え上手」だけでなく、「仕組みを作ってくれる人」</strong>として見られやすいです。',
+sce:['新人育成の流れを設計する場面','「なぜ伝わらないのか」を考えながら教え方を変える場面','教育マニュアルやガイドを整備する場面','一人の育成経験をチーム全体に横展開できる場面'],
+cau:'整えることに時間をかけすぎて、<strong>目の前の人へのケアが後回しになること</strong>があります。マニュアルを磨いている間に、今いる人が不安になっていると損します。「仕組みを作る」と「今すぐフォローする」のバランスを意識してください。',
+act:'今教えている内容を一つだけ、「次の人に渡せる一枚のメモ」にしてみてください。'},
+'EDU-REC':{
+catch:'採ってから育てるまで見届ける人',
+one:'人が「ここで続けられる」と思えるまでを支えることができる人です。',
+ara:['採用後のギャップが気になる','新人が不安そうだとほっておけない','一人ひとりの理解度や状態を見ながら関わる','「全員に同じ対応」だと合わない人が出ると知っている'],
+str:'あなたの強みは、<strong>「採る」から「定着する」まで視野を持てること</strong>です。<br>採用担当が「とにかく採る」で終わる中、あなたは「この人は続けられるか」「何が不安になりそうか」を採用段階から考えられる。<br>入社後の離脱が起きやすいポイントを事前に見ておける力は実は珍しいです。周りからは、<strong>「フォローが丁寧」「離職が起きにくくなる」</strong>と見られやすいです。',
+sce:['採用から入社後3ヶ月まで伴走できる場面','新人の「辞めやすいポイント」を事前に拾える場面','面接で「定着できるか」まで見る場面','育成と採用をセットで設計する場面'],
+cau:'一人ひとりに時間をかけすぎて、<strong>自分のキャパを超えやすい</strong>ことがあります。全員を同じ深さで見ようとすると体力的に限界が来ます。「誰を重点的に見るか」を決めないと、自分が疲弊して全体が回らなくなります。',
+act:'今いる新人の「一番不安に感じていること」を一つ想像して、今日声をかけてみてください。'},
+'NUM-SYS':{
+catch:'原因を見つけて勝ち筋を作る改善屋',
+one:'数字の変化を見て、なぜかを探して、仕組みで解く人です。',
+ara:['数字が悪いと「なぜか」が気になって止まらない','「感覚でうまくいった」より「再現できるか」の方が気になる','原因を特定せずに動くことに不安を感じる','改善の仕組みを作っているときが一番燃える'],
+str:'あなたの強みは、<strong>「数字を見る目」と「仕組みで解く力」を持っていること</strong>です。<br>問題が起きたとき、多くの人は「とりあえず動く」か「分析するだけ」で止まります。でもあなたは、数字から原因を特定して、再発しないように構造を変えられる。<br>周りからは、<strong>「同じ失敗を繰り返さない人」「根拠を持って改善を動かせる人」</strong>として見られやすいです。',
+sce:['KPI改善・業績分析を任される場面','繰り返し起きているミスの構造を分析できる場面','数字が落ちた原因を仮説立てして検証できる場面','改善施策の効果を測定できる場面'],
+cau:'データと仕組みに集中するあまり、<strong>現場の人の感情や動きが見えにくくなること</strong>があります。「数字の裏に人がいる」ことを忘れると、改善案が現場で動かなくなります。数字分析の前後に、現場で一言確認する習慣が損をしないための鍵です。',
+act:'今週の数字で「なぜこうなっているか」が説明できないものを一つ特定して、仮説を一文書いてみてください。'},
+'NUM-PR':{
+catch:'効果を測りながら見せ方を変える人',
+one:'「刺さっているか」を数字で確認しながら、発信の精度を上げる人です。',
+ara:['イベントや企画の後、効果を確認したくなる','「なんとなく盛り上がった」で終わらせたくない','数字と見せ方の両方を同時に考えている','効果測定なしに動き続けることに違和感を感じる'],
+str:'あなたの強みは、<strong>「感覚的な発信」を「再現できる発信」に変えられること</strong>です。<br>SNSや企画は「とりあえずやってみた」で終わりがちですが、あなたは「何が効いたのか」を数字で見て次に活かせる。<br>感性と分析の両方を持っているため、センスだけでも理屈だけでもない、使いやすい提案ができます。周りからは、<strong>「根拠を持って発信できる人」「企画の効果を説明できる人」</strong>として見られやすいです。',
+sce:['集客施策の効果を測定して改善できる場面','SNSや広告の「何が効いたか」を分析する場面','イベントの企画から振り返りまで任される場面','発信ルールと効果測定をセットで設計できる場面'],
+cau:'効果測定にこだわりすぎると、<strong>企画のスピードが落ちやすい</strong>ことがあります。「完璧なデータが揃ってから動く」を続けると機会を逃します。「まず小さく動いて計測する」を繰り返す形にすると前に進みやすいです。',
+act:'今週の発信や企画で「何が一番効いたか」を一つ特定して、次に同じことをやる条件を書いてみてください。'},
+'REC-PR':{
+catch:'言葉で人を引き寄せる採用広報型',
+one:'「この職場に入りたい」と思わせる言葉と見せ方を考えられる人です。',
+ara:['求人の言葉が刺さっていないと気になる','「いい人が来ない」は見せ方の問題かもと思う','ターゲットに合っていない発信を見ると修正したくなる','採用後のギャップが見せ方から来ていることに気づきやすい'],
+str:'あなたの強みは、<strong>「採用の課題」を「伝わる言葉と見せ方」で解けること</strong>です。<br>求人がうまくいかない原因の多くは、条件ではなく言葉と見せ方にあります。あなたはそこを直感的に感じ取れる。<br>「刺さる言葉はどれか」「ターゲットに届いているか」を考えながら発信できるのは、採用にも広報にもなれる珍しい視点です。周りからは、<strong>「求人の言葉がうまい」「応募が来やすい発信を作れる人」</strong>として見られやすいです。',
+sce:['求人文や採用SNSの改善を任される場面','「なぜ応募が来ないか」を言葉と見せ方から考える場面','店やスタッフの魅力を言語化する場面','採用ブランドを設計する場面'],
+cau:'見せ方の改善に注力するあまり、<strong>採用後のフォローが薄くなりやすい</strong>ことがあります。「採ることに成功した後」の定着を意識しないと、また同じ採用コストがかかります。「採った後」まで視野を広げると、発信の内容も変わります。',
+act:'今の求人文を読んで「一番引っかかりにくいポイント」を一つ特定して、言葉を一つ変えてみてください。'},
+'PR-SYS':{
+catch:'違和感を"伝わる形"に整える人',
+one:'現場や人の動きを見ながら、言葉・流れ・仕組みのズレに気づきやすいタイプです。',
+ara:['目的が見えない指示だと動きにくい','話が散らかっていると整理したくなる','見せ方や言葉がズレていると気になる','人の空気は見ているのに、細かい声かけは抜けやすい'],
+str:'あなたの強みは、ただ情報を整理することではありません。<br>現場で起きていること、人の動き、言葉のズレ、流れの詰まりを見て、<strong>「どこを整えれば動きやすくなるか」を考えられること</strong>です。<br>自分では普通に考えているだけでも、周りから見ると、<strong>ごちゃごちゃした状況を整理してくれる人、言葉にしにくい違和感を形にしてくれる人</strong>として見られやすいです。',
+sce:['制作依頼や相談内容が散らかっているとき','SNSや求人文の見せ方を考えるとき','店舗やグループのブランドに合う言葉を探すとき','現場の流れが詰まっていて、原因を整理したいとき'],
+cau:'気づいていることを頭の中だけで終わらせると、<strong>周りには伝わりません</strong>。また、忙しい時ほど細かい声かけや確認が抜けやすくなり、「見てくれていない」と受け取られることがあります。',
+act:'気づいた違和感を一つだけメモして、「これ、こうしたらやりやすくなりそうです」と一言で誰かに共有してみてください。'},
+'SYS-REC':{
+catch:'採用の流れを整えて安定させる人',
+one:'採用がうまくいかない理由をフロー全体から見て、整えられる人です。',
+ara:['採用の「どこで落ちているか」が気になる','フローが整っていないと同じ失敗が繰り返されると感じる','属人的な採用対応が気になる','「とりあえず採る」で進む環境に違和感がある'],
+str:'あなたの強みは、<strong>採用の問題を「人」ではなく「仕組み」から解けること</strong>です。<br>採用がうまくいかない時、多くの人は「いい人が来ない」「面接が下手」で終わります。でもあなたは、「どのフローで詰まっているか」を見て、構造から改善できる。<br>属人的な採用対応を標準化する力は、組織が大きくなるほど価値が出ます。周りからは、<strong>「採用が安定してきた」「同じ失敗が減った」</strong>と感じてもらえやすいです。',
+sce:['採用フロー全体を見直せる場面','「どのステップで歩留まりが落ちるか」を分析できる場面','面接対応・応募後連絡を標準化できる場面','採用KPIを設定して改善できる場面'],
+cau:'仕組みを整えることに集中するあまり、<strong>応募者一人ひとりへの対応が薄くなること</strong>があります。「フローが整った」だけでは温度感が落ちて、採用の印象が変わることがあります。個別対応とフロー整備のバランスを意識してください。',
+act:'今の採用フローで「一番詰まっているステップ」を一つ特定して、原因を一文書いてみてください。'},
+'LEAD-REC':{
+catch:'現場のリアルを採用に変換する人',
+one:'現場で見えていることを、採用・紹介・定着の改善につなげられる人です。',
+ara:['現場にいると「この人は合いそう・合わなそう」がわかる','採用後に「思っていたのと違う」となる原因が見えやすい','新人が不安を出す場面が読めている','採用情報が現場の実態とズレていると気になる'],
+str:'あなたの強みは、<strong>「現場を見る目」を採用・定着改善に使えること</strong>です。<br>採用担当が「どんな人が来るか」だけを見る中、あなたは「今の現場に何が必要か」「どんな人がここで続けられるか」を現場感から判断できる。<br>リアルな情報を持っているからこそ、求人の言葉も面接の判断も現実に近い精度になります。周りからは、<strong>「採用のズレが減った」「定着する人を採れるようになった」</strong>と見られやすいです。',
+sce:['現場の魅力や課題をリアルに語れる面接場面','応募者に「実際の現場」を正確に伝えられる場面','新人の不安ポイントを早期に把握できる場面','採用〜定着をセットで改善できる場面'],
+cau:'現場対応に追われすぎると、<strong>採用や定着への振り返りが後回しになりやすい</strong>です。「今の現場で手一杯」になると、採用の質が落ちたまま時間が経ちます。営業後に「新人の状態」を短時間だけ確認する習慣がないと損します。',
+act:'今いる新人が「一番不安に感じていること」を一つ想像して、それを求人や面談で使える言葉にしてみてください。'},
+'LEAD-PR':{
+catch:'現場を動かして外にも見せる人',
+one:'現場を回しながら、その空気や魅力を外に伝えられる人です。',
+ara:['現場でいいことが起きると「これ発信できる」と思う','両方やろうとして、どっちかが中途半端になりやすい','「映える現場」と「回る現場」を同時に考えている','発信のために現場を犠牲にしたくない'],
+str:'あなたの強みは、<strong>現場を動かす力と、それを外に見せる力が同時にあること</strong>です。<br>現場をまとめるだけの人と、発信だけ上手な人は多くいます。でもあなたはどちらも持っている。<br>「この現場の空気を知ってほしい」という感覚を持ちながら動けるため、リアルで伝わる発信ができます。周りからは、<strong>「この店に入りたいと思わせてくれる」「現場と発信がズレていない」</strong>と見られやすいです。',
+sce:['イベントの企画から当日運営・発信まで任される場面','現場の空気をSNSに変換できる場面','現場の信頼を持ちながら発信方針を決める場面','店舗ブランドと現場の実態が一致するように動ける場面'],
+cau:'現場と発信の両方を同時に完璧にやろうとして、<strong>両方が中途半端になりやすい</strong>です。「今日は現場優先、今週は発信1本」のように切り替えを決めないと、どちらも「まあまあ」で終わります。',
+act:'今週の現場で「発信できるポイント」を一つだけ見つけておいて、3行でメモしておいてください。'},
+'EDU-NUM':{
+catch:'育成の効果を数字で証明できる人',
+one:'人の成長を見ながら、それを数字でも確認できる人です。',
+ara:['育成が効いているかどうか、数字で確認したくなる','「感覚的にうまくいった」より「何が効いたか」が気になる','育成の効果測定の仕組みがないと落ち着かない','感情的なフォローと論理的な分析を使い分けている'],
+str:'あなたの強みは、<strong>育てることと、その効果を見えるようにすることが両立できること</strong>です。<br>多くの育成担当は「感覚的に教えている」か「数字しか見ない」に分かれます。でもあなたは両方できる。<br>「この人はここが成長した」という感覚を、定着率・売上の変化で確認できる。周りからは、<strong>「育成が機能しているかを説明できる人」</strong>として見られやすいです。',
+sce:['育成KPIの設定と振り返りを任される場面','「誰の育成に時間をかけるか」を数字で判断できる場面','定着率や売上貢献を育成の文脈で分析できる場面','個人の成長と店舗数字の両方を同時に見る場面'],
+cau:'数字を追うあまり、<strong>目の前の人への対応が機械的になりやすい</strong>ことがあります。「指標が悪いから指導する」だと、人は萎縮します。「数字は人の変化の結果」という意識を持つと育成と分析が両立します。',
+act:'今担当している人の「成長を測れる指標」を一つ決めて、1週間後に確認する日程を入れてみてください。'},
+'NUM-REC':{
+catch:'採用の詰まりを数字で解く人',
+one:'「なぜ採れないのか」を数字と現場感で特定できる人です。',
+ara:['採用率や歩留まりの数字が気になる','どこで応募者が離脱しているか追いたくなる','採用の課題を「感覚」ではなく「データ」で話したい','「とにかく採る」より「どこが改善できるか」が先に来る'],
+str:'あなたの強みは、<strong>採用の問題を「感覚ではなくデータで解く」視点</strong>です。<br>採用を改善しようとしても、多くの場合は「媒体を変えてみよう」で終わります。でもあなたは、「応募数・面接率・採用率・定着率」のどこで詰まっているかを見て、改善箇所を特定できる。<br>周りからは、<strong>「採用の議論を前に進めてくれる人」</strong>として見られやすいです。',
+sce:['採用KPIを設定して改善できる場面','どのステップで歩留まりが落ちているかを分析できる場面','媒体効果・応募後対応の改善を数字で提案できる場面','採用コストと採用質を同時に考えられる場面'],
+cau:'数字分析に集中するあまり、<strong>応募者の気持ちや現場感が薄くなりやすい</strong>ことがあります。「データ上は正しい」でも現場の感覚と乖離していると改善が動かなくなります。現場のリアルを数字と照らし合わせる習慣がないと損します。',
+act:'今の採用数字で「一番改善余地がある指標」を一つ特定して、その原因の仮説を書いてみてください。'},
+'PR-EDU':{
+catch:'人の魅力を言葉にして外に届ける人',
+one:'スタッフやキャストの強みを見つけて、それを伝わる形にできる人です。',
+ara:['「この人のここを知ってほしい」と自然に思う','人の良さを見つけるのが得意','発信しながら「この人はどう見られたいか」を考えている','言葉の選び方で印象が変わることを知っている'],
+str:'あなたの強みは、<strong>「人の魅力を引き出して言葉にする力」</strong>です。<br>発信が得意な人と、育成が得意な人は別々にいます。でもあなたは両方を持っていて、「この人のここが強み」を見つけて、それを外に伝わる言葉に変えられる。<br>周りからは、<strong>「この人と話すと自分のことをわかってもらえる気がする」</strong>と感じてもらえやすいです。',
+sce:['キャストやスタッフのSNS・プロフィール発信を支援できる場面','「自分の強みがわからない」という人の強みを言語化する場面','採用や育成で「この人のどこをアピールするか」を考える場面','店舗や人の魅力を外に届ける発信を担う場面'],
+cau:'発信に力を入れすぎて、<strong>育成の本質的なフォローが薄くなること</strong>があります。「いい発信ができた」だけで満足してしまうと、本人の成長が停滞することがあります。「発信は育成の結果として出るもの」という順番を意識すると安定します。',
+act:'今担当しているスタッフの「発信できる強み」を一つ見つけて、本人に「ここ、あなたの強みだと思う」と伝えてみてください。'},
+'REC-NUM':{
+catch:'採用フローを現場で改善し続ける人',
+one:'「なぜここで落ちるのか」を現場感と数字で追える人です。',
+ara:['採用フローのどこで詰まっているかが気になる','面接率・採用率・定着率のどれかが落ちると原因を考えたくなる','属人的な採用対応が標準化できていないと不安','「とりあえず採る」で進む環境に違和感がある'],
+str:'あなたの強みは、<strong>採用の現場を見ながら、数字でも改善できること</strong>です。<br>採用改善は「感覚派」と「数字派」に分かれがちですが、あなたは現場感を持ちながら数字も追える。<br>「なぜここで断られるのか」「どのステップで応募者が離脱しているか」を両方から見られるため、改善の精度が上がります。周りからは、<strong>「採用がちゃんと機能するようになってきた」</strong>と見られやすいです。',
+sce:['採用フローの改善を数字で確認しながら進められる場面','面接対応・応募後連絡の標準化を任される場面','「どこで離脱が起きているか」を現場で確認できる場面','採用歩留まり改善の施策を考えられる場面'],
+cau:'現場の改善に集中するあまり、<strong>求人の見せ方（入口側）が後回しになること</strong>があります。フロー改善と入口改善はセットで動かさないと、片方だけでは効果が出にくいです。入口と出口の両方を定期的に確認する習慣がないと損します。',
+act:'今の採用フローで「一番離脱が多いステップ」を一つ確認して、その原因の仮説を一文書いてみてください。'}
+};
+if(TYPE_PERSONAL['NUM-SYS']){
+  TYPE_PERSONAL['NUM-SYS'].strByRole={
+    staff:'あなたの強みは、<strong>気づいて・確かめて・次に活かす力</strong>です。<br>自分の担当で「なんか変だな」と感じたことを放置せず、原因まで見にいけます。多くの新人が「とりあえずやる」で止まる中、あなたは「なぜそうなるか」を確かめてから動けます。<br>先輩から見ると、<strong>「任せても雑にならない」「同じミスを繰り返さない」</strong>人として信頼されやすいです。',
+    leader:'あなたの強みは、<strong>後輩のミスを「本人のせい」で終わらせず、「どうすれば起きないか」で考えられること</strong>です。<br>その場で叱って終わりにせず、手順や仕組みで防ぐ方向に持っていけます。これは主任がいちばん効く力で、<strong>後輩が育ち、あなたが見ていない時間帯も同じ品質で回るようになります</strong>。<br>周りからは「この人がいると現場が崩れない」と見られやすいです。',
+    manager:'あなたの強みは、<strong>店の数字と仕組みを結びつけて、勘ではなく「仕組みで底上げ」できること</strong>です。<br>調子のいい人頼みにせず、誰がやっても回る形に落とし込めます。店舗責任者がこの力を持つと、<strong>自分が現場に張り付かなくても店が安定し、数字が再現的に積み上がります</strong>。<br>周りからは「この店舗責任者になってから店が崩れにくくなった」と見られやすいです。'
+  };
+  TYPE_PERSONAL['NUM-SYS'].cauByRole={
+    staff:'手順や数字に集中すると、<strong>まわりへの報告や声かけが後回しになりやすい</strong>です。自分の中で「わかってるから大丈夫」と完結させず、気づいたことを一言共有するだけで、評価も信頼も大きく変わります。',
+    leader:'仕組みを作り込むことに集中するほど、<strong>後輩への声かけが薄くなりがち</strong>です。後輩は「ちゃんと見てもらえていない」と感じやすいので、仕組みづくりと並行して一日一声でも様子を確認すると、育成と仕組みが両立します。',
+    manager:'数字と仕組みに寄りすぎると、<strong>店の空気やスタッフの感情を見落とすこと</strong>があります。空気の悪さは後から数字に出るので、仕組みを動かす前後に「現場の温度」を一言確認する習慣が、店舗責任者としての損を防ぐ鍵です。'
+  };
+}
+var STORAGE_KEY_PROGRESS='dps_progress_v29';
+var SCHEMA_VERSION='2.9-placement';
+var VALID_ROLES=['','manager','leader','staff'];
+function validateSavedProgress(data){
+  if(!data||typeof data!=='object') return false;
+  if(data.schemaVersion!==SCHEMA_VERSION) return false;
+  if(!Array.isArray(data.ans)||data.ans.length!==TOTAL) return false;
+  for(var i=0;i<data.ans.length;i++){
+    var v=data.ans[i];
+    if(v!==null&&(typeof v!=='number'||!isFinite(v)||v<0||Math.floor(v)!==v||v>=QS[i].ch.length)) return false;
+  }
+  if(typeof data.cur!=='number'||!isFinite(data.cur)||data.cur<0||data.cur>=TOTAL||Math.floor(data.cur)!==data.cur) return false;
+  if(VALID_ROLES.indexOf(data.userRole)<0) return false;
+  return true;
+}
+function validateSavedResult(data){
+  if(!data||typeof data!=='object') return false;
+  if(data.schemaVersion!==SCHEMA_VERSION) return false;
+  if(data.ans!==undefined){
+    if(!Array.isArray(data.ans)||data.ans.length!==TOTAL) return false;
+    for(var i=0;i<data.ans.length;i++){
+      var v=data.ans[i];
+      if(v!==null&&(typeof v!=='number'||!isFinite(v)||v<0||Math.floor(v)!==v||v>=QS[i].ch.length)) return false;
+    }
+  }
+  if(VALID_ROLES.indexOf(data.userRole||'')<0) return false;
+  return true;
+}
+function saveProgress(){
+  try{
+    var data={schemaVersion:SCHEMA_VERSION,ans:ans,cur:cur,userRole:userRole,savedAt:new Date().toISOString()};
+    localStorage.setItem(STORAGE_KEY_PROGRESS,JSON.stringify(data));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY_PROGRESS);
+    if(!raw) return null;
+    var data=JSON.parse(raw);
+    if(!validateSavedProgress(data)){
+      try{localStorage.removeItem(STORAGE_KEY_PROGRESS);}catch(e){}
+      return null;
+    }
+    return data;
+  }catch(e){
+    try{localStorage.removeItem(STORAGE_KEY_PROGRESS);}catch(e2){}
+    return null;
+  }
+}
+function clearProgress(){
+  try{localStorage.removeItem(STORAGE_KEY_PROGRESS);}catch(e){}
+}
+var STORAGE_KEY_RESULT='dps_result_v29';
+function saveResult(sc,name,store){
+  try{
+    var payload={
+      schemaVersion:SCHEMA_VERSION,
+      typeName:(TYPES[sc.typeKey]?TYPES[sc.typeKey].role:sc.topKey+'-'+sc.secKey),
+      hantei:sc.hantei,
+      hanteiLabel:HANTEI_LABEL[sc.hantei]||sc.hantei,
+      sorted:sc.sorted,
+      wf:sc.wf||'',
+      trust:sc.trust||'',
+      name:name||'',
+      store:store||'',
+      ans:ans.slice(),
+      userRole:userRole,
+      savedAt:new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY_RESULT,JSON.stringify(payload));
+    return true;
+  }catch(e){return false;}
+}
+function loadSavedResult(){
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY_RESULT);
+    if(!raw) return null;
+    var data=JSON.parse(raw);
+    if(!validateSavedResult(data)){
+      try{localStorage.removeItem(STORAGE_KEY_RESULT);}catch(e){}
+      return null;
+    }
+    return data;
+  }catch(e){
+    try{localStorage.removeItem(STORAGE_KEY_RESULT);}catch(e2){}
+    return null;
+  }
+}
+function showOnly(id){
+  var ids=['s-cover','s-q','s-result'];
+  for(var i=0;i<ids.length;i++) document.getElementById(ids[i]).style.display='none';
+  document.getElementById(id).style.display='block';
+  window.scrollTo(0,0);
+}
+function startQ(){
+  userRole=document.getElementById('user-role').value||'';
+  var _re=document.getElementById('role-error');
+  var _sel=document.getElementById('user-role');
+  if(!userRole){
+    if(_re) _re.textContent='役職を選択してください';
+    if(_sel) _sel.style.borderColor='var(--red)';
+    return;
+  }
+  if(_re) _re.textContent='';
+  if(_sel) _sel.style.borderColor='var(--line)';
+  ans=new Array(TOTAL).fill(null);cur=0;renderQ();showOnly('s-q');
+}
+function doRestart(){clearProgress();startQ();}
+function renderQ(){
+  var q=QS[cur];
+  document.getElementById('q-bl').textContent=q.bll||'';
+  var pct=Math.round((cur+1)/TOTAL*100);
+  document.getElementById('q-bar').style.width=pct+'%';
+  document.getElementById('q-num').textContent=(cur+1)+'/'+TOTAL;
+  document.getElementById('q-no').textContent='Q'+(cur+1);
+  document.getElementById('q-tx').textContent=q.tx;
+  var nw=document.getElementById('q-note-wrap');nw.innerHTML='';
+  if(q.note) nw.innerHTML='<div class="q-note">'+q.note+'</div>';
+  if(q.fo) nw.innerHTML+='<div class="q-note" style="color:var(--amb)">この設問は1つだけ選んでください</div>';
+  var letters=['A','B','C','D'];
+  var choiceHtml='';
+  for(var i=0;i<q.ch.length;i++){
+    var sel=(ans[cur]===i)?' selected':'';
+    choiceHtml+='<div class="choice'+sel+'" onclick="selectAns('+i+')" style="cursor:pointer">'+
+      '<div class="choice-letter">'+letters[i]+'</div><div>'+q.ch[i].t+'</div></div>';
+  }
+  document.getElementById('q-choices').innerHTML=choiceHtml;
+  document.getElementById('btn-back').disabled=false;
+  document.getElementById('btn-next').disabled=(ans[cur]===null||ans[cur]===undefined);
+}
+function selectAns(idx){
+  ans[cur]=idx;
+  var letters=['A','B','C','D'];
+  var q=QS[cur];
+  var choiceHtml='';
+  for(var i=0;i<q.ch.length;i++){
+    var sel=(i===idx)?' selected':'';
+    choiceHtml+='<div class="choice'+sel+'" onclick="selectAns('+i+')" style="cursor:pointer">'+
+      '<div class="choice-letter">'+letters[i]+'</div><div>'+q.ch[i].t+'</div></div>';
+  }
+  document.getElementById('q-choices').innerHTML=choiceHtml;
+  document.getElementById('btn-next').disabled=false;
+  saveProgress();
+}
+function gNext(){
+  if(ans[cur]===null) return;
+  if(cur===TOTAL-1){showResult();}else{cur++;renderQ();}
+}
+function gBack(){if(cur>0){cur--;renderQ();}else{showOnly('s-cover');}}
+function calcSc(){
+  var W=WEIGHTS;
+  var NAT_IDX=[0,1,2,3,4,5];
+  var CLM_IDX=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+  var SIM_IDX=[30,31,32,34,35,36];
+  var STR_IDX=[21,22,23,24,25];
+  var nat={};nat[N]=0;nat[B]=0;nat[C]=0;nat[D]=0;
+  var clm={};clm[N]=0;clm[B]=0;clm[C]=0;clm[D]=0;
+  var sim={};sim[N]=0;sim[B]=0;sim[C]=0;sim[D]=0;
+  var rdir={LEAD:0,EDU:0,NUM:0,SYS:0,REC:0,PR:0};
+  var rdirAspir={LEAD:0,EDU:0,NUM:0,SYS:0,REC:0,PR:0};
+  var str={REL:0,AMB:0,NUM_S:0,FREE:0,OVER:0};
+  var lrnMap={DO:0,WHY:0,STEP:0,FB:0,CHALLENGE:0};
+  var ea=0,ef=0,wf=null;
+  var cp={trust:0,mood:0,crm:0,contact:0,next:0,after:0,sales:0,teach:0,mgmt:0,player:0,support:0,volume:0,pr:0,sense:0};
+  for(var i=0;i<QS.length;i++){
+    var q=QS[i];var a=ans[i];
+    if(a===null||a===undefined) continue;
+    var ch=q.ch[a];if(!ch) continue;
+    if(i===33){if(ch.wf) wf=ch.wf;continue;}
+    if(ch.a){
+      if(NAT_IDX.indexOf(i)>=0) nat[ch.a]=(nat[ch.a]||0)+2;
+      else if(CLM_IDX.indexOf(i)>=0) clm[ch.a]=(clm[ch.a]||0)+2;
+      else if(SIM_IDX.indexOf(i)>=0) sim[ch.a]=(sim[ch.a]||0)+2;
+    }
+    if(ch.a2){
+      if(NAT_IDX.indexOf(i)>=0) nat[ch.a2]=(nat[ch.a2]||0)+1;
+      else if(CLM_IDX.indexOf(i)>=0) clm[ch.a2]=(clm[ch.a2]||0)+1;
+    }
+    if(ch.r&&STR_IDX.indexOf(i)<0){for(var rk in ch.r) rdir[rk]=(rdir[rk]||0)+ch.r[rk];}
+    if(ch.r&&BBLOCK_IDX.indexOf(i)>=0){for(var rk in ch.r) rdirAspir[rk]=(rdirAspir[rk]||0)+ch.r[rk];}
+    if(ch.st&&STR_IDX.indexOf(i)>=0) str[ch.st]=(str[ch.st]||0)+3;
+    else if(ch.st&&STR_IDX.indexOf(i)<0) str[ch.st]=(str[ch.st]||0)+1;
+    if(ch.ls) lrnMap[ch.ls]=(lrnMap[ch.ls]||0)+2;
+    if(ch.ls2) lrnMap[ch.ls2]=(lrnMap[ch.ls2]||0)+1;
+    if(ch.ea!==undefined) ea+=ch.ea;
+    if(ch.ef) ef+=ch.ef;
+    if(ch.cp){for(var ck in ch.cp) cp[ck]=(cp[ck]||0)+ch.cp[ck];}
+  }
+  var clmMax=Object.values(clm).reduce(function(a,b){return a+b;},0)||1;
+  var simMax=Object.values(sim).reduce(function(a,b){return a+b;},0)||1;
+  var crn={};for(var k in clm) crn[k]=clm[k]/clmMax;
+  var srn={};for(var k in sim) srn[k]=sim[k]/simMax;
+  var mix={};
+  mix[N]=crn[N]*W.CLM_MIX+(srn[N]||0)*W.SIM_MIX;
+  mix[B]=crn[B]*W.CLM_MIX+(srn[B]||0)*W.SIM_MIX;
+  mix[C]=crn[C]*W.CLM_MIX+(srn[C]||0)*W.SIM_MIX;
+  mix[D]=crn[D]*W.D_CLM+(srn[D]||0)*W.D_SIM;
+  function convRole(ab){
+    return{LEAD:ab[B]*2+ab[N],EDU:ab[N]*2+ab[B],
+    NUM:ab[C]*2+ab[B],SYS:ab[C]*2+(ab[N]||0)*0.5,
+    REC:ab[N]*2+(ab[D]||0)*0.5,PR:ab[D]*2+ab[C]};
+  }
+  var abConv=convRole(mix);
+  var simConv=convRole(srn);
+  var roleKeys=['LEAD','EDU','NUM','SYS','REC','PR'];
+  var rdirN={};
+  for(var i=0;i<roleKeys.length;i++){
+    var rk=roleKeys[i];
+    rdirN[rk]=Math.min(1.0,(rdir[rk]||0)/(RDIR_THEO_MAX[rk]||1));
+  }
+  var roles={};
+  var AB_CONV_MAX=2.0,SM_CONV_MAX=2.0;
+  for(var i=0;i<roleKeys.length;i++){
+    var rk=roleKeys[i];
+    var ab3=(abConv[rk]||0)/AB_CONV_MAX;
+    var rd3=rdirN[rk]||0;
+    var sm3=(simConv[rk]||0)/SM_CONV_MAX;
+    roles[rk]=ab3*W.AB_CONV+rd3*W.RDIR_W+sm3*W.SIM_W;
+  }
+  var rn={};
+  for(var rk in roles) rn[rk]=Math.min(100,Math.round(roles[rk]*100));
+  var roles_raw={LEAD:clm[B]*2+clm[N],EDU:clm[N]*2+clm[B],NUM:clm[C]*2+clm[B],
+  SYS:clm[C]*2+clm[N]*0.5,REC:clm[N]*2+(clm[D]||0)*0.5,PR:(clm[D]||0)*2+clm[C]};
+  var rawVals=Object.values(roles_raw).sort(function(a,b){return b-a;});
+  var rawGap=rawVals[0]-rawVals[1];
+  var rolesForSort=[];
+  for(var rk in roles) rolesForSort.push([rk,roles[rk]]);
+  rolesForSort.sort(function(a,b){return b[1]-a[1];});
+  var sorted=rolesForSort.map(function(p){return[p[0],rn[p[0]]];});
+  var topKey=rolesForSort[0][0];
+  var secKey=rolesForSort[1][0];
+  var typeKey=topKey+'-'+secKey;
+  var junType=false;
+  if(!TYPES[typeKey]){var revKey=secKey+'-'+topKey;if(TYPES[revKey]) typeKey=revKey;else{junType=true;typeKey=null;}}
+  var ntTop=topK(nat);var clTop=topK(clm);var simTop=topK(sim);
+  var gap=(clTop!==ntTop)&&(clTop!==simTop)&&!(clTop===D);
+  var tobj=buildTrustLabel({ntTop:ntTop,clTop:clTop,simTop:simTop});
+  var trust=tobj.label;var trustColor=tobj.color;
+  var topScore=sorted[0][1];
+  var scoreGap=sorted[0][1]-sorted[1][1];
+  var conflictStrength=0;
+  if(wf){
+    var conflicts={LEAD:['現場後回し'],EDU:['育成後回し','対人後回し'],NUM:['数字後回し'],
+    SYS:['現場後回し'],REC:['対人後回し','育成後回し'],PR:['数字後回し']};
+    if(conflicts[topKey]&&conflicts[topKey].indexOf(wf)>=0) conflictStrength+=1;
+  }
+  var wfConflict=(conflictStrength>=1)&&(scoreGap>=8);
+  var _aspirMax=Math.max.apply(null,Object.values(rdirAspir))||1;
+  var aspir={};for(var _ak in rdirAspir) aspir[_ak]=Math.round((rdirAspir[_ak]/_aspirMax)*100);
+  var aspirTopKey=topK(rdirAspir);
+  var hantei='';
+  var T=SCORE_THRESHOLDS;
+  if(topScore>=T.P1_TOP&&scoreGap>=T.P1_GAP&&!wfConflict){
+    hantei='P1';
+  } else if(topScore>=T.P2_TOP&&scoreGap>=T.P2_GAP){
+    hantei=wfConflict?'P2W':'P2';
+  } else {
+    var _tobj=buildTrustLabel({ntTop:ntTop,clTop:clTop,simTop:simTop});
+    var _isLowTrust=(_tobj.level===1);
+    var _isLowScore=(topScore<38);
+    if(_isLowTrust) hantei='P3B';
+    else if(_isLowScore) hantei='P3C';
+    else hantei='P3A';
+  }
+  var _ab=(clTop===simTop)?8:0;
+  var confidence=Math.min(90,Math.max(25,
+    50+_ab+Math.min(18,scoreGap)+Math.max(0,topScore-55)-ef*4-(wfConflict?12:0)
+  ));
+  var lrnTop=topK(lrnMap);
+  var sc={nat:nat,clm:clm,sim:sim,ntTop:ntTop,clTop:clTop,simTop:simTop,junType:junType,
+  gap:gap,trust:trust,trustColor:trustColor,
+  rn:rn,sorted:sorted,typeKey:typeKey,topKey:topKey,secKey:secKey,
+  str:str,lrnTop:lrnTop,ea:ea,ef:ef,wf:wf,wfConflict:wfConflict,
+  hantei:hantei,topScore:topScore,scoreGap:scoreGap,cp:cp};
+  sc.aspir=aspir;sc.aspirTopKey=aspirTopKey;sc.confidence=confidence;
+  sc.fieldProfile=buildFieldProfile(sc);
+  return sc;
+}
+function topK(obj){
+  var best=null,bestV=-1;
+  for(var k in obj){if((obj[k]||0)>bestV){bestV=obj[k];best=k;}}
+  return best;
+}
+function calcPlacementSc(ans){
+  var pl={pro:0,meister:0,partner:0,contributor:0,
+          purposeSelf:0,purposeTeam:0,evalExternal:0,evalSelf:0};
+  for(var i=0;i<QS.length;i++){
+    var a=ans[i];
+    if(a===null||a===undefined) continue;
+    var ch=QS[i].ch[a];
+    if(!ch||!ch.pl) continue;
+    for(var k in ch.pl){if(pl[k]!==undefined) pl[k]+=ch.pl[k];}
+  }
+  var archetypes=['pro','meister','partner','contributor'];
+  var arcSorted=archetypes.slice().sort(function(a,b){return pl[b]-pl[a];});
+  var topArc=arcSorted[0],secArc=arcSorted[1];
+  var arcGap=pl[topArc]-pl[secArc];
+  var confidence=arcGap>=3?'高':arcGap>=1?'中':'低（同点）';
+  var purposeTop=pl.purposeSelf===pl.purposeTeam
+    ?'目的軸は同点'
+    :pl.purposeSelf>pl.purposeTeam?'自己目的寄り':'チーム目的寄り';
+  var evalTop=pl.evalExternal===pl.evalSelf
+    ?'評価軸は同点'
+    :pl.evalExternal>pl.evalSelf?'他者評価寄り':'自己評価寄り';
+  return{pl:pl,topArc:topArc,secArc:secArc,arcGap:arcGap,
+         confidence:confidence,purposeTop:purposeTop,evalTop:evalTop};
+}
+function getWeakFlagLabel(wf,role){
+  if(!wf) return 'なし';
+  var base={
+    '対人後回し':'キャストへの細かい声かけが後回しになりやすい',
+    '育成後回し':'新人スタッフへの確認が後回しになりやすい',
+    '現場後回し':'店全体の流れ確認が後回しになりやすい',
+    '数字後回し':'売上・数字の確認が後回しになりやすい'
+  };
+  var isManagement=(role==='exec'||role==='director'||role==='manager');
+  if(wf==='育成後回し'&&isManagement){
+    return base[wf]+'（現場優先の合理的判断として働いている可能性もあります。面談で実態を確認してください）';
+  }
+  return base[wf]||wf;
+}
+function buildTrustLabel(sc){
+  var ntTop=sc.ntTop,clTop=sc.clTop,simTop=sc.simTop;
+  if(ntTop===clTop&&clTop===simTop) return{label:'高（3層一致）',color:'var(--teal)',level:3};
+  if(ntTop===clTop&&clTop!==simTop) return{label:'中〜高（自己認識は安定。現場行動で別傾向あり）',color:'var(--gold)',level:2};
+  if(ntTop===simTop&&clTop!==simTop) return{label:'中（本人申告と実際の出方に確認余地あり）',color:'var(--gold)',level:2};
+  if(clTop===simTop&&ntTop!==clTop) return{label:'中（仕事上の自己認識と行動は一致。自然傾向とは使い分けあり）',color:'var(--gold)',level:2};
+  return{label:'低（3層にズレあり・面談必須）',color:'var(--red)',level:1};
+}
+function buildTrustComment(sc){
+  var ntTop=sc.ntTop,clTop=sc.clTop,simTop=sc.simTop;
+  var an={'対人':'対人運用力','現場':'現場統率力','分析':'分析・構造化力','表現':'表現・訴求力'};
+  var nt=an[ntTop]||ntTop,ct=an[clTop]||clTop,st=an[simTop]||simTop;
+  if(ntTop===clTop&&clTop===simTop) return '自然な傾向・本人の認識・場面行動、すべてが「'+nt+'」で一致しています。スコアへの信頼度は高いです。';
+  if(ntTop===clTop&&clTop!==simTop) return '仕事外での自然な傾向と、本人が思う強みはどちらも「'+nt+'」に寄っています。自己認識は比較的一貫しています。<br>一方で、場面想定では「'+st+'」が出ているため、実際の現場では'+nt+'で考えたことを、'+st+'の動きに変換して使っている可能性があります。';
+  if(ntTop===simTop&&clTop!==simTop) return '自然な傾向と場面行動はどちらも「'+nt+'」です。<br>一方で本人申告は「'+ct+'」に寄っており、自分の強みの認識と実際の出方に確認余地があります。面談で「力が出た仕事の場面」を確認してください。';
+  if(clTop===simTop&&ntTop!==clTop) return '本人の申告と場面行動はどちらも「'+ct+'」で一致しています。<br>自然な傾向（'+nt+'）とは異なりますが、仕事における自己認識と実際の動きは安定しています。';
+  return '自然な傾向（'+nt+'）・本人申告（'+ct+'）・場面行動（'+st+'）の3つがすべて異なります。方向性を絞る前に面談での確認が必要です。';
+}
+var ROLE_HIGH_MEANING={
+LEAD:'現場全体の流れを見て動き、判断のスピードや状況把握の速さで力を発揮します。チームを動かす場面や、混乱した現場を立て直す場面が得意です。',
+EDU:'人の反応を見ながら伝え方を変え、相手の成長を引き出すこと。教えること自体より「どうすれば伝わるか」を工夫することに強みがあります。',
+NUM:'数字の変化を見て原因を読み、改善の仮説を立てること。感覚ではなく根拠で動き、結果を説明できる状態を大切にします。',
+SYS:'繰り返し起きる問題の構造を見て、仕組みに落とし込むこと。「次も同じことが起きないようにする」視点で現場や業務を整えます。',
+REC:'人を見て関係を作り、定着まで見届けること。採用の入口だけでなく、入社後の不安や成長まで視野があります。',
+PR:'店やキャストの魅力を言語化し、見せ方と発信の仕組みを整えること。発信そのものより「続けられる形」「結果につながる形」にすることに力があります。'
+};
+var ROLE_LOW_MEANING={
+LEAD:'営業中に前へ出て場を制することより、営業前後の準備・整備・改善で力が出やすいです。現場に関心がないのではなく、現場を支える役割に強みがあります。',
+EDU:'人を育てることが苦手なのではなく、育成より現場や数字・仕組みを動かす方が本来の強みです。',
+NUM:'数字が嫌いなのではなく、数字を起点に動くより現場や人・発信を起点に動く方が力が出やすいです。',
+SYS:'整理や仕組み化が苦手なのではなく、仕組みを作ることより現場や人・発信を直接動かすことに強みがあります。',
+REC:'採用への関心が低いのではなく、採用専担より現場・育成・数字・発信などの役割で力が出やすいです。',
+PR:'発信や見せ方への関心が低いのではなく、発信より現場・人・数字・仕組みを動かす方が本来の強みです。'
+};
+var ROLE_TASKS={
+LEAD:['混雑時のフロア判断','トラブル初動対応','重要時間帯の現場責任','人員不足時の即時対応','バタついた夜の現場立て直し'],
+EDU:['新人スタッフの3日間フォロー','落ち込んでいるスタッフへの声かけ','振り返り同席','キャストや黒服の不安拾い','教え方の工夫と確認'],
+NUM:['週次売上原因分析','客単価・指名・再来店の推移確認','特定曜日のKPIチェック','数字が落ちた原因の仮説立て','改善効果の数値確認'],
+SYS:['繰り返しミスの原因整理','営業導線の見直し','確認漏れ防止の仕組み作り','教育マニュアルの整備','ルールの言語化と共有'],
+REC:['応募後対応の改善','面接前後の不安拾い','新人定着の初期フォロー','紹介促進の声かけ','求人条件の見直し提案'],
+PR:['SNS投稿ルールの整備','店やキャストの魅力言語化','ブランドとズレた投稿のチェック','発信を続ける運用ルール作り','伝わる言葉・見せ方の整理']
+};
+var ROLE_UNSUITABLE={
+LEAD:'権限がないのに火消しだけ任せられる状態 / 現場対応ばかりで振り返りや改善の時間がない / 責任だけ重く判断範囲が曖昧 / 緊急対応だけが続いて次の仕組みに変える余裕がない——こうした状態では力が出にくくなります。',
+EDU:'育成専任にして現場や数字から切り離すと、力が出にくくなります。',
+NUM:'数字を見るだけで改善の権限がない状態では力が出にくくなります。数字の結果だけ責められ、原因分析や改善策まで任されない状態も避けてください。',
+SYS:'毎日の緊急対応に追われ整える余裕がない環境では強みが活かせません。改善提案を出しても実行権限がない状態でも力が出にくくなります。',
+REC:'採用基準が毎回変わる、または採用だけを感覚で任される環境では力が出にくくなります。',
+PR:'発信だけを感覚で任せるより、目的・ターゲット・運用ルールまでセットで任せる方が力が出やすいです。毎日の緊急対応だけを中心に置くと、本来の強みが出にくくなります。'
+};
+var ROLE_FIRST_STEPS={
+LEAD:['今週の混雑時間帯を振り返り、次の対応策を1つ決める','新人の行動で「ここを変えれば良くなる」と感じた点を1つ伝える'],
+EDU:['今担当しているスタッフに「最近どう？」と聞く5分を作る','振り返りの場を1回設ける'],
+NUM:['今週の売上で「なぜこうなったか」説明できないものを1つ特定する','客単価が低い時間帯の原因を1つ仮説立てる'],
+SYS:['今週繰り返し起きているトラブルを1つ書き出す','同じ質問が来る場面に対して、回答をメモ1枚にまとめる'],
+REC:['今いる新人の「辞めやすいポイント」を1つ書き出す','応募後対応で「改善できそうな点」を1つ特定する'],
+PR:['今月の投稿で「ブランドとズレている」と感じるものを3つ選ぶ','キャストの魅力を3つ言語化する','「伝えたいことが伝わっているか」を1つの投稿で確認する']
+};
+function buildResultReason(sc){
+  var sorted=sc.sorted;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var top1=sorted[0],top2=sorted.length>1?sorted[1]:null,top3=sorted.length>2?sorted[2]:null;
+  var gap12=top2?top1[1]-top2[1]:100;
+  var gap23=(top2&&top3)?top2[1]-top3[1]:100;
+  var html='';
+  if(gap12<10&&gap23<10&&top3){
+    html+='回答全体では、<strong>'+roleNames[top1[0]]+'（'+Math.round(top1[1])+'点）</strong>・<strong>'+roleNames[top2[0]]+'（'+Math.round(top2[1])+'点）</strong>・<strong>'+roleNames[top3[0]]+'（'+Math.round(top3[1])+'点）</strong>が近い値で出ています。<br>1位だけで断定するより、<strong>'+roleNames[top1[0]]+'・'+roleNames[top2[0]]+'・'+roleNames[top3[0]]+'をつなぐ複合型</strong>として捉えた方が実態に近いです。';
+  } else if(gap12<10&&top2){
+    html+='回答全体では、<strong>'+roleNames[top1[0]]+'（'+Math.round(top1[1])+'点）</strong>と<strong>'+roleNames[top2[0]]+'（'+Math.round(top2[1])+'点）</strong>が近い値で出ています。<br>このタイプは「'+roleNames[top1[0]]+'と'+roleNames[top2[0]]+'の組み合わせ」として理解されるべきです。どちらか一方だけを任せると、本来の力が半分しか出ません。';
+  } else {
+    html+='回答全体では、<strong>'+roleNames[top1[0]]+'（'+Math.round(top1[1])+'点）</strong>が最も高く出ています。';
+    if(top2) html+='次いで<strong>'+roleNames[top2[0]]+'（'+Math.round(top2[1])+'点）</strong>';
+    if(top3) html+='、<strong>'+roleNames[top3[0]]+'（'+Math.round(top3[1])+'点）</strong>';
+    html+='が続いています。';
+    if(top2&&top3&&top2[1]-top3[1]<8) html+='<br>'+roleNames[top2[0]]+'・'+roleNames[top3[0]]+'も近い値のため、この2つとの組み合わせでも力が出やすい傾向があります。';
+  }
+  return html;
+}
+function buildHighScoreMeaning(sc){var k=sc.topKey;return ROLE_HIGH_MEANING[k]||'このロールでの強みが高く出ています。';}
+function buildLowScoreMeaning(sc){var sorted=sc.sorted;var last=sorted[sorted.length-1];var k=last[0];if(last[1]>40) return '';return ROLE_LOW_MEANING[k]||'';}
+function buildSuitableTasks(sc){var k=sc.topKey;var tasks=ROLE_TASKS[k]||[];if(!tasks.length) return '';var html='<ul class="enh-task-list">';for(var i=0;i<tasks.length;i++) html+='<li>'+tasks[i]+'</li>';html+='</ul>';return html;}
+function buildUnsuitableAssignment(sc){
+  var k=sc.topKey;var fp=sc.fieldProfile;var sub=fp?fp.fieldSubtype:'';
+  if(sub==='現場特化型') return '現場から完全に外してデスクワークや企画だけを任せると強みが出にくいです。現場内で責任範囲を広げる方向が合っています。';
+  if(sub==='現場土台の拡張型') return '現場から急に外すより、現場を続けながら小さな役割を追加する方が合います。複数の役割を一気に渡すと強みが分散しやすいです。';
+  if(sub==='客席プレーヤー型') return 'いきなり教育責任者やフロア全体管理に置くより、まずは重要顧客対応・接客同行・関係維持の実例確認から始める方が安全です（客席適性は仮説のため面談で確認してください）。';
+  if(sub==='プレーヤー兼育成型') return '完全に育成専任にするより、本人の接客経験を活かせる同行・振り返り役から始める方が力が出やすいです。';
+  if(sub==='営業マネジメント転用候補') return '現場感覚を切り離したデスクワークだけにすると力が出にくいです。現場の動きと数字改善をセットで任せる方が合います。';
+  return ROLE_UNSUITABLE[k]||'';
+}
+function buildFirstSmallStep(sc){var k=sc.topKey;var steps=ROLE_FIRST_STEPS[k]||[];if(!steps.length) return '';var html='<ul class="enh-step-list">';for(var i=0;i<steps.length;i++) html+='<li>'+steps[i]+'</li>';html+='</ul>';return html;}
+function detectFieldSubtype(sc){
+  var rn=sc.rn,nat=sc.nat,cp=sc.cp||{};
+  var leadScore=rn['LEAD']||0,eduScore=rn['EDU']||0,numScore=rn['NUM']||0;
+  var sysScore=rn['SYS']||0,recScore=rn['REC']||0,prScore=rn['PR']||0;
+  var nonLeadMax=Math.max(eduScore,numScore,sysScore,recScore,prScore);
+  var sorted=sc.sorted,topKey=sc.topKey,simTop=sc.simTop;
+  var topSc=sorted[0][1],secSc=sorted.length>1?sorted[1][1]:0,gap=topSc-secSc;
+  var nNat=nat['対人']||0,bNat=nat['現場']||0;
+  var cpPlayer=(cp.player||0)+(cp.after||0)+(cp.contact||0)+(cp.mood||0);
+  var cpTeach=cp.teach||0;
+  var cpMgmt=(cp.mgmt||0)+(cp.next||0)+(cp.sales||0);
+  var _simMgmt=(simTop==='現場'||simTop==='対人');
+  var _topMgmt=(topKey==='LEAD'||topKey==='NUM'||topKey==='SYS');
+  if(cpMgmt>=7&&leadScore>=45&&_simMgmt&&_topMgmt) return '営業マネジメント転用候補';
+  var _cpRelation=(cp.trust||0)+(cp.crm||0)+(cp.next||0);
+  if(cpTeach>=3&&_cpRelation>=5&&eduScore>=45) return 'プレーヤー兼育成型';
+  if(cpPlayer>=6&&cpTeach>=3) return 'プレーヤー兼育成型';
+  if(cpPlayer>=6) return '客席プレーヤー型';
+  if(topKey!=='LEAD'){
+    var roleLabels2={'EDU':'育成','NUM':'数字分析','SYS':'仕組み化','REC':'採用','PR':'広報'};
+    return '役割特化型（'+(roleLabels2[topKey]||topKey)+'で力が出やすい）';
+  }
+  if(((leadScore>=58&&numScore>=43)||(cpMgmt>=5&&leadScore>=50))&&_simMgmt) return '営業マネジメント転用候補';
+  if(leadScore>=50&&nonLeadMax>=42&&gap<=22) return '現場土台の拡張型';
+  if(nNat>=bNat&&nNat>0&&(leadScore>=38||cpPlayer>=4)&&(eduScore>=35||cpTeach>=3)) return 'プレーヤー兼育成型';
+  if(nNat>=bNat&&nNat>0&&(leadScore>=35||cpPlayer>=4)) return '客席プレーヤー型';
+  if(bNat>nNat&&bNat>0&&leadScore>=52&&nonLeadMax<43) return 'フロア統率型';
+  if(leadScore>=48&&nonLeadMax<36) return '現場特化型';
+  return '現場適応型';
+}
+function detectHiddenPotential(sc){
+  var rn=sc.rn,topKey=sc.topKey,secKey=sc.secKey;
+  var roleLabels={EDU:'育成（人の成長を拾う観察眼がある）',NUM:'数字（営業の変化を数字で追う視点がある）',
+  SYS:'仕組み化（繰り返しのトラブルを整理する目がある）',REC:'採用（人を見る目と定着への関心がある）',
+  PR:'広報（店やキャストの魅力を発信する感性がある）',LEAD:'現場統率（店全体の流れを見て動ける力がある）'};
+  var thresholds={EDU:33,NUM:33,SYS:33,REC:28,PR:28,LEAD:38};
+  var potentials=[];
+  var keys=['LEAD','EDU','NUM','SYS','REC','PR'];
+  for(var i=0;i<keys.length;i++){
+    var k=keys[i];
+    if(k===topKey||k===secKey) continue;
+    if((rn[k]||0)>=(thresholds[k]||28)) potentials.push(roleLabels[k]);
+  }
+  return potentials.length>0?potentials:null;
+}
+function buildFirstSmallRole(sc,fieldSubtype){
+  var secKey=sc.secKey;var topKey=sc.topKey;var rn=sc.rn||{};
+  var prSmall=(topKey==='REC'||(rn['REC']||0)>=42)
+    ? '求人文の見直し / 採用ページの改善点を1つ書き出す / 応募者へのフォロー文を整える'
+    : (topKey==='SYS'||(rn['SYS']||0)>=38)
+    ? '制作依頼の整理 / SNSや求人文の見せ方改善 / 店舗ブランドに合う言葉づくり / 業務フロー改善'
+    : 'SNS投稿案 / キャストや店の魅力整理 / 発信の見せ方を1つ改善する';
+  var roleSmall={EDU:'新人1名の3日間フォロー / 営業後の振り返り同席 / キャストの不安拾い',
+  NUM:'特定曜日の売上原因分析 / 22時以降の客単価チェック / 指名・再来店の簡易確認',
+  SYS:'繰り返しのミスが起きる箇所の整理 / 営業導線の見直し / 確認漏れ防止の仕組み作り',
+  REC:'応募後対応の改善 / 面接前後の不安拾い / 新人定着の初期フォロー',
+  PR:prSmall,
+  LEAD:'混雑時のフロア判断 / トラブル初動対応 / 重要時間帯の現場責任'};
+  if(fieldSubtype==='客席プレーヤー型') return '重要顧客対応 / アフター同行 / 関係維持の連絡 / 若手への接客同行';
+  if(fieldSubtype==='プレーヤー兼育成型') return '重要顧客対応 + 新人への接客同行 / キャストの振り返り同席';
+  if(fieldSubtype==='現場特化型'||fieldSubtype==='フロア統率型') return roleSmall['LEAD'];
+  if(fieldSubtype==='営業マネジメント転用候補') return roleSmall['NUM'];
+  if(secKey&&roleSmall[secKey]) return roleSmall[secKey];
+  return roleSmall['LEAD'];
+}
+function getBehaviorStrengthLabel(sc){
+  var cp=sc.cp||{};var rn=sc.rn||{};var nat=sc.nat||{};var topKey=sc.topKey;
+  var cpRelation=(cp.contact||0)+(cp.trust||0)+(cp.crm||0)+(cp.mood||0);
+  if(topKey==='SYS'||(rn['SYS']||0)>=45) return '情報を整理して改善につなげる力';
+  if(topKey==='NUM'||(rn['NUM']||0)>=45) return '数字の動きを見て判断する力';
+  if(topKey==='PR'||(rn['PR']||0)>=45) return '伝わる形に整える力';
+  if(topKey==='EDU'||(rn['EDU']||0)>=45) return '相手の状態を見て関わる力';
+  if(topKey==='REC'||(rn['REC']||0)>=42) return '人を見極めて定着させる力';
+  if(cpRelation>=5&&(nat['対人']||0)>=(nat['現場']||0)) return '相手の状態や空気を見る力';
+  if(cpRelation>=4) return '対人運用力';
+  if((nat['現場']||0)>0) return '現場の違和感を拾う力';
+  return '状況を読んで動く力';
+}
+function buildUserFieldCommentBlocks(sc,fieldSubtype,hiddenPotential,firstSmallRole){
+  var blocks=[];
+  var strengthMap={
+  '客席プレーヤー型':'お客様との関係づくりに強みがある可能性があります。席での距離感、営業後の連絡、アフターや次回来店へのつなぎ方に反応が出ています。<br>ただし、これは診断上の仮説です。実際の営業でどのように関係を作っているかを面談で確認すると、より正確に見えます。',
+  'プレーヤー兼育成型':'お客様との関係づくりだけでなく、自分の接客経験を後輩やキャストに伝える力も出ています。自分だけが売るより、同行・振り返り・距離感の教え方で力が出る可能性があります。',
+  'フロア統率型':'あなたは現場の中でも特に<strong>フロア全体の流れを見て動く</strong>ことに強みが出やすいタイプです。店全体を俯瞰して詰まりを解消し、人を動かす判断ができます。',
+  '現場特化型':'あなたは<strong>現場の中で価値が出やすい</strong>タイプです。忙しい夜でも場を回し続ける力、トラブルの初動対応、重要顧客への対応など、現場内でできることが揃っています。',
+  '現場土台の拡張型':'あなたは<strong>今の役割を土台にしながら、別の方向にも反応が出ている</strong>タイプです。現在の強みを活かしつつ、別の役割にも少しずつ広げていける可能性があります。',
+  '営業マネジメント転用候補':'個人で関係を作るだけでなく、誰をどの席につけるか、どのタイミングで次回来店につなげるかなど、営業全体を見る力が出ています。感覚だけで終わらせず、結果を作る仕組みを考えられるタイプです。'
+  };
+  var b1body=strengthMap[fieldSubtype]||'あなたは<strong>現場の中で柔軟に対応できる</strong>タイプです。状況に応じて動きを変えながら場を支えることができます。';
+  blocks.push({cls:'field-block-g',labelCls:'field-block-label-g',label:'あなたの現場での強み',body:b1body});
+  var b2body='';
+  if(hiddenPotential&&hiddenPotential.length>0){
+    var _bsLabel=getBehaviorStrengthLabel(sc);
+    b2body='回答では<strong>'+_bsLabel+'</strong>が出ていますが、全体では以下への伸びしろも見えます。<br><strong>'+hiddenPotential.join(' / ')+'</strong>';
+    var firstTask=firstSmallRole?firstSmallRole.split('/')[0].trim():'';
+    if(firstTask) b2body+='<br>いきなり役割を変えるより、まずは「<strong>'+firstTask+'</strong>」から試すとよいです。';
+  }else{
+    if(fieldSubtype==='現場特化型'||fieldSubtype==='フロア統率型'){
+      b2body='現在の回答では現場内での動きに一貫性があります。現場内で責任範囲を広げること——フロア責任・混雑時判断・トラブル初動・重要顧客対応——が次のステップになりそうです。';
+    }else{
+      var _bsLabel2=getBehaviorStrengthLabel(sc);
+      b2body='現在は<strong>'+_bsLabel2+'</strong>に回答が集中しています。この力を活かしながら、少しずつ次の方向を見つけていく段階です。';
+    }
+  }
+  blocks.push({cls:'field-block-a',labelCls:'field-block-label-a',label:'次に伸ばせそうな方向',body:b2body});
+  var stayMap={
+  '現場特化型':'この診断では、<strong>現場に残しながら責任範囲を広げる</strong>方向が合っていそうです。現場から外すより、現場内でできることを増やしていくことが力を発揮しやすいです。',
+  'フロア統率型':'この診断では、<strong>現場に残しながら統率範囲を広げる</strong>方向が合っていそうです。より大きな現場を任される方向で成長しやすいです。',
+  '現場土台の拡張型':'この診断では、<strong>現場経験を土台に、育成・数字・仕組み化などへ少しずつ役割を広げていく</strong>方向が合っていそうです。現場を続けながら新しい役割を少し渡す形が安全です。',
+  '営業マネジメント転用候補':'この診断では、<strong>現場の動きを活かしながら営業全体の設計に広げていく</strong>方向が合っていそうです。現場感覚を持ちながら数字・仕組みの視点を加えることで、より大きな役割への転換が可能です。',
+  'プレーヤー兼育成型':'この診断では、<strong>お客様との関係構築の経験を後輩やキャストの育成に転用していく</strong>方向が合っていそうです。まずは新人への接客同行や振り返り同席から試すとよいです。',
+  '客席プレーヤー型':'この診断では、<strong>お客様との関係構築に強みがある可能性</strong>があります。面談で、席での動き・アフター対応・連絡頻度・次回来店へのつなぎ方の実例を確認してから配置を判断してください。'
+  };
+  var b3body=stayMap[fieldSubtype]||'現時点の回答では、現場を続けながら少しずつ役割を確認していく段階です。面談でどの方向に力が出やすいかを確認してください。';
+  blocks.push({cls:'field-block-b',labelCls:'field-block-label',label:'現場に残った方がいいか・広げた方がいいか',body:b3body});
+  return blocks;
+}
+function buildManagerFieldData(sc,fieldSubtype,hiddenPotential,firstSmallRole,fits){
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var currentUsageMap={
+  '客席プレーヤー型':'営業中のお客様対応に強みが出る可能性（面談で確認） / 距離感・連絡・アフター・関係維持の実例を面談で確認 / 重要顧客対応は仮説として保持',
+  'プレーヤー兼育成型':'お客様との関係構築 / 後輩・キャストへの接客同行 / 振り返り同席 / 現場での経験の言語化',
+  'フロア統率型':'フロア全体の流れの管理 / 混雑時の人員判断 / トラブル初動対応 / 現場責任者としての動き',
+  '現場特化型':'現場での確実な動き / トラブル初動 / 重要時間帯の現場責任 / 混雑時のフロア対応',
+  '現場土台の拡張型':getBehaviorStrengthLabel(sc)+'（安定） + '+(sc.secKey?(roleNames[sc.secKey]||sc.secKey):'次役割')+'への転用準備',
+  '営業マネジメント転用候補':'現場の動きと数字の両面を見る視点 / 売上改善の仮説立て / 営業全体の設計'
+  };
+  var currentUsage=currentUsageMap[fieldSubtype]||getBehaviorStrengthLabel(sc)+' / 状況に応じた柔軟な対応';
+  var dangerRoleMap={
+  '客席プレーヤー型':'いきなりフロア全体の管理を任せる / 数字責任だけを持たせる',
+  'プレーヤー兼育成型':'育成専任にして現場から切り離す / 数字責任だけを持たせる',
+  'フロア統率型':'SNS・求人・広報を主業務にする / 数字分析専任',
+  '現場特化型':'いきなり育成責任者にする / 現場から完全に外す',
+  '現場土台の拡張型':'現場から完全に外す / 役割を急に複数追加する',
+  '営業マネジメント転用候補':'現場感覚を活かせない純粋なデスクワーク / 現場との接点が全くない役割'
+  };
+  var dangerRole=dangerRoleMap[fieldSubtype]||'役割が曖昧なままでの配置';
+  var interviewPoints=['「最近、一番力が出た仕事の場面を教えてください」'];
+  if(fieldSubtype==='客席プレーヤー型'||fieldSubtype==='プレーヤー兼育成型'){
+    interviewPoints.push('「お客様との関係づくりで、うまくいったと感じた場面はどんな時ですか？」');
+    if(fieldSubtype==='客席プレーヤー型') interviewPoints.push('※客席プレーヤー適性は現時点では仮説です。席での距離感・連絡・アフター対応・関係維持の実例を確認してください。');
+    if(fieldSubtype==='プレーヤー兼育成型') interviewPoints.push('「後輩やキャストに何かを教えた経験がありますか？どう伝えましたか？」');
+  }
+  if(fieldSubtype==='現場土台の拡張型'||fieldSubtype==='営業マネジメント転用候補') interviewPoints.push('「現場以外で、任されたら力が出そうだと思う仕事はありますか？」');
+  if(fieldSubtype==='現場特化型'||fieldSubtype==='フロア統率型') interviewPoints.push('「現場の中で、もっと任されたいと思っている部分はありますか？」');
+  if(hiddenPotential&&hiddenPotential.length>0) interviewPoints.push('「隠れ適性確認：'+hiddenPotential.join(' / ').replace(/<[^>]*>/g,'')+'の仕事に興味を感じることはありますか？」');
+  return{fieldSubtype:fieldSubtype,currentUsage:currentUsage,
+  hiddenPotentialList:hiddenPotential||[],
+  stayOrExpand:fits.stayFieldFit==='高'?'現場維持推奨':fits.expansionFit==='高'?'拡張推奨':'要面談確認',
+  playerContinue:(fits.playerFit==='高'&&fits.playerToEducationFit!=='高')?'○（プレーヤー継続推奨）':(fits.playerFit==='高'?'△（追加観察）':'－'),
+  playerToEdu:fits.playerToEducationFit==='高'?'○（育成転用の可能性あり）':fits.playerToEducationFit==='中'?'△（追加観察が必要）':'－',
+  playerToMgmt:fits.playerToManagementFit==='高'?'○（営業マネジメント転用の可能性あり）':fits.playerToManagementFit==='中'?'△（追加観察が必要）':'－',
+  firstSmallRole:firstSmallRole,dangerRole:dangerRole,interviewPoints:interviewPoints,fits:fits};
+}
+function buildFieldProfile(sc){
+  var rn=sc.rn,nat=sc.nat,cp=sc.cp||{};
+  var leadScore=rn['LEAD']||0,eduScore=rn['EDU']||0,numScore=rn['NUM']||0;
+  var sysScore=rn['SYS']||0,recScore=rn['REC']||0,prScore=rn['PR']||0;
+  var nonLeadMax=Math.max(eduScore,numScore,sysScore,recScore,prScore);
+  var sorted=sc.sorted,topScore=sorted[0][1],secScore=sorted.length>1?sorted[1][1]:0,scoreGap=topScore-secScore;
+  var nNat=nat['対人']||0,bNat=nat['現場']||0;
+  var cpPlayer=(cp.player||0)+(cp.after||0)+(cp.contact||0)+(cp.mood||0);
+  var cpRelationship=(cp.trust||0)+(cp.crm||0)+(cp.contact||0)+(cp.next||0);
+  var cpAfterContact=(cp.after||0)+(cp.contact||0)+(cp.next||0);
+  var cpTeach=cp.teach||0;
+  var cpMgmt=(cp.mgmt||0)+(cp.next||0)+(cp.sales||0);
+  var customerPlayerFit=cpPlayer>=6?'高':cpPlayer>=3?'中':'低';
+  var relationshipBuildingFit=cpRelationship>=7?'高':cpRelationship>=4?'中':'低';
+  var afterContactFit=cpAfterContact>=5?'高':cpAfterContact>=3?'中':'低';
+  var playerToTeachingFit=cpTeach>=4?'高':cpTeach>=2?'中':'低';
+  var currentFieldFit=leadScore>=62?'高':leadScore>=48?'中':'低';
+  var playerFit=(nNat>=bNat&&nNat>0&&(leadScore>=38||cpPlayer>=4))?'高':(leadScore>=32||cpPlayer>=2?'中':'低');
+  var playerToEducationFit=(nNat>=bNat&&(eduScore>=34||cpTeach>=3))?'高':(eduScore>=26||cpTeach>=2?'中':'低');
+  var playerToManagementFit=(leadScore>=56&&numScore>=40)||(cpMgmt>=6&&leadScore>=46)?'高':(leadScore>=46&&numScore>=30||cpMgmt>=4?'中':'低');
+  var expansionFit=(leadScore>=48&&nonLeadMax>=40&&scoreGap<=24)?'高':(leadScore>=40&&nonLeadMax>=32?'中':'低');
+  var stayFieldFit=(leadScore>=56&&nonLeadMax<43)?'高':(leadScore>=46&&nonLeadMax<38?'中':'低');
+  var fieldSubtype=detectFieldSubtype(sc);
+  var hiddenPotential=detectHiddenPotential(sc);
+  var firstSmallRole=buildFirstSmallRole(sc,fieldSubtype);
+  var fits={stayFieldFit:stayFieldFit,expansionFit:expansionFit,playerFit:playerFit,
+  playerToEducationFit:playerToEducationFit,playerToManagementFit:playerToManagementFit};
+  var userCommentBlocks=buildUserFieldCommentBlocks(sc,fieldSubtype,hiddenPotential,firstSmallRole);
+  var managerData=buildManagerFieldData(sc,fieldSubtype,hiddenPotential,firstSmallRole,fits);
+  return{currentFieldFit:currentFieldFit,fieldSubtype:fieldSubtype,
+  hiddenPotential:hiddenPotential?hiddenPotential.join(' / '):'現時点では他の役割への反応は弱め',
+  expansionFit:expansionFit,stayFieldFit:stayFieldFit,playerFit:playerFit,
+  playerToEducationFit:playerToEducationFit,playerToManagementFit:playerToManagementFit,
+  customerPlayerFit:customerPlayerFit,relationshipBuildingFit:relationshipBuildingFit,
+  afterContactFit:afterContactFit,playerToTeachingFit:playerToTeachingFit,
+  firstSmallRole:firstSmallRole,userCommentBlocks:userCommentBlocks,managerData:managerData};
+}
+function checkAnswerQuality(sc,ans){
+  var flags=[];
+  var va=ans.filter(function(a){return a!==null&&a!==undefined;});
+  var n=va.length;
+  if(n>=12){
+    var cyc=0;
+    for(var i=4;i<n;i++){if(va[i]===va[i%4]) cyc++;}
+    if(cyc>=n-4-2) flags.push('periodic');
+  }
+  var maxRun=1,run=1;
+  for(var i=1;i<n;i++){
+    if(va[i]===va[i-1]) run++; else run=1;
+    if(run>maxRun) maxRun=run;
+  }
+  if(maxRun>=8) flags.push('consecutive');
+  var s=sc.sorted;
+  if(s.length>=3&&s[0][1]-s[2][1]<=8) flags.push('flat_scores');
+  var _isP3=sc.hantei==='P3'||sc.hantei==='P3A'||sc.hantei==='P3B'||sc.hantei==='P3C';
+  if(_isP3&&sc.trust&&sc.trust.indexOf('高（3層')>=0) flags.push('p3_high_trust');
+  if(sc.topScore<38) flags.push('low_score');
+  var _countMap=[0,0,0,0];
+  for(var _ci=0;_ci<va.length;_ci++){
+    if(va[_ci]!==null&&va[_ci]!==undefined) _countMap[va[_ci]]++;
+  }
+  var _maxCount=Math.max.apply(null,_countMap);
+  if(_maxCount/n>=0.70) flags.push('single_dominant');
+  return{warn:flags.length>=1,flags:flags};
+}
+function findAdjacentType(sc){
+  var sorted=sc.sorted;
+  if(!sc.typeKey||sorted.length<3) return null;
+  var t=sc.topKey,s=sc.secKey,th=sorted[2][0];
+  var sScore=sorted.length>1?sorted[1][1]:0,thScore=sorted[2][1];
+  if(sScore-thScore>15) return null;
+  var candidates=[t+'-'+th,th+'-'+t,s+'-'+th,th+'-'+s];
+  for(var i=0;i<candidates.length;i++){
+    if(TYPES[candidates[i]]&&candidates[i]!==sc.typeKey)
+      return{key:candidates[i],typeObj:TYPES[candidates[i]],thirdKey:th,thirdScore:Math.round(thScore)};
+  }
+  return null;
+}
+var ROLE_TONE={
+'manager':{
+  label:'店舗責任者（マネージャー / 店長 / 副店長）',
+  banner:'あなたは一つの店を預かる立場です。この結果は<strong>「数字・現場・人の両立をどう取るか」</strong>と<strong>「次の主任・スタッフをどう育てるか」</strong>の視点で読んでください。',
+  oneLead:'店を預かる立場から見ると、これはあなたが店を回すときの基本スタイルです。',
+  araTitle:'店舗責任者として出やすいあなたの癖',
+  strengthTitle:'あなたの強み（店の運営での効き方）',
+  sceneTitle:'この強みが店舗運営で効く場面',
+  cautionTitle:'店を預かる立場で気をつけたいこと',
+  actionTitle:'店舗責任者としての次の一手',
+  strengthLead:'この強みは、自分が動くだけでなく、店全体の数字と空気を同時に支える力として読んでください。',
+  strengthClose:'店舗責任者が抱え込みすぎると、店の上限が自分のキャパで止まります。強みを主任やスタッフに分けて渡せると、店の総力が上がります。',
+  cautionFrame:'あなたの場合、これは自分一人の問題ではなく、店全体の空気や数字に直結する点に注意してください。',
+  action:'この強みが必要な役割を、主任やスタッフの一人に今週ひとつ任せて、終わりに振り返ってみてください。',
+  scoreLead:'この点数は、あなたが店を見るときに自然に重視する軸です。低い領域は「弱点」ではなく、得意なスタッフに任せられる部分として読んでください。',
+  stressLead:'店舗責任者のストレスは店全体の空気に出やすいので、自分が崩れやすい状況を知っておきましょう。'
+},
+'leader':{
+  label:'現場リーダー（主任）',
+  banner:'あなたはプレーヤーからリーダーへ移る段階です。この結果は<strong>「自分が動く力」だけでなく「後輩を見ながら動く力」</strong>に変えていく視点で読んでください。',
+  oneLead:'現場をまとめ始める立場から見ると、これはあなたの今の動き方の土台です。',
+  araTitle:'主任になって出やすいあなたの癖',
+  strengthTitle:'あなたの強み（リーダーとしての伸ばし方）',
+  sceneTitle:'この強みが現場で効く場面',
+  cautionTitle:'リーダーになる過程で気をつけたいこと',
+  actionTitle:'主任としての次の一歩',
+  strengthLead:'この強みは、これまでの「自分でやる」から「後輩を動かす」へ広げていく軸として読んでください。',
+  strengthClose:'自分でやった方が早いと感じる場面ほど、あえて後輩に渡すと、あなたの強みがリーダーの強みに変わります。',
+  cautionFrame:'あなたの場合、これは自分一人の損で終わらず、後輩の育ちにも影響し始める点に注意してください。',
+  action:'いつもなら自分でやることを一つ選び、今週は後輩に任せて、終わりに一言フィードバックしてみてください。',
+  scoreLead:'この点数は、今のあなたが自然に力を出しやすい方向です。低い領域は「これから伸ばせる余白」として読んでください。',
+  stressLead:'リーダーになると責任が増えます。自分が崩れやすい状況を知っておくと長く続けられます。'
+},
+'staff':{
+  label:'スタッフ',
+  banner:'この結果は評価ではなく、<strong>あなたがこれから何を強みにして、どう任されると伸びるか</strong>を知るためのものです。今できる／できないより、向かう方向として読んでください。',
+  oneLead:'今のあなたを一言でいうと、こういう動き方が自然に出やすいタイプです。',
+  araTitle:'あなたのあるある',
+  strengthTitle:'あなたの強み',
+  sceneTitle:'強みが出やすい場面',
+  cautionTitle:'気をつけると伸びやすいこと',
+  actionTitle:'明日から試す1アクション',
+  strengthLead:'これは「すでに完成した強み」ではなく、意識して使うと伸びていくあなたの持ち味です。',
+  strengthClose:'この強みが活きる仕事を任せてもらえると、いちばん成長が早くなります。先輩に「こういうことをやってみたい」と伝えてみるのも一歩です。',
+  cautionFrame:'これは欠点ではなく、知っておくと損しにくくなるポイントです。',
+  action:'',
+  scoreLead:'この点数は能力の高さではなく、今のあなたが力を出しやすい方向です。低い領域は「できない」ではなく、これから伸ばせる余白として読んでください。',
+  stressLead:'自分がしんどくなりやすい状況を知っておくと、無理なく続けやすくなります。'
+},
+'_default':{
+  label:'',banner:'',oneLead:'',
+  araTitle:'あなたのあるある',strengthTitle:'あなたの強み',sceneTitle:'強みが出やすい場面',
+  cautionTitle:'気をつけないと損しやすいこと',actionTitle:'明日から試す1アクション',
+  strengthLead:'',strengthClose:'',cautionFrame:'',action:'',
+  scoreLead:'この点数は能力の高さではなく、回答から見た「力が出やすい方向」です。<br>点数が低い役割は「できない」という意味ではなく、今の回答では優先度が低く出ている領域です。',
+  stressLead:''
+}
+};
+function buildPersonalInsights(sc){
+  var AX={'対人':'人の気持ちや場の空気を見て動く','現場':'その場で自分が動いて前に出る','分析':'筋道を立てて整理し、原因から考える','表現':'見せ方や伝え方を工夫する'};
+  var RF={LEAD:'現場をまとめて動かす仕事',EDU:'人を育てる仕事',NUM:'数字を見て改善する仕事',SYS:'仕組みやルールを整える仕事',REC:'人を集める・採用の仕事',PR:'見せ方や発信の仕事'};
+  var items=[];
+  if(sc.clTop&&sc.simTop&&sc.clTop!==sc.simTop){
+    items.push({t:'思っている自分と、出ている自分',
+      b:'あなたは自分の強みを「'+(AX[sc.clTop]||sc.clTop)+'」と感じている回答が多めでした。でも、いざという場面を選ぶ問題では「'+(AX[sc.simTop]||sc.simTop)+'」の動きが自然に出ています。どちらも本物で、頭で思う自分と、とっさに出る自分が少し違うタイプです。これは弱点ではなく、自分でも気づいていない強みが行動の側にある、ということです。'});
+  } else if(sc.ntTop&&sc.clTop&&sc.ntTop!==sc.clTop){
+    items.push({t:'素のあなたと、仕事のあなた',
+      b:'仕事の場面では「'+(AX[sc.clTop]||sc.clTop)+'」で動くあなたですが、もともとの素の傾向は「'+(AX[sc.ntTop]||sc.ntTop)+'」寄りです。今の役割に合わせて動き方を切り替えられている、とも読めます。'});
+  } else {
+    items.push({t:'ブレの少なさ',
+      b:'思っている自分と、実際に出ている自分がよく一致しています。自分の強みを自分で分かって使えている、安定した状態です。'});
+  }
+  if(sc.aspirTopKey&&sc.topKey&&sc.aspirTopKey!==sc.topKey&&RF[sc.aspirTopKey]&&RF[sc.topKey]){
+    items.push({t:'やりたいことと、力が出る場所',
+      b:'あなたが「やってみたい」と答えたのは'+RF[sc.aspirTopKey]+'でした。一方で、回答全体から自然に力が出やすいと出たのは'+RF[sc.topKey]+'です。やりたいことと、今いちばん力が出る場所が少し違うのは、よくあることです。両方を知っておくと、自分の伸ばし方を選びやすくなります。'});
+  }
+  var WB={'対人後回し':'忙しくなると、まわりへの細かい声かけがつい後回しになりやすいです。気持ちが薄いのではなく、目の前を回すことに集中するからです。',
+          '育成後回し':'忙しい時は、新人のフォローより現場を回す方を優先しがちです。',
+          '現場後回し':'忙しい時は、店全体の流れの確認が後回しになりやすいです。',
+          '数字後回し':'忙しい時は、売上や数字の確認が後回しになりやすいです。'};
+  if(sc.wf&&WB[sc.wf]&&(sc.wfConflict||items.length<2)){
+    items.push({t:'忙しい時に出やすいクセ',b:WB[sc.wf]+'知っておくだけで、ひと声かける・あとで確認する、で十分カバーできます。'});
+  }
+  items.push({t:'自分では気づきにくい強み',
+    b:'あなたが「普通にやっているだけ」と思っている"'+(AX[sc.simTop]||'状況を見て動く')+'"動きは、まわりからは「気が利く」「安心できる」と見られていることが多いです。自分では強みと気づきにくいので、覚えておくと損しません。'});
+  var seen={},out=[];
+  for(var i=0;i<items.length&&out.length<3;i++){if(!seen[items[i].t]){seen[items[i].t]=1;out.push(items[i]);}}
+  var html='<div class="pm-section"><div class="pm-section-title">回答から見えた、あなたらしさ</div>'+
+    '<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:8px">これはタイプの一般的な説明ではなく、あなたの回答の<strong>組み合わせ</strong>から見えた、あなた個人の特徴です。</div>';
+  for(var j=0;j<out.length;j++){
+    html+='<div style="margin-bottom:8px;padding:9px 12px;background:var(--bg3);border-left:3px solid var(--gold);border-radius:4px">'+
+      '<div style="font-size:12px;font-weight:600;color:var(--gold2);margin-bottom:3px">'+out[j].t+'</div>'+
+      '<div style="font-size:12px;color:var(--dark);line-height:1.8">'+out[j].b+'</div></div>';
+  }
+  html+='</div>';
+  return html;
+}
+function calcCpSubtype(cp){
+  var groups=[
+    {label:'関係構築型',score:(cp.trust||0)+(cp.contact||0)+(cp.crm||0)},
+    {label:'盛り上げ型',score:(cp.mood||0)+(cp.player||0)+(cp.sense||0)},
+    {label:'再来店設計型',score:(cp.next||0)+(cp.crm||0)+(cp.sales||0)},
+    {label:'支援・育成型',score:(cp.support||0)+(cp.teach||0)},
+    {label:'VIP/アフター型',score:(cp.after||0)+(cp.contact||0)}
+  ];
+  groups.sort(function(a,b){return b.score-a.score;});
+  return groups.filter(function(g){return g.score>0;}).slice(0,2);
+}
+function showResult(){
+  clearProgress();
+  var sc=calcSc();
+  var plSc=calcPlacementSc(ans);
+  sc.plSc=plSc;
+  lastSc=sc;
+  var qf=checkAnswerQuality(sc,ans);
+  sc.qualityFlag=qf;
+  var ty=sc.typeKey?TYPES[sc.typeKey]:null;
+  if(!ty){
+    var roleNames2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+    var t1=roleNames2[sc.topKey]||sc.topKey;var t2=roleNames2[sc.secKey]||sc.secKey;
+    ty={role:'準タイプ（'+t1+'×'+t2+'）',lb:t1+'と'+t2+'の両面を持つ',ct:'15タイプのカテゴリには収まらない複合的な適性',
+    ds:t1+'の強みと'+t2+'の強みを両方持っている可能性があります。\nどちらか一方に特化しているというより、場面によって使い分けられるタイプです。\n面談でどちらの役割で力が出やすいかを確認してください。',
+    tp:'どちらの役割も試験配置で確認することを推奨します。\nまず現在の配置で力が出やすい方から始めてください。',
+    wn:'役割が定まっていない状態が長続きすると疲弊しやすいです。\n「今は何をメインにやるか」を明確にする時間をつくると安定します。',
+    pa:'複数の領域を経験しながら、自分の得意を探してきた',pr:'どの役割で一番力が出るかを見極める時期にいる',fu:'自分の核心的な強みが見えてきて、それを活かせる場所が定まる',
+    gd:'柔軟に役割を変えられる場面・2つの視点が必要な場面',bd:'「あなたの専門は何ですか」と問われる場面',
+    nx:'今週、'+t1+'と'+t2+'どちらの仕事で力が出たかを記録してみる'};
+  }
+  var _adjType=findAdjacentType(sc);
+  var _confTip=sc.confidence>=70?'比較的まとまった傾向':sc.confidence>=50?'ある程度の傾向あり':'傾向の確認が必要';
+  var _tp=TYPE_PERSONAL[sc.typeKey]||null;
+  if(!_tp){
+    var _rn2={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+    var _t1=_rn2[sc.topKey]||sc.topKey,_t2=_rn2[sc.secKey]||sc.secKey;
+    _tp={
+    catch:_t1+'と'+_t2+'の両面を持つタイプ',
+    one:'どちらか一方に特化しているというより、2つをつなぐ視点で力が出やすい人です。',
+    ara:['どちらの役割でも動ける分、どこに集中するか迷いやすい','場面によって違う強みが出ることに気づいている','「専門は？」と聞かれると答えにくいことがある','幅広く動けるが、軸を決めると一気に力が出やすい'],
+    str:'あなたの強みは、<strong>'+_t1+'と'+_t2+'の両面を持てること</strong>です。<br>どちらか一方だけを任せると本来の力が半分しか出ません。この2つを組み合わせる場面で一番力が発揮されます。<br>周りからは、<strong>「どっちもできる人」「使いやすい視点を持っている人」</strong>として見られやすいです。',
+    sce:[_t1+'の力が必要な場面',_t2+'の力が必要な場面','どちらも同時に必要な場面','役割の切り替えが求められる場面'],
+    cau:'役割が定まっていない状態が続くと、<strong>どちらも中途半端になりやすい</strong>です。「今は何をメインにやるか」を決めないと、強みが分散します。',
+    act:'今週、'+_t1+'と'+_t2+'のどちらで力が出たかを記録してみてください。'
+    };
+  }
+  function _listHtml(arr,cls){var h='<ul class="'+cls+'">';for(var i=0;i<arr.length;i++) h+='<li>'+arr[i]+'</li>';return h+'</ul>';}
+  var _rt=ROLE_TONE[userRole]||ROLE_TONE._default;
+  var _personalSection=buildPersonalInsights(sc);
+  function _lead(t){return t?'<div style="font-size:11px;color:var(--gold2);margin-bottom:6px;line-height:1.7">'+t+'</div>':'';}
+  function _close(t){return t?'<div style="font-size:11px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);line-height:1.7">'+t+'</div>':'';}
+  var _useRoleStr=!!(_tp.strByRole&&_tp.strByRole[userRole]);
+  var _useRoleCau=!!(_tp.cauByRole&&_tp.cauByRole[userRole]);
+  var _strBody=_useRoleStr?_tp.strByRole[userRole]:_tp.str;
+  var _cauBody=_useRoleCau?_tp.cauByRole[userRole]:_tp.cau;
+  var rc='<div class="pm-wrap">'+
+    '<div class="pm-section">'+
+    '<div class="pm-type-name">'+ty.role+'</div>'+
+    '<div class="pm-catch">'+_tp.catch+'</div>'+
+    (_rt.label?'<div style="font-size:9px;letter-spacing:.15em;color:var(--gold2);margin-top:2px">'+_rt.label+' 向け表示</div>':'')+
+    '</div>'+
+    '<div class="r-divider"></div>'+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">あなたを一言でいうと</div>'+
+    '<div class="pm-oneliner">'+_tp.one+'</div>'+
+    '</div>'+
+    _personalSection+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">'+_rt.araTitle+'</div>'+
+    _listHtml(_tp.ara,'pm-ara-list')+
+    '</div>'+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">'+_rt.strengthTitle+'</div>'+
+    (_useRoleStr?'':_lead(_rt.strengthLead))+
+    '<div class="pm-strength">'+_strBody+'</div>'+
+    (_useRoleStr?'':_close(_rt.strengthClose))+
+    '</div>'+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">'+_rt.sceneTitle+'</div>'+
+    _listHtml(_tp.sce,'pm-scene-list')+
+    '</div>'+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">'+_rt.cautionTitle+'</div>'+
+    '<div class="pm-caution">'+_cauBody+((!_useRoleCau&&_rt.cautionFrame)?'<br><span style="color:var(--mid)">'+_rt.cautionFrame+'</span>':'')+'</div>'+
+    '</div>'+
+    '<div class="pm-section">'+
+    '<div class="pm-section-title">'+_rt.actionTitle+'</div>'+
+    '<div class="pm-action"><strong>→ </strong>'+_tp.act+'</div>'+
+    '</div>'+
+    '<div style="font-size:9px;color:var(--text3);margin-top:10px;padding:5px 10px;background:var(--bg4);border-radius:4px;line-height:1.6">今の回答パターンからの仮説（目安: '+_confTip+'）。断定ではなく面談・現場観察の起点としてください。</div>'+
+    '</div>';
+  if(_adjType){
+    rc+='<div class="r-divider"></div>'+
+      '<div style="padding:10px 12px;background:var(--bg3);border-radius:6px;border-left:2px solid var(--line)">'+
+      '<div style="font-size:9px;letter-spacing:.2em;color:var(--lit);margin-bottom:3px">近接する傾向（参考）</div>'+
+      '<div style="font-size:12px;font-weight:500;color:var(--mid);margin-bottom:2px">'+_adjType.typeObj.role+'</div>'+
+      '<div style="font-size:10px;color:var(--text3)">'+_adjType.typeObj.ct+'</div>'+
+      '<div style="font-size:9px;color:var(--text3);margin-top:4px">3位スコア（'+({LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'}[_adjType.thirdKey]||_adjType.thirdKey)+': '+_adjType.thirdScore+'点）が2位に近いため参考として表示</div>'+
+      '</div>';
+  }
+  document.getElementById('rcard').innerHTML=rc;
+  var sorted=sc.sorted;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var sg='<div class="s-title">役割スコア</div>'+'<div style="font-size:11px;color:var(--mid);line-height:1.7;margin-bottom:10px;padding:8px 10px;background:var(--bg3);border-radius:6px">'+_rt.scoreLead+'</div>'+'<div class="scores-grid">';
+  for(var i=0;i<sorted.length;i++){
+    sg+='<div class="sc-card'+(i===0?' top':'')+'">'+
+      '<div class="sc-label">'+roleNames[sorted[i][0]]+'</div>'+
+      '<div class="sc-val">'+Math.round(sorted[i][1])+'</div></div>';
+  }
+  sg+='</div>';
+  document.getElementById('sgrid').innerHTML=sg;
+  var sb='';
+  var strMax=Math.max.apply(null,Object.values(sc.str))||1;
+  var strLabels={REL:'人間関係で気を使うストレス',AMB:'やることが曖昧なストレス',NUM_S:'やった結果が見えないストレス',FREE:'自分で決められないストレス',OVER:'一人で抱えすぎるストレス'};
+  var strDescs={
+  REL:'空気が悪い職場や、言い方がきつい人が多い環境だと疲れやすいタイプです。',
+  AMB:'「何をすればいいかよくわからない」状態が続くと、やる気が下がりやすいタイプです。',
+  NUM_S:'頑張っているのに結果がどう出ているか見えないと、続けるのがしんどくなりやすいタイプです。',
+  FREE:'自分で考えて動きたいのに、細かく決められすぎるとやる気が落ちやすいタイプです。',
+  OVER:'忙しくなると、人に頼る前に自分で何とかしようとして疲れやすいタイプです。'
+  };
+  function strLevel(sv,mx){if(sv/mx>=0.7) return'強め';if(sv/mx>=0.35) return'ややあり';return'低め';}
+  sb+='<div class="shachi-box"><div class="s-title">ストレスがたまりやすい場面</div>';
+  if(_rt.stressLead) sb+='<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:8px">'+_rt.stressLead+'</div>';
+  var strSorted=Object.keys(sc.str).sort(function(a,b){return sc.str[b]-sc.str[a];});
+  for(var i=0;i<Math.min(3,strSorted.length);i++){
+    var sv=sc.str[strSorted[i]]||0;if(sv===0) continue;
+    var pct=Math.round(sv/strMax*100);
+    var lvl=strLevel(sv,strMax);
+    var lvlColor=lvl==='強め'?'var(--red)':lvl==='ややあり'?'var(--amb)':'var(--mid)';
+    sb+='<div class="stress-row2">'+
+      '<div class="stress-head">'+
+      '<div class="stress-label2">'+strLabels[strSorted[i]]+'</div>'+
+      '<div class="stress-lv" style="color:'+lvlColor+'">'+lvl+'</div>'+
+      '</div>'+
+      '<div class="stress-bar-wrap"><div class="stress-bar" style="width:'+pct+'%"></div></div>'+
+      '<div class="stress-desc">'+strDescs[strSorted[i]]+'</div>'+
+      '</div>';
+  }
+  sb+='</div>';
+  if(sc.ef>=2){
+    sb+='<div style="margin-top:10px;padding:10px 12px;background:var(--bl);border-left:3px solid var(--blu);border-radius:6px;font-size:12px;color:var(--dark);line-height:1.8">'+
+      '<strong style="color:var(--blu)">評価・承認への感度</strong><br>'+
+      '評価や昇格の動きに反応しやすいタイプです。認められることがモチベーションになる反面、'+
+      '評価が見えない状態が続くと意欲が下がりやすい傾向があります。'+
+      '</div>';
+  }
+  // ── cp サブタイプ表示（客席プレーヤー型・プレーヤー兼育成型のみ） ──
+  var _fp=sc.fieldProfile;
+  var _fst=_fp?_fp.fieldSubtype:'';
+  if(_fst==='客席プレーヤー型'||_fst==='プレーヤー兼育成型'){
+    var _cpGroups=calcCpSubtype(sc.cp||{});
+    if(_cpGroups.length>0){
+      var _cpChips='';
+      for(var _ci=0;_ci<_cpGroups.length;_ci++){
+        _cpChips+='<span style="display:inline-block;padding:4px 10px;margin:3px 4px 3px 0;'+
+          'background:#e6f4f2;color:var(--teal);border-radius:20px;font-size:11px;font-weight:500">'+
+          _cpGroups[_ci].label+'</span>';
+      }
+      sb+='<div class="shachi-box" style="margin-top:10px">'+
+        '<div class="s-title">客席対応の出方（補助）</div>'+
+        '<div style="font-size:12px;color:var(--dark);line-height:1.7;margin-bottom:8px">'+
+        '客席対応の出方としては、<strong>'+_cpGroups[0].label+'</strong>寄りの傾向が出ています。'+
+        (_cpGroups.length>1?'（次いで'+_cpGroups[1].label+'）':'')+
+        '</div>'+
+        _cpChips+
+        '<div style="font-size:10px;color:var(--lit);margin-top:8px;line-height:1.6">'+
+        'これは診断上の仮説です。面談で実際の接客場面の実例を確認してください。</div>'+
+        '</div>';
+    }
+  }
+  // ── PR 発信適性表示 ──
+  var _prScore=sc.rn['PR']||0;
+  var _prLevel=_prScore>=40?'high':_prScore>=28?'medium':'none';
+  if(_prLevel!=='none'){
+    sb+='<div class="shachi-box" style="margin-top:10px;border-left:3px solid var(--gold2)">'+
+      '<div class="s-title">'+(_prLevel==='high'?'発信・集客向き傾向あり':'発信・PRへの感度あり')+'（補助）</div>'+
+      '<div style="font-size:12px;color:var(--dark);line-height:1.8">'+
+      '回答上、発信・見せ方・集客につながる役割への反応が出ています。</div>'+
+      '<div style="font-size:12px;color:var(--dark);line-height:1.8;margin-top:6px">'+
+      '主タイプとは別に、SNS投稿・求人文・イベント告知・店舗の見せ方改善などを小さく任せると力が見える可能性があります。</div>'+
+      '<div style="font-size:11px;color:var(--lit);margin-top:8px;line-height:1.6">'+
+      '面談で、過去に発信・見せ方・言葉選びで工夫した経験を確認してください。（発信スコア: '+_prScore+'）</div>'+
+      '</div>';
+  }
+  // ── placement 補助表示ブロック ──
+  var _pl=plSc;
+  var _confColor=_pl.confidence==='高'?'var(--teal)':_pl.confidence==='中'?'var(--gold)':'var(--red)';
+  var _isTie=(_pl.confidence==='低（同点）');
+  var _arcRows='';
+  if(_isTie){
+    // 同点時: 順位を付けず全アーキタイプをスコア順に並列表示
+    var _arcAll=['pro','meister','partner','contributor'];
+    var _arcByScore=_arcAll.slice().sort(function(a,b){return _pl.pl[b]-_pl.pl[a];});
+    // 1位スコアと同点のアーキタイプを列挙
+    var _topScore=_pl.pl[_arcByScore[0]];
+    var _tiedArcs=_arcByScore.filter(function(k){return _pl.pl[k]===_topScore;});
+    for(var _ti=0;_ti<_tiedArcs.length;_ti++){
+      var _tl=PLACEMENT_LABEL[_tiedArcs[_ti]]||{name:_tiedArcs[_ti],desc:''};
+      _arcRows+='<div class="pl-arc-row">'+
+        '<div class="pl-arc-badge" style="background:var(--mid);color:#fff">同点</div>'+
+        '<div><div class="pl-arc-name" style="font-size:12px">'+_tl.name+'</div>'+
+        '<div class="pl-arc-desc">'+_tl.desc+'</div></div>'+
+        '</div>';
+    }
+  }else{
+    var _topLabel=PLACEMENT_LABEL[_pl.topArc]||{name:_pl.topArc,desc:''};
+    var _secLabel=PLACEMENT_LABEL[_pl.secArc]||{name:_pl.secArc,desc:''};
+    _arcRows='<div class="pl-arc-row">'+
+      '<div class="pl-arc-badge" style="background:var(--gold2);color:#fff">1位</div>'+
+      '<div><div class="pl-arc-name">'+_topLabel.name+'</div>'+
+      '<div class="pl-arc-desc">'+_topLabel.desc+'</div></div>'+
+      '</div>'+
+      '<div class="pl-arc-row" style="opacity:0.75">'+
+      '<div class="pl-arc-badge" style="background:var(--mid);color:#fff">2位</div>'+
+      '<div><div class="pl-arc-name" style="font-size:12px">'+_secLabel.name+'</div>'+
+      '<div class="pl-arc-desc">'+_secLabel.desc+'</div></div>'+
+      '</div>';
+  }
+  sb+='<div class="shachi-box" style="margin-top:12px">'+
+    '<div class="s-title">配置参考軸（補助仮説）</div>'+
+    '<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:10px">'+
+    'この情報は確定評価ではなく、面談・配置検討の補助仮説です。役割スコアと組み合わせて参考にしてください。'+
+    '</div>'+
+    _arcRows+
+    '<div class="pl-meta-row">'+
+    '<div class="pl-meta-chip">目的志向: '+_pl.purposeTop+'</div>'+
+    '<div class="pl-meta-chip">評価感度: '+_pl.evalTop+'</div>'+
+    '</div>'+
+    '<div style="font-size:11px;margin-top:8px">信頼度: <strong style="color:'+_confColor+'">'+_pl.confidence+'</strong></div>'+
+    (_isTie?'<div style="font-size:11px;color:var(--amb);margin-top:6px;line-height:1.7">傾向がまとまっていないため、面談で直接確認することをおすすめします。</div>':'')+
+    '</div>';
+  document.getElementById('sbox').innerHTML=sb;
+  var saveBlockHtml='<div style="text-align:center;margin:16px 0 0">'+
+    '<button class="btn-nav" id="btn-save-result" onclick="onSaveResult()">'+
+    'この結果を保存する'+
+    '</button>'+
+    '<div id="save-result-status" style="font-size:11px;color:var(--teal);margin-top:6px;min-height:16px"></div>'+
+    '</div>';
+  document.getElementById('sbox').innerHTML+=saveBlockHtml;
+  showOnly('s-result');
+}
+function onSaveResult(){
+  var sc=lastSc;
+  if(!sc) return;
+  var name=document.getElementById('send-name').value.trim();
+  var store=document.getElementById('send-store').value.trim();
+  var ok=saveResult(sc,name,store);
+  var btn=document.getElementById('btn-save-result');
+  var status=document.getElementById('save-result-status');
+  if(ok){
+    btn.textContent='保存しました';
+    btn.disabled=true;
+    status.textContent='同じブラウザで次回開いたとき、カバー画面から確認できます';
+  }else{
+    status.style.color='var(--red)';
+    status.textContent='保存に失敗しました（ストレージ容量不足の可能性があります）';
+  }
+}
+function buildLLMPayload(sc,name,store){
+  var aptCodeMap={N:'対人',B:'現場',C:'分析',D:'表現'};
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var letters=['A','B','C','D'];
+  var stressNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
+  var stressTop='';var stressMax=-1;
+  for(var sk in (sc.str||{})){if((sc.str[sk]||0)>stressMax){stressMax=sc.str[sk];stressTop=stressNames[sk]||sk;}}
+  var hiddenStr='';
+  if(sc.fieldProfile&&sc.fieldProfile.hiddenPotential){
+    var hp=sc.fieldProfile.hiddenPotential;
+    hiddenStr=(Array.isArray(hp)?hp.join(' / '):String(hp)).replace(/<[^>]+>/g,'');
+  }
+  var catScores={};
+  for(var i=0;i<sc.sorted.length;i++) catScores[roleNames[sc.sorted[i][0]]]=Math.round(sc.sorted[i][1]);
+  var answersArr=[];
+  for(var qi=0;qi<QS.length;qi++){
+    var q=QS[qi];var a=ans[qi];
+    var entry={
+    q_no:qi+1,block:q.bl,block_label:q.bll,question:q.tx,
+    selected_letter:'未回答',selected_text:'未回答',
+    tags:{aptitude:'',role:{},stress:'',learning_style:'',weak_flag:'',customer_response:{}}
+    };
+    if(a!==null&&a!==undefined&&q.ch[a]){
+      var ch=q.ch[a];
+      entry.selected_letter=letters[a];
+      entry.selected_text=ch.t;
+      entry.tags={
+      aptitude:aptCodeMap[ch.a]||'',
+      role:ch.r||{},
+      stress:ch.st||'',
+      learning_style:ch.ls||'',
+      weak_flag:ch.wf||'',
+      customer_response:ch.cp||{}
+      };
+    }
+    answersArr.push(entry);
+  }
+  var _plSc=sc.plSc||calcPlacementSc(ans);
+  var llmPayload={
+  basic_info:{name:name,store:store,date:new Date().toLocaleDateString('ja-JP')},
+  diagnosis_result:{
+    type_name:(TYPES[sc.typeKey]?TYPES[sc.typeKey].role:null)||sc.topKey+'-'+sc.secKey,
+    p_rank:sc.hantei,
+    self_top:sc.clTop,
+    natural_top:sc.ntTop,
+    behavior_top:sc.simTop,
+    trust:sc.trust||'',
+    gap:sc.gap?'あり':'なし',
+    weak_flag:sc.wf||'なし',
+    stress_factor:stressTop,
+    field_subtype:(sc.fieldProfile&&sc.fieldProfile.fieldSubtype)||'',
+    hidden_potential:hiddenStr,
+    stay_field_fit:(sc.fieldProfile&&sc.fieldProfile.stayFieldFit)||'',
+    expansion_fit:(sc.fieldProfile&&sc.fieldProfile.expansionFit)||'',
+    placement_top:_plSc.topArc,
+    placement_sec:_plSc.secArc,
+    placement_conf:_plSc.confidence,
+    placement_purpose:_plSc.purposeTop,
+    placement_eval:_plSc.evalTop,
+    placement_scores:JSON.stringify(_plSc.pl),
+    pr_affinity_level:sc.rn['PR']>=40?'high':sc.rn['PR']>=28?'medium':'none'
+  },
+  category_scores:catScores,
+  answers:answersArr
+  };
+  var promptBase='あなたは、SHACHI GROUPの人材配置・育成を支援する診断レポート作成AIです。\n\nこの診断は、人を評価するためではなく、配置・育成・面談の仮説を作るためのものです。\n\n以下の採点済みデータと全回答をもとに、管理者向けの詳細レポートを作成してください。\n\n重要ルール：\n- 点数や判定は変更しない\n- 診断結果を断定しすぎない\n- 「この人は絶対に〇〇」と書かない\n- 「能力が低い」「向いていない」「使えない」などの評価表現は禁止\n- 「回答上は」「傾向があります」「配置仮説としては」「面談で確認してください」という表現を使う\n- P3は低評価ではなく、複数傾向が近い／現場観察とセットで確認する段階として説明する\n- 低スコアは「できない」ではなく「今回の回答では優先度が低く出ている領域」として説明する\n- 「現場対応」という広すぎる表現は避け、実際の回答傾向に応じて具体化する\n- 「対人後回し」は、対人が苦手という意味にしない。対人系回答が多い場合は、日常的な細かい声かけが後回しになりやすいが、空気の変化や相手の違和感には反応できる可能性がある、と説明する\n- 「求人文の見直し」は、求人・採用が1位または上位で、かつ広報・PRも高い場合のみ優先提案として出す\n- 必ずQ番号や回答内容を根拠として使う\n- 固定テンプレートではなく、この人の回答内容に合わせたカスタマイズされた人物像にする\n\n出力項目：\n1. 総合人物像\n2. 回答から見える強み\n3. 本人が自覚していない可能性のある強み\n4. 向いている役割\n5. 任せるとズレやすい仕事\n6. モチベーションが上がる条件\n7. 腐りやすい条件\n8. 指導・育成時の注意\n9. 面談で確認すべき質問\n10. 回答上の根拠';
+  return{llm_analysis_payload:llmPayload,llm_prompt_base:promptBase};
+}
+var WEBHOOK_URL=DPS_CONFIG.webhookUrl;
+function sendResult(){
+  var name=document.getElementById('send-name').value.trim();
+  var store=document.getElementById('send-store').value.trim();
+  var _vErr=validateSendForm(name,store);
+  if(_vErr){document.getElementById('send-status').textContent=_vErr;return;}
+  var sc=lastSc;
+  var qf=sc.qualityFlag||{warn:false,flags:[]};
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var abilityNames={'対人':'対人運用力','現場':'現場統率力','分析':'分析・構造化力','表現':'表現・訴求力'};
+  var sorted=sc.sorted||[];
+  var top1=sorted[0]?roleNames[sorted[0][0]]+'('+Math.round(sorted[0][1])+'pt)':'-';
+  var top2=sorted[1]?roleNames[sorted[1][0]]+'('+Math.round(sorted[1][1])+'pt)':'-';
+  var ty=TYPES[sc.typeKey]||{};
+  var roleScores={};
+  if(sc.sorted){for(var i=0;i<sc.sorted.length;i++){roleScores[roleNames[sc.sorted[i][0]]]=Math.round(sc.sorted[i][1]);}}
+  var allAnswers={};
+  for(var i=0;i<TOTAL;i++){
+    var q=QS[i];var a=ans[i];var letters=['A','B','C','D'];
+    allAnswers['Q'+(i+1)]=(a!==null&&a!==undefined&&q.ch[a])?letters[a]+': '+q.ch[a].t:'未回答';
+  }
+  var stressTop=(function(){
+    var st=sc.str||{};var best=null,bestV=-1;
+    var stNames={REL:'人間関係',AMB:'曖昧さ',NUM_S:'結果不明',FREE:'裁量不足',OVER:'抱え込み'};
+    for(var k in st){if((st[k]||0)>bestV){bestV=st[k];best=k;}}
+    return best?stNames[best]:'-';
+  })();
+  var _plSc=sc.plSc||calcPlacementSc(ans);
+  var payload={
+  name:name,store:store,date:new Date().toLocaleDateString('ja-JP'),
+  type:ty.role||sc.typeKey||'準タイプ',hantei:sc.hantei,hantei_label:HANTEI_LABEL[sc.hantei]||sc.hantei,
+  top_role:top1,second_role:top2,
+  natural_top:abilityNames[sc.ntTop]||sc.ntTop,
+  claimed_top:abilityNames[sc.clTop]||sc.clTop,
+  behavior_sim:abilityNames[sc.simTop]||sc.simTop,
+  trust:sc.trust,gap:sc.gap?'あり':'なし',
+  eval_flag:sc.ef,ea_score:sc.ea,weakness_flag:sc.wf||'なし',stress_top:stressTop,
+  role_scores:JSON.stringify(roleScores),all_answers:JSON.stringify(allAnswers),
+  field_subtype:sc.fieldProfile.fieldSubtype,
+  hidden_potential:sc.fieldProfile.hiddenPotential,
+  stay_field_fit:sc.fieldProfile.stayFieldFit,
+  expansion_fit:sc.fieldProfile.expansionFit,
+  player_fit:sc.fieldProfile.playerFit,
+  player_to_education_fit:sc.fieldProfile.playerToEducationFit,
+  player_to_management_fit:sc.fieldProfile.playerToManagementFit,
+  first_small_role:sc.fieldProfile.firstSmallRole,
+  trust_comment:buildTrustComment(sc).replace(/<[^>]+>/g,' '),
+  result_reason:buildResultReason(sc).replace(/<[^>]+>/g,' '),
+  suitable_tasks:(ROLE_TASKS[sc.topKey]||[]).join(' / '),
+  unsuitable_assignment:buildUnsuitableAssignment(sc),
+  first_small_steps:(ROLE_FIRST_STEPS[sc.topKey]||[]).join(' / '),
+  customer_player_fit:sc.fieldProfile.customerPlayerFit,
+  relationship_building_fit:sc.fieldProfile.relationshipBuildingFit,
+  after_contact_fit:sc.fieldProfile.afterContactFit,
+  player_to_teaching_fit:sc.fieldProfile.playerToTeachingFit,
+  customer_response_scores:JSON.stringify(sc.cp||{}),
+  placement_top:_plSc.topArc,
+  placement_sec:_plSc.secArc,
+  placement_conf:_plSc.confidence,
+  placement_purpose:_plSc.purposeTop,
+  placement_eval:_plSc.evalTop,
+  placement_scores:JSON.stringify(_plSc.pl),
+  pr_affinity_level:sc.rn['PR']>=40?'high':sc.rn['PR']>=28?'medium':'none'
+  };
+  payload.user_role=userRole;
+  var _llmData=buildLLMPayload(sc,name,store);
+  payload.llm_analysis_payload=JSON.stringify(_llmData.llm_analysis_payload);
+  payload.llm_prompt_base=_llmData.llm_prompt_base;
+  payload.quality_flags=qf.flags.join(',')||'none';
+  payload.quality_warn=qf.warn?'1':'0';
+  payload.llm_report_status='pending';
+  payload.llm_admin_report='';
+  var btn=document.getElementById('btn-send');
+  var status=document.getElementById('send-status');
+  btn.disabled=true;status.style.color='var(--mid)';status.textContent='送信中...';
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(res){
+      if(res.ok){status.style.color='var(--teal)';status.textContent='✓ 送信が完了しました。ありがとうございました。';}
+      else{throw new Error('HTTP '+res.status);}
+    })
+    .catch(function(err){
+      status.style.color='var(--red)';status.textContent='送信に失敗しました。もう一度試すか、管理者に連絡してください。';
+      btn.disabled=false;console.error('送信エラー:',err);
+    });
+}
+var HANTEI_LABEL={
+P1:'方向性参考（P1）— 参考仮説として有力',
+P2:'暫定傾向あり（P2）— 試験的に確認する段階',
+P2W:'暫定傾向あり・弱点確認推奨（P2-確認あり）',
+P3A:'面談要確認（P3-拮抗）— 複数傾向が近く複合型として配置を検討',
+P3B:'面談要確認（P3-ズレ）— 3層ズレあり・面談を先行させること',
+P3C:'面談要確認（P3-低）— 全体スコアが低め・追加観察が必要',
+P3:'面談要確認（P3）— 現時点では傾向が確定しにくい状態'
+};
+function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function validateSendForm(name,store){
+  if(!name) return '氏名を入力してください';
+  if(!store) return '店舗を入力してください';
+  if(!lastSc) return '診断結果がありません。診断を完了してください';
+  return null;
+}
+(function checkResume(){
+  var saved=loadProgress();
+  if(!saved) return;
+  var d=new Date(saved.savedAt);
+  var dateStr=(d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+('0'+d.getMinutes()).slice(-2);
+  var answeredCount=saved.ans.filter(function(a){return a!==null;}).length;
+  var resumeHtml='<div id="resume-block" style="margin-bottom:14px;padding:12px 14px;background:var(--al);'+
+    'border:1px solid var(--gold);border-radius:6px;text-align:left">'+
+    '<div style="font-size:10px;color:var(--gold2);letter-spacing:.2em;margin-bottom:4px">前回の途中データあり</div>'+
+    '<div style="font-size:12px;color:var(--dark);margin-bottom:10px">'+
+    dateStr+' 保存　/ '+answeredCount+'問 / '+TOTAL+'問 回答済み'+
+    '</div>'+
+    '<button class="btn-start" style="margin-bottom:6px" onclick="resumeQ()">続きから再開する</button>'+
+    '<button class="btn-nav sec" style="display:block;margin:0 auto;font-size:11px" '+
+    'onclick="discardAndStart()">最初からやり直す</button>'+
+    '</div>';
+  var btnStart=document.getElementById('main-start');
+  if(btnStart) btnStart.insertAdjacentHTML('beforebegin',resumeHtml);
+})();
+function resumeQ(){
+  var saved=loadProgress();
+  if(!saved){startQ();return;}
+  ans=saved.ans.slice();
+  cur=Math.min(Math.max(0,saved.cur),TOTAL-1);
+  userRole=saved.userRole||'';
+  var sel=document.getElementById('user-role');
+  if(sel&&userRole) sel.value=userRole;
+  renderQ();
+  showOnly('s-q');
+}
+function discardAndStart(){
+  clearProgress();
+  var rb=document.getElementById('resume-block');
+  if(rb) rb.remove();
+  var _re=document.getElementById('role-error');
+  if(_re) _re.textContent='';
+}
+(function checkSavedResult(){
+  var saved=loadSavedResult();
+  if(!saved) return;
+  var d=new Date(saved.savedAt);
+  var dateStr=(d.getMonth()+1)+'/'+d.getDate();
+  var savedHtml='<div id="saved-block" style="margin-bottom:14px;padding:12px 14px;background:var(--bg3);'+
+    'border:1px solid var(--line);border-radius:6px;text-align:left">'+
+    '<div style="font-size:10px;color:var(--lit);letter-spacing:.2em;margin-bottom:4px">保存済みの結果</div>'+
+    '<div style="font-size:13px;font-weight:500;color:var(--dark);margin-bottom:2px">'+
+    _esc(saved.name||'（名前未入力）')+'</div>'+
+    '<div style="font-size:11px;color:var(--mid);margin-bottom:8px">'+
+    _esc(saved.typeName)+'　'+_esc(dateStr)+'</div>'+
+    '<button class="btn-nav sec" style="display:block;margin:0 auto;font-size:11px" '+
+    'onclick="showSavedResult()">保存済みの結果を見る</button>'+
+    '</div>';
+  var btnStart=document.getElementById('main-start');
+  if(btnStart) btnStart.insertAdjacentHTML('beforebegin',savedHtml);
+})();
+function showSavedResult(){
+  var saved=loadSavedResult();
+  if(!saved) return;
+  var roleNames={LEAD:'統率・現場',EDU:'育成・教育',NUM:'戦略・数字',SYS:'整理・仕組み化',REC:'求人・採用',PR:'広報・PR'};
+  var scoresHtml='';
+  if(Array.isArray(saved.sorted)){
+    for(var i=0;i<saved.sorted.length;i++){
+      var _row=saved.sorted[i];
+      if(!Array.isArray(_row)||_row.length<2) continue;
+      var _key=String(_row[0]||'');
+      var _pt=isFinite(_row[1])?Math.round(_row[1]):0;
+      scoresHtml+='<div style="display:flex;justify-content:space-between;'+
+        'font-size:12px;padding:3px 0;border-bottom:1px solid var(--line)">'+
+        '<span style="color:var(--mid)">'+_esc(roleNames[_key]||_key)+'</span>'+
+        '<span style="font-weight:500;color:'+(i===0?'var(--gold2)':'var(--dark)')+'">'+
+        _pt+'pt</span></div>';
+    }
+  }
+  var detailHtml='<div id="saved-detail" style="margin-bottom:14px;padding:14px 16px;background:var(--bg2);'+
+    'border:1px solid var(--line);border-radius:6px;text-align:left">'+
+    '<div style="font-size:10px;color:var(--gold2);letter-spacing:.2em;margin-bottom:8px">保存済み結果サマリー</div>'+
+    '<div style="font-size:15px;font-weight:500;color:var(--dark);margin-bottom:2px">'+_esc(saved.typeName)+'</div>'+
+    '<div style="font-size:11px;color:var(--lit);margin-bottom:12px">'+_esc(saved.hanteiLabel)+'</div>'+
+    scoresHtml+
+    '<div style="font-size:10px;color:var(--lit);margin-top:10px">一致度: '+_esc(saved.trust||'—')+'</div>'+
+    (saved.ans
+      ? '<button class="btn-nav" style="display:block;margin:12px auto 0;font-size:11px" onclick="restoreSavedFull()">診断結果を全画面で見返す</button>'
+      : '<div style="font-size:10px;color:var(--lit);margin-top:10px">※この保存データは旧バージョンのため、全画面表示には対応していません（再診断で対応します）</div>')+
+    '<button class="btn-nav sec" style="display:block;margin:10px auto 0;font-size:11px" '+
+    'onclick="document.getElementById(\'saved-detail\').remove()">閉じる</button>'+
+    '</div>';
+  var savedBlock=document.getElementById('saved-detail');
+  if(savedBlock){savedBlock.remove();}
+  var btnStart=document.getElementById('main-start');
+  if(btnStart) btnStart.insertAdjacentHTML('beforebegin',detailHtml);
+}
+function restoreSavedFull(){
+  var saved=loadSavedResult();
+  if(!saved||!Array.isArray(saved.ans)||saved.ans.length!==TOTAL){showOnly('s-cover');return;}
+  ans=saved.ans.slice();
+  userRole=saved.userRole||'';
+  var sel=document.getElementById('user-role');
+  if(sel&&userRole) sel.value=userRole;
+  showResult();
+}
+</script>
+</body>
+</html>
+
 :root{
 --bg:#F1EFE8;--bg2:#FAFAF8;--bg3:#EDEBE2;--bg4:#E5E2D8;
 --dark:#2C2C2A;--mid:#5F5E5A;--lit:#888780;
